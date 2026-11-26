@@ -2,96 +2,283 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#244a3c">
 <title>Ulangan Online SD Negeri 7 Kumbe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#eef2f6;--card:#fff;--ink:#16202c;--muted:#5d6b7a;--line:#d9e0e8;--pri:#1f6f5c;--pri2:#e5f2ee;--warn:#b54708;--bad:#c0362c;--good:#1f7a3d;--gold:#c99a06}
+:root{
+  --papan:#244a3c;      /* papan tulis */
+  --papan-2:#1b3a2f;
+  --kapur:#f3f0e4;      /* kapur tulis */
+  --kuning:#f5c84c;     /* kapur kuning */
+  --merah:#b8262e;      /* merah seragam & tinta guru */
+  --tinta:#1d2a3a;      /* tinta biru-hitam */
+  --pensil:#2d2f33;     /* isian pensil 2B */
+  --garis:#cfe0ee;      /* garis buku tulis */
+  --margin:#eaa3a6;     /* garis margin merah */
+  --kertas:#ffffff;
+  --latar:#e7eef4;
+  --abu:#5b6878;
+  --hijau:#1f7a46;
+  --ln:30px;            /* jarak garis buku */
+  --r:14px;
+  --fb:"Nunito",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --fd:"Baloo 2","Nunito",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+}
 *{box-sizing:border-box}
-body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
-header{background:var(--card);border-bottom:2px solid var(--ink);padding:10px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:5}
-header .flag{width:22px;height:14px;background:linear-gradient(#d62828 50%,#fff 50%);border:1px solid #ccc}
-header b{flex:1}
-header .timer{font-variant-numeric:tabular-nums;font-weight:700;padding:3px 10px;border-radius:6px;background:var(--pri2);color:var(--pri);display:none}
-header .timer.low{background:#fdecea;color:var(--bad)}
-main{max-width:760px;margin:0 auto;padding:18px 14px 60px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:14px}
-.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 4px}
-h1{font-size:22px;margin:0 0 6px}
-h2{font-size:18px;margin:0 0 6px}
-p.sub{color:var(--muted);margin:0 0 14px;font-size:14px}
-label{font-size:14px;font-weight:600;display:block;margin:10px 0 4px}
-input{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:8px;font-size:16px;background:#f7f9fb}
-button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--line);background:#fff;padding:10px 14px}
-.btn{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:600;width:100%;padding:12px;margin-top:14px}
-.btn.pri{background:var(--pri);border-color:var(--pri)}
-.btn.ghost{background:#fff;color:var(--ink)}
-.grid{display:grid;gap:10px}
-.g3{grid-template-columns:repeat(3,1fr)}
-.kelas{padding:18px 8px;text-align:center;font-weight:700;font-size:18px}
-.kelas small{display:block;font-weight:500;font-size:12px;color:var(--muted)}
-.kelas.on{border:2px solid var(--pri);background:var(--pri2);color:var(--pri)}
-.kelas:disabled{opacity:.5;cursor:not-allowed}
-.menu{text-align:left;display:flex;gap:14px;align-items:center;padding:16px;width:100%}
-.menu .tag{min-width:62px;height:62px;border-radius:10px;background:var(--pri);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800}
-.menu .tag.b{background:#2f4f8f}.menu .tag.r{background:var(--gold)}
-.menu div p{margin:2px 0 0;color:var(--muted);font-size:13px}
-.qhead{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:8px}
-.qtext{font-size:17px;margin:0 0 14px}
-.opt{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;margin-bottom:8px;padding:12px;font-size:16px}
-.opt .l{min-width:28px;height:28px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:700}
-.opt.sel{border-color:var(--pri);background:var(--pri2)}.opt.sel .l{background:var(--pri);color:#fff;border-color:var(--pri)}
-.opt.ok{border-color:var(--good);background:#e8f5ec}.opt.no{border-color:var(--bad);background:#fdecea}
-.nav{display:flex;gap:8px}.nav button{flex:1}
-.nums{display:grid;grid-template-columns:repeat(10,1fr);gap:5px}
-.nums button{padding:6px 0;font-size:13px}
-.nums .ans{background:var(--pri);color:#fff;border-color:var(--pri)}
-.nums .cur{outline:2px solid var(--ink);outline-offset:1px}
-.frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;font-size:.85em;line-height:1.1;margin:0 2px}
-.frac span:first-child{border-bottom:1.5px solid currentColor;padding:0 2px}
-.score{font-size:56px;font-weight:800;text-align:center;margin:6px 0;color:var(--pri)}
-.stats{display:flex;justify-content:center;gap:18px;color:var(--muted);font-size:14px;flex-wrap:wrap}
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-.tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-table{width:100%;border-collapse:collapse;font-size:14px}
-th,td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left}
-th{font-size:12px;color:var(--muted);text-transform:uppercase}
-td.n{text-align:right;font-variant-numeric:tabular-nums}
-tr.me{background:#fff7df}
-.medal{display:inline-flex;width:26px;height:26px;border-radius:50%;align-items:center;justify-content:center;font-weight:800;font-size:13px;background:#eef2f6}
-.m1{background:#f6d24a}.m2{background:#d6dbe1}.m3{background:#e3a76f}
-.note{font-size:13px;color:var(--muted)}
-.rv{border-top:1px solid var(--line);padding-top:12px;margin-top:12px}
-.rv .exp{font-size:14px;background:#f4f7fa;border-radius:8px;padding:8px 10px;color:#334}
-.modal{position:fixed;inset:0;background:rgba(10,20,30,.45);display:none;align-items:center;justify-content:center;padding:16px;z-index:9}
-.modal .card{max-width:420px;width:100%}
-.hide{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--fb);font-weight:500;background:var(--latar);color:var(--tinta);line-height:1.5;min-height:100vh}
+h1,h2,h3,.baloo{font-family:var(--fd);line-height:1.15;margin:0}
+[hidden]{display:none!important}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--kuning);outline-offset:2px}
+
+/* ---------- papan tulis (header) ---------- */
+.papan{background:radial-gradient(120% 140% at 20% 0%,#2e5a4a 0%,var(--papan) 45%,var(--papan-2) 100%);color:var(--kapur);border-bottom:6px solid #8a5a32;box-shadow:inset 0 -2px 0 #6e4626;position:sticky;top:0;z-index:20}
+.papan-in{max-width:720px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;min-height:58px}
+.logo{width:34px;height:34px;border-radius:50%;background:var(--kapur);color:var(--merah);display:grid;place-items:center;font:800 15px var(--fd);flex:none}
+.papan-judul{flex:1;min-width:0}
+.papan-judul b{display:block;font:700 18px/1.1 var(--fd);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.papan-judul span{font-size:13px;opacity:.75}
+.timer{font:800 20px var(--fd);color:var(--kuning);font-variant-numeric:tabular-nums;padding:2px 10px;border:2px dashed rgba(245,200,76,.55);border-radius:10px;display:none}
+.timer.low{color:#ff8b8b;border-color:#ff8b8b;animation:kedip 1s steps(2) infinite}
+@keyframes kedip{50%{opacity:.45}}
+
+main{max-width:720px;margin:0 auto;padding:20px 14px 120px}
+
+/* ---------- layar sambutan ---------- */
+.sambut{padding:8px 4px 18px}
+.sambut h1{font-size:clamp(28px,7vw,40px);font-weight:800;color:var(--tinta)}
+.sambut p{margin:6px 0 0;color:var(--abu);font-size:16px;max-width:52ch}
+
+.kelas-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.kelas{background:var(--kertas);border:2px solid #d5dee8;border-radius:var(--r);padding:14px 8px 12px;text-align:center}
+.kelas .angka{font:800 52px/1 var(--fd);color:#c3ccd6}
+.kelas small{display:block;font-size:13px;color:var(--abu);margin-top:4px}
+.kelas.on{border-color:var(--merah);background:#fff;box-shadow:0 6px 0 var(--merah)}
+.kelas.on .angka{color:var(--merah)}
+.kelas.on small{color:var(--merah);font-weight:800}
+.kelas.on:active{transform:translateY(4px);box-shadow:0 2px 0 var(--merah)}
+.kelas:disabled{cursor:not-allowed;background:transparent;border-style:dashed}
+
+/* ---------- kertas buku tulis ---------- */
+.buku{position:relative;background:var(--kertas);border-radius:6px 6px var(--r) var(--r);padding:calc(var(--ln)*1) 18px calc(var(--ln)*1) 58px;
+  background-image:linear-gradient(to right,transparent 43px,var(--margin) 43px,var(--margin) 45px,transparent 45px),
+                   repeating-linear-gradient(to bottom,transparent 0,transparent calc(var(--ln) - 1px),var(--garis) calc(var(--ln) - 1px),var(--garis) var(--ln));
+  background-position:0 0,0 calc(var(--ln)*1 + 6px);
+  box-shadow:0 1px 0 #d3dce6,0 10px 24px -14px rgba(29,42,58,.35);margin-bottom:16px}
+.buku::before{content:"";position:absolute;left:0;right:0;top:0;height:8px;border-radius:6px 6px 0 0;background:repeating-linear-gradient(90deg,var(--merah) 0 18px,#fff 18px 22px)}
+.buku .no{position:absolute;left:0;width:43px;text-align:center;font:800 18px var(--fd);color:var(--merah)}
+.buku h2{font-size:24px;font-weight:800;margin-bottom:6px}
+.buku p.ket{margin:0 0 12px;color:var(--abu)}
+label.lbl{display:block;font-weight:800;margin:14px 0 6px}
+.input{width:100%;font:700 20px var(--fb);color:var(--tinta);padding:10px 12px;border:none;border-bottom:3px solid var(--tinta);background:transparent;border-radius:0}
+.input::placeholder{color:#a8b3bf;font-weight:500}
+.input:focus{outline:none;border-bottom-color:var(--merah)}
+
+/* ---------- tombol ---------- */
+.btn{display:block;width:100%;border:none;border-radius:12px;padding:14px 16px;font:800 17px var(--fb);margin-top:12px;text-align:center}
+.btn-utama{background:var(--merah);color:#fff;box-shadow:0 5px 0 #7f161c}
+.btn-utama:active{transform:translateY(3px);box-shadow:0 2px 0 #7f161c}
+.btn-papan{background:var(--papan);color:var(--kapur);box-shadow:0 5px 0 var(--papan-2)}
+.btn-papan:active{transform:translateY(3px);box-shadow:0 2px 0 var(--papan-2)}
+.btn-garis{background:transparent;border:2px solid #c4cfdb;color:var(--tinta)}
+.btn-teks{background:none;border:none;color:var(--abu);text-decoration:underline;text-underline-offset:3px;padding:10px;margin-top:6px}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
+
+/* ---------- menu mapel ---------- */
+.halo{display:flex;align-items:center;gap:12px;margin:0 2px 16px}
+.inisial{width:48px;height:48px;border-radius:50%;background:var(--kuning);color:var(--tinta);display:grid;place-items:center;font:800 20px var(--fd);flex:none}
+.halo h1{font-size:26px;font-weight:800}
+.halo p{margin:0;color:var(--abu)}
+.mapel{display:flex;gap:14px;align-items:stretch;width:100%;text-align:left;background:var(--kertas);border:none;border-radius:var(--r);padding:0;margin-bottom:14px;overflow:hidden;box-shadow:0 1px 0 #d3dce6,0 10px 24px -16px rgba(29,42,58,.4)}
+.mapel .sampul{width:92px;flex:none;display:grid;place-items:center;font:800 34px var(--fd);color:#fff}
+.mapel .isi{padding:14px 14px 14px 0;flex:1}
+.mapel h3{font-size:22px;font-weight:800}
+.mapel p{margin:2px 0 8px;color:var(--abu);font-size:14px}
+.chip{display:inline-block;font-size:13px;font-weight:800;padding:3px 10px;border-radius:99px;background:#eef3f7;color:var(--tinta);margin:0 4px 4px 0}
+.chip.ok{background:#e3f3ea;color:var(--hijau)}
+.mapel:active{transform:scale(.99)}
+
+/* ---------- soal ---------- */
+.kemajuan{display:flex;align-items:center;gap:10px;margin:0 2px 12px;font-weight:800;font-size:14px;color:var(--abu)}
+.bar{flex:1;height:10px;border-radius:99px;background:#d4dde7;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--merah);border-radius:99px;transition:width .25s}
+.topik{display:inline-block;font-size:13px;font-weight:800;color:var(--papan);background:#e1ece6;border-radius:99px;padding:2px 10px;margin-bottom:6px}
+.qtext{font-size:19px;line-height:var(--ln);margin:0 0 14px;font-weight:700;padding-top:2px}
+.opsi{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:#fff;border:2px solid #d5dee8;border-radius:12px;padding:10px 12px;margin:0 0 10px;font-size:17px;font-weight:700;min-height:56px}
+.bulat{width:34px;height:34px;flex:none;border-radius:50%;border:2px solid var(--pensil);display:grid;place-items:center;font:800 15px var(--fb);color:var(--pensil);background:#fff}
+.opsi.pilih{border-color:var(--tinta);background:#f5f8fb}
+.opsi.pilih .bulat{background:radial-gradient(circle at 35% 30%,#55585e,var(--pensil) 60%);color:#fff;border-color:var(--pensil)}
+.opsi.benar{border-color:var(--hijau);background:#e9f6ef}
+.opsi.benar .bulat{background:var(--hijau);border-color:var(--hijau);color:#fff}
+.opsi.salah{border-color:var(--merah);background:#fdeeee}
+.opsi.salah .bulat{background:var(--merah);border-color:var(--merah);color:#fff}
+.opsi .tanda{margin-left:auto;font-weight:800;font-size:14px}
+
+details.daftar{background:var(--kertas);border-radius:var(--r);padding:4px 14px;margin-bottom:12px}
+details.daftar summary{cursor:pointer;font-weight:800;padding:10px 0;list-style:none;display:flex;justify-content:space-between}
+details.daftar summary::-webkit-details-marker{display:none}
+details.daftar summary::after{content:"Buka";color:var(--abu);font-weight:700}
+details.daftar[open] summary::after{content:"Tutup"}
+.nums{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;padding:4px 0 14px}
+.nums button{aspect-ratio:1;border-radius:50%;border:2px solid var(--pensil);background:#fff;font-weight:800;font-size:14px;padding:0}
+.nums button.isi{background:var(--pensil);color:#fff}
+.nums button.kini{outline:3px solid var(--merah);outline-offset:2px}
+.legenda{display:flex;gap:14px;font-size:13px;color:var(--abu);padding-bottom:12px}
+.legenda span::before{content:"";display:inline-block;width:12px;height:12px;border-radius:50%;border:2px solid var(--pensil);vertical-align:-2px;margin-right:6px}
+.legenda span.l-isi::before{background:var(--pensil)}
+
+.bawah{position:fixed;left:0;right:0;bottom:0;background:rgba(231,238,244,.94);backdrop-filter:blur(6px);border-top:1px solid #cfd9e3;z-index:15;padding:10px 14px calc(10px + env(safe-area-inset-bottom))}
+.bawah-in{max-width:720px;margin:0 auto;display:flex;gap:10px}
+.bawah .btn{margin:0;padding:13px 10px}
+.bawah .btn-garis{flex:1}.bawah .btn-utama,.bawah .btn-papan{flex:1.4}
+
+.frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;font-size:.82em;line-height:1.05;margin:0 3px}
+.frac span:first-child{border-bottom:2px solid currentColor;padding:0 3px}
+
+/* ---------- hasil ---------- */
+.hasil{text-align:center;padding-top:calc(var(--ln)*1.2)}
+.stempel{width:170px;height:150px;margin:8px auto 4px;position:relative;display:grid;place-items:center}
+.stempel svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.stempel svg path{fill:none;stroke:var(--merah);stroke-width:4;stroke-linecap:round;stroke-dasharray:560;stroke-dashoffset:560;animation:coret .9s .15s ease-out forwards}
+@keyframes coret{to{stroke-dashoffset:0}}
+.skor{font:800 76px/1 var(--fd);color:var(--merah);transform:rotate(-6deg)}
+.pesan{font:800 24px var(--fd);margin:4px 0 2px}
+.ringkas{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:12px 0 4px}
+.ringkas div{background:#f3f6f9;border-radius:12px;padding:8px 14px;min-width:88px}
+.ringkas b{display:block;font:800 22px var(--fd)}
+.ringkas span{font-size:13px;color:var(--abu)}
+.status{font-size:14px;color:var(--abu);margin-top:10px}
+.status.ok{color:var(--hijau);font-weight:800}
+.status.gagal{color:var(--merah);font-weight:800}
+.bahas{font-size:15px;background:#fff8e1;border-left:4px solid var(--kuning);border-radius:6px;padding:8px 12px;margin:4px 0 0}
+.tinjau-item{border-top:2px dashed #d5dee8;padding-top:14px;margin-top:14px}
+.tinjau-item:first-of-type{border-top:none;margin-top:0;padding-top:0}
+
+/* ---------- ranking ---------- */
+.rank-kepala{display:flex;align-items:end;justify-content:space-between;gap:10px;margin:0 2px 12px}
+.rank-kepala h1{font-size:30px;font-weight:800}
+.rank-kepala p{margin:0;color:var(--abu);font-size:14px}
+.segmen{display:flex;background:#d7e0e9;border-radius:12px;padding:4px;margin-bottom:16px}
+.segmen button{flex:1;border:none;background:transparent;border-radius:9px;padding:9px 4px;font-weight:800;color:var(--abu)}
+.segmen button.on{background:#fff;color:var(--tinta);box-shadow:0 2px 6px rgba(29,42,58,.15)}
+.podium{display:grid;grid-template-columns:1fr 1fr 1fr;align-items:end;gap:8px;background:var(--papan);border-radius:var(--r) var(--r) 0 0;padding:18px 10px 0;color:var(--kapur)}
+.juara{text-align:center;min-width:0}
+.juara .ava{width:54px;height:54px;border-radius:50%;margin:0 auto 6px;display:grid;place-items:center;font:800 22px var(--fd);background:var(--kapur);color:var(--papan);border:3px solid}
+.juara .nm{font-weight:800;font-size:14px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;min-height:2.4em;padding:0 2px}
+.juara .nil{font:800 22px var(--fd);color:var(--kuning)}
+.juara .tiang{margin-top:8px;border-radius:10px 10px 0 0;display:grid;place-items:start center;padding-top:6px;font:800 30px var(--fd);color:rgba(29,42,58,.55)}
+.j1 .ava{border-color:#f5c84c;width:66px;height:66px;font-size:26px}
+.j1 .tiang{height:96px;background:#f5c84c}
+.j2 .ava{border-color:#cfd6de}.j2 .tiang{height:70px;background:#cfd6de}
+.j3 .ava{border-color:#d9935a}.j3 .tiang{height:52px;background:#d9935a}
+.mahkota{font-size:22px;line-height:1;display:block;margin-bottom:2px}
+.daftar-rank{background:var(--kertas);border-radius:0 0 var(--r) var(--r);margin:0 0 14px;padding:4px 0;list-style:none}
+.daftar-rank li{display:flex;align-items:center;gap:12px;padding:10px 14px;border-top:1px solid #edf1f5}
+.daftar-rank li:first-child{border-top:none}
+.daftar-rank .pk{width:30px;text-align:center;font:800 18px var(--fd);color:var(--abu);flex:none}
+.daftar-rank .nm{flex:1;font-weight:800;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.daftar-rank .kecil{display:block;font-weight:600;font-size:13px;color:var(--abu)}
+.daftar-rank .nl{font:800 22px var(--fd);color:var(--merah)}
+.daftar-rank li.saya{background:#fff6d9}
+.kosong{background:var(--kertas);border-radius:var(--r);padding:28px 18px;text-align:center;color:var(--abu)}
+.kosong b{display:block;color:var(--tinta);font:800 20px var(--fd);margin-bottom:4px}
+.catatan{font-size:13px;color:var(--abu);margin:8px 4px 0}
+
+/* ---------- lebih ceria ---------- */
+.kelas.on:nth-child(5){animation:goyang 2.4s ease-in-out 1s 2}
+@keyframes goyang{0%,100%{transform:rotate(0)}20%{transform:rotate(-3deg)}40%{transform:rotate(3deg)}60%{transform:rotate(-2deg)}80%{transform:rotate(1deg)}}
+.awan{display:flex;gap:10px;align-items:flex-end;margin:4px 0 18px}
+.maskot{font-size:54px;line-height:1;flex:none;filter:drop-shadow(0 4px 0 rgba(29,42,58,.12))}
+.gelembung{background:#fff;border-radius:18px 18px 18px 4px;padding:12px 16px;font-weight:700;box-shadow:0 1px 0 #d3dce6}
+.gelembung b{font:800 22px/1.15 var(--fd);display:block;color:var(--merah)}
+.konfeti{position:fixed;inset:0;pointer-events:none;z-index:40;overflow:hidden}
+.konfeti i{position:absolute;top:-20px;width:10px;height:14px;border-radius:2px;animation:jatuh linear forwards}
+@keyframes jatuh{to{transform:translateY(110vh) rotate(720deg)}}
+.link-guru{display:block;margin:28px auto 0;text-align:center;color:var(--abu);font-weight:700;background:none;border:none;text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- peringatan keluar ---------- */
+.peringatan .buku{border:3px solid var(--merah)}
+.peringatan .besar{font-size:52px;text-align:center;line-height:1;margin-bottom:6px}
+.nyawa{display:flex;justify-content:center;gap:10px;margin:10px 0 4px;font-size:30px}
+.nyawa span.hilang{filter:grayscale(1);opacity:.3}
+.penjaga{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:var(--abu);margin:0 2px 10px}
+.penjaga .hati{letter-spacing:2px}
+
+/* ---------- guru / admin ---------- */
+.admin-tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:14px;padding-bottom:2px}
+.admin-tabs button{flex:none;border:2px solid #c4cfdb;background:#fff;border-radius:99px;padding:8px 14px;font-weight:800}
+.admin-tabs button.on{background:var(--papan);border-color:var(--papan);color:var(--kapur)}
+.saring{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.saring select{font:700 15px var(--fb);padding:8px 10px;border-radius:10px;border:2px solid #c4cfdb;background:#fff;color:var(--tinta)}
+.ringkasan{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:14px}
+.ringkasan div{background:#fff;border-radius:12px;padding:10px 14px}
+.ringkasan b{display:block;font:800 28px var(--fd)}
+.ringkasan span{font-size:13px;color:var(--abu)}
+.kartu{background:#fff;border-radius:var(--r);overflow:hidden;margin-bottom:14px}
+.tabel{width:100%;border-collapse:collapse;font-size:14px}
+.tabel th{text-align:left;font-size:13px;color:var(--abu);font-weight:800;padding:10px 12px;background:#f3f6f9}
+.tabel td{padding:10px 12px;border-top:1px solid #edf1f5;vertical-align:top}
+.tabel td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.scroll{overflow-x:auto}
+.lencana{display:inline-block;font-size:12px;font-weight:800;padding:2px 9px;border-radius:99px;white-space:nowrap}
+.l-kerja{background:#e3eefb;color:#2f5d9e}.l-keluar{background:#fdeaea;color:var(--merah)}.l-selesai{background:#e3f3ea;color:var(--hijau)}.l-diam{background:#f1f1f1;color:#6b6b6b}
+.keluar-n{font-weight:800}.keluar-n.bahaya{color:var(--merah)}
+.waktu-kecil{font-size:12px;color:var(--abu)}
+
+.modal{position:fixed;inset:0;background:rgba(18,30,25,.55);display:none;align-items:flex-end;justify-content:center;z-index:30;padding:14px}
+.modal.buka{display:flex}
+.modal .buku{max-width:460px;width:100%;margin:0 0 env(safe-area-inset-bottom)}
+@media (min-width:560px){.modal{align-items:center}.nums{grid-template-columns:repeat(10,1fr)}}
+@media (max-width:500px){.tabel th,.tabel td{padding:8px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.stempel svg path{stroke-dashoffset:0}}
 </style>
 </head>
 <body>
-<header><span class="flag"></span><b id="judul">Ulangan Online</b><span class="timer" id="timer">60:00</span></header>
+<header class="papan"><div class="papan-in">
+  <div class="logo" aria-hidden="true">7</div>
+  <div class="papan-judul"><b id="judul">Ulangan Online</b><span id="subjudul">SD Negeri 7 Kumbe</span></div>
+  <span class="timer" id="timer" aria-live="off">60:00</span>
+</div></header>
 <main id="app"></main>
 
-<div class="modal" id="modal"><div class="card">
-  <h2>Selesai mengerjakan?</h2>
-  <p class="sub" id="modalTxt"></p>
-  <div class="nav"><button class="btn ghost" onclick="tutupModal()">Lanjut mengerjakan</button><button class="btn pri" onclick="selesai()">Ya, selesai</button></div>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle"><div class="buku">
+  <h2 id="mTitle">Kumpulkan jawaban?</h2>
+  <p class="ket" id="modalTxt"></p>
+  <button class="btn btn-utama" onclick="selesai()">Ya, kumpulkan</button>
+  <button class="btn btn-garis" onclick="tutupModal()">Periksa lagi</button>
+</div></div>
+
+<div class="modal peringatan" id="peringatan" role="alertdialog" aria-modal="true" aria-labelledby="pTitle"><div class="buku">
+  <div class="besar" aria-hidden="true">⚠️</div>
+  <h2 id="pTitle" style="text-align:center">Kamu keluar dari halaman ulangan</h2>
+  <div class="nyawa" id="nyawa" aria-hidden="true"></div>
+  <p class="ket" id="pTxt" style="text-align:center"></p>
+  <button class="btn btn-utama" onclick="tutupPeringatan()">Saya mengerti, lanjut mengerjakan</button>
 </div></div>
 
 <script>
 /* ================== PENGATURAN ================== */
 const CONFIG = {
   SEKOLAH: "SD Negeri 7 Kumbe",
-  // Tempel URL Web App Google Apps Script di sini agar ranking tersimpan bersama (lihat Code.gs).
-  // Jika dikosongkan, ranking hanya tersimpan di HP/komputer ini saja.
+  // URL Web App Google Apps Script (lihat Code.gs). Kosongkan untuk menyimpan nilai di perangkat ini saja.
   SCRIPT_URL: "https://script.google.com/macros/s/AKfycbx4xGOCbL81H2TW0qQyOt4V-tCNgj7PbFjciquZ7MAstdjQfrDWGk5HAnJtzFJZSJvs/exec",
   DURASI_MENIT: 60,          // waktu mengerjakan per mapel
-  TAMPILKAN_PEMBAHASAN: true // setelah selesai, siswa bisa melihat kunci & pembahasan
+  TAMPILKAN_PEMBAHASAN: true, // setelah selesai, siswa bisa melihat kunci & pembahasan
+  MAKS_KELUAR: 3,             // keluar sebanyak ini → jawaban dikumpulkan otomatis
+  SHEET_URL: "https://docs.google.com/spreadsheets/d/16aKAgU24CTsNJUC4khLV9oitSvTRJqUffOGcbB7sDfc/edit" // hanya bisa dibuka pemilik
 };
 const KELAS_AKTIF = ["5"];   // tambahkan "4", "6", dst. jika soalnya sudah ada
-const MAPEL = {mtk:{nama:"Matematika",kode:"MTK",cls:"b"}, ipas:{nama:"IPAS",kode:"IPAS",cls:""}};
+const MAPEL = {
+  mtk:{nama:"Matematika", ikon:"×÷", warna:"#2f5d9e"},
+  ipas:{nama:"IPAS", ikon:"🌏", warna:"#2b7a55"}
+};
 /* ================================================= */
 
-// Opsi pertama (indeks 0) selalu jawaban benar; urutan opsi diacak saat ujian.
 const BANK = {
 mtk: [
 // ===== Bab 1 Bilangan Cacah sampai 100.000 (20 soal) =====
@@ -184,6 +371,7 @@ ipas: [
 ]
 };
 
+
 const DATA = {"5": BANK};
 
 const $ = s => document.querySelector(s);
@@ -196,87 +384,144 @@ const store = {
   del(k){try{localStorage.removeItem(k)}catch(e){}}
 };
 const acak = a => {a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
-const kunciNama = n => n.trim().toLowerCase().replace(/\s+/g," ");
+const kunciNama = n => String(n).trim().toLowerCase().replace(/\s+/g," ");
+const inisial = n => String(n).trim().split(/\s+/).slice(0,2).map(w=>w[0]||"").join("").toUpperCase();
+const namaDepan = n => String(n).trim().split(/\s+/)[0];
 
-let S = store.get("ulangan_sesi", null);   // sesi ujian berjalan
+let S = store.get("ulangan_sesi", null);
 let profil = store.get("ulangan_profil", {});
 let tick = null;
-
 function simpan(){ store.set("ulangan_sesi", S); }
+function papan(judul, sub){ $("#judul").textContent = judul; $("#subjudul").textContent = sub || CONFIG.SEKOLAH; }
+function bawah(html){ let b=$("#bawah"); if(!html){ if(b) b.remove(); return; } if(!b){ b=document.createElement("div"); b.id="bawah"; b.className="bawah"; document.body.appendChild(b);} b.innerHTML=`<div class="bawah-in">${html}</div>`; }
+function atas(){ window.scrollTo({top:0}); }
 
-/* ---------- Layar: pilih kelas ---------- */
+/* ---------- Pilih kelas ---------- */
 function layarKelas(){
-  stopTimer(); $("#judul").textContent = "Ulangan Online " + CONFIG.SEKOLAH;
-  let h = `<div class="card"><p class="eyebrow">${esc(CONFIG.SEKOLAH)}</p><h1>Pilih kelas</h1><p class="sub">Saat ini ulangan tersedia untuk Kelas 5.</p><div class="grid g3">`;
+  stopTimer(); bawah(); papan("Ulangan Online");
+  let h = `<div class="awan"><span class="maskot" aria-hidden="true">🦉</span><div class="gelembung"><b>Halo, anak hebat!</b>Pilih kelasmu dulu, ya. Saat ini ulangan tersedia untuk Kelas 5.</div></div><div class="kelas-grid">`;
   for(let k=1;k<=6;k++){
     const on = KELAS_AKTIF.includes(String(k));
-    h += `<button class="kelas ${on?"on":""}" ${on?`onclick="pilihKelas('${k}')"`:"disabled"}>Kelas ${k}<small>${on?"Tersedia":"Segera hadir"}</small></button>`;
+    h += `<button class="kelas ${on?"on":""}" ${on?`onclick="pilihKelas('${k}')"`:"disabled"} aria-label="Kelas ${k}${on?"":", belum tersedia"}"><span class="angka">${k}</span><small>${on?"Mulai":"Segera"}</small></button>`;
   }
-  app.innerHTML = h + `</div></div>`;
+  app.innerHTML = h + `</div><button class="link-guru" onclick="layarLoginGuru()">Masuk sebagai guru</button>`; atas();
 }
 function pilihKelas(k){ profil.kelas = k; store.set("ulangan_profil", profil); layarNama(); }
 
-/* ---------- Layar: nama ---------- */
+/* ---------- Nama ---------- */
 function layarNama(){
-  app.innerHTML = `<div class="card"><p class="eyebrow">Kelas ${profil.kelas}</p><h1>Masukkan nama kamu</h1>
-  <p class="sub">Tulis nama lengkap. Nama ini akan tampil di ranking nilai.</p>
-  <label for="nm">Nama lengkap</label><input id="nm" placeholder="contoh: Siti Rahmawati" value="${esc(profil.nama||"")}" maxlength="40">
-  <button class="btn" onclick="simpanNama()">Lanjut ke menu</button>
-  <button class="btn ghost" onclick="layarKelas()">← Ganti kelas</button></div>`;
-  $("#nm").focus();
-  $("#nm").addEventListener("keydown",e=>{if(e.key==="Enter")simpanNama()});
+  bawah(); papan("Kelas " + profil.kelas);
+  app.innerHTML = `<div class="buku"><h2>Siapa namamu?</h2>
+  <p class="ket">Tulis nama lengkap. Gunakan nama yang sama untuk semua ulangan, agar nilaimu tergabung di ranking.</p>
+  <label class="lbl" for="nm">Nama lengkap</label>
+  <input class="input" id="nm" placeholder="contoh: Siti Rahmawati" value="${esc(profil.nama||"")}" maxlength="40" autocomplete="name" autocapitalize="words">
+  <button class="btn btn-utama" onclick="simpanNama()">Lanjut</button>
+  <button class="btn btn-teks" onclick="layarKelas()">Ganti kelas</button></div>`;
+  const i=$("#nm"); i.focus(); i.addEventListener("keydown",e=>{if(e.key==="Enter")simpanNama()}); atas();
 }
 function simpanNama(){
   const n = $("#nm").value.trim().replace(/\s+/g," ");
-  if(n.length<3){alert("Nama minimal 3 huruf.");return}
+  if(n.length<3){ $("#nm").setAttribute("aria-invalid","true"); $("#nm").placeholder="Nama minimal 3 huruf"; $("#nm").focus(); return; }
   profil.nama = n; store.set("ulangan_profil", profil); layarMenu();
 }
 
-/* ---------- Layar: menu mapel ---------- */
+/* ---------- Menu ---------- */
+function nilaiLokal(m){
+  const r = store.get("ulangan_nilai_lokal",[]).filter(x=>x.mapel===m && String(x.kelas)===String(profil.kelas) && kunciNama(x.nama)===kunciNama(profil.nama||""));
+  return r.length ? r[0] : null;
+}
 function layarMenu(){
-  stopTimer();
+  stopTimer(); bawah(); papan("Kelas " + profil.kelas);
   const d = DATA[profil.kelas];
-  let h = `<div class="card"><p class="eyebrow">Kelas ${profil.kelas} · ${esc(profil.nama)}</p><h1>Pilih ulangan</h1><p class="sub">Setiap ulangan berisi soal pilihan ganda. Waktu ${CONFIG.DURASI_MENIT} menit.</p><div class="grid">`;
+  let h = `<div class="halo"><div class="inisial">${esc(inisial(profil.nama))}</div><div><h1>Halo, ${esc(namaDepan(profil.nama))}!</h1><p>Pilih ulangan yang ingin dikerjakan.</p></div></div>`;
   for(const m in MAPEL){
     if(!d[m]) continue;
-    const topik = [...new Set(d[m].map(x=>x.t))];
-    h += `<button class="menu" onclick="mulai('${m}')"><span class="tag ${MAPEL[m].cls}">${MAPEL[m].kode}</span><div><b>${MAPEL[m].nama}</b><p>${d[m].length} soal · ${topik.map(esc).join(", ")}</p></div></button>`;
+    const topik = [...new Set(d[m].map(x=>x.t))], sudah = nilaiLokal(m);
+    h += `<button class="mapel" onclick="mulai('${m}')"><span class="sampul" style="background:${MAPEL[m].warna}">${MAPEL[m].ikon}</span><span class="isi">
+      <h3>${MAPEL[m].nama}</h3><p>${topik.map(esc).join(", ")}</p>
+      <span class="chip">${d[m].length} soal</span><span class="chip">${CONFIG.DURASI_MENIT} menit</span>${sudah?`<span class="chip ok">Sudah dikerjakan, nilai ${sudah.nilai}</span>`:""}</span></button>`;
   }
-  h += `<button class="menu" onclick="layarRanking()"><span class="tag r">🏆</span><div><b>Lihat ranking nilai</b><p>Peringkat per mapel dan gabungan Kelas ${profil.kelas}</p></div></button>`;
-  app.innerHTML = h + `</div><button class="btn ghost" onclick="layarNama()">← Ganti nama</button></div>`;
+  app.innerHTML = h + `<button class="btn btn-papan" onclick="layarRanking()">🏆 Lihat ranking kelas</button><button class="btn btn-teks" onclick="layarNama()">Bukan ${esc(namaDepan(profil.nama))}? Ganti nama</button>`;
+  atas();
 }
 
 /* ---------- Ujian ---------- */
 function mulai(m){
   const bank = DATA[profil.kelas][m];
-  const urut = acak(bank.map((_,i)=>i));
-  S = {kelas:profil.kelas, nama:profil.nama, mapel:m, soal:urut.map(i=>({i, o:acak([0,1,2,3])})), jwb:Array(bank.length).fill(null), cur:0, mulai:Date.now(), selesai:null};
-  simpan(); layarSoal();
+  S = {id:Date.now().toString(36)+Math.random().toString(36).slice(2,7), kelas:profil.kelas, nama:profil.nama, mapel:m, soal:acak(bank.map((_,i)=>i)).map(i=>({i, o:acak([0,1,2,3])})), jwb:Array(bank.length).fill(null), cur:0, mulai:Date.now(), selesai:null, keluar:0, detak:Date.now()};
+  simpan(); lapor("mulai"); layarSoal();
+  try{ const el=document.documentElement; (el.requestFullscreen||el.webkitRequestFullscreen||(()=>{})).call(el); }catch(e){}
 }
+
+/* ---------- Penjaga ulangan & laporan ke guru ---------- */
+function kirimData(body){
+  if(!CONFIG.SCRIPT_URL) return Promise.resolve();
+  try{ if(navigator.sendBeacon && navigator.sendBeacon(CONFIG.SCRIPT_URL, new Blob([body],{type:"text/plain;charset=utf-8"}))) return Promise.resolve(); }catch(e){}
+  return fetch(CONFIG.SCRIPT_URL,{method:"POST",mode:"no-cors",keepalive:true,headers:{"Content-Type":"text/plain;charset=utf-8"},body});
+}
+function lapor(jenis, extra){
+  if(!S) return;
+  const d = {aksi:"log", jenis, sesi:S.id, kelas:S.kelas, mapel:S.mapel, nama:S.nama, keluar:S.keluar||0, terjawab:S.jwb.filter(j=>j!==null).length, total:S.jwb.length, ...(extra||{})};
+  if(jenis==="mulai") d.mulai = new Date(S.mulai).toISOString();
+  kirimData(JSON.stringify(d)).catch(()=>{});
+}
+function siswaKeluar(){
+  if(!S||S.selesai||S.keluarSejak) return;
+  S.keluar=(S.keluar||0)+1; S.keluarSejak=Date.now(); simpan();
+  if(S.keluar>=CONFIG.MAKS_KELUAR){
+    S.alasan=`Keluar ${S.keluar} kali`;
+    lapor("keluar",{keterangan:`Keluar ke-${S.keluar}, jawaban dikumpulkan otomatis`});
+    selesai();
+  } else lapor("keluar",{keterangan:`Keluar ke-${S.keluar}`});
+}
+function siswaKembali(){
+  if(!S||!S.keluarSejak) return;
+  const lama = Math.round((Date.now()-S.keluarSejak)/1000); S.keluarSejak=null; simpan();
+  if(S.selesai) return;
+  lapor("kembali",{keterangan:`Kembali setelah ${lama} detik`});
+  tampilPeringatan();
+}
+document.addEventListener("visibilitychange",()=>{ document.hidden ? siswaKeluar() : siswaKembali(); });
+window.addEventListener("pagehide",()=>{ siswaKeluar(); });
+function tampilPeringatan(){
+  const sisa = CONFIG.MAKS_KELUAR - S.keluar;
+  $("#nyawa").innerHTML = Array.from({length:CONFIG.MAKS_KELUAR},(_,i)=>`<span class="${i<S.keluar?"hilang":""}">❤️</span>`).join("");
+  $("#pTxt").textContent = sisa<=1
+    ? "Ini kesempatan terakhir. Kalau keluar sekali lagi, jawabanmu langsung dikumpulkan dan guru akan melihatnya."
+    : `Gurumu bisa melihat kalau kamu keluar. Kalau keluar ${sisa} kali lagi, jawabanmu akan dikumpulkan otomatis.`;
+  $("#peringatan").classList.add("buka");
+}
+function tutupPeringatan(){ $("#peringatan").classList.remove("buka"); }
 function bankS(){ return DATA[S.kelas][S.mapel]; }
 function layarSoal(){
   startTimer();
-  const bank = bankS(), it = S.soal[S.cur], q = bank[it.i];
-  $("#judul").textContent = `${MAPEL[S.mapel].nama} · Kelas ${S.kelas}`;
-  let h = `<div class="card"><div class="qhead"><span>Soal ${S.cur+1} dari ${bank.length}</span><span>${esc(q.t)}</span></div><p class="qtext">${fmt(q.q)}</p>`;
+  const bank = bankS(), it = S.soal[S.cur], q = bank[it.i], n = bank.length;
+  const terjawab = S.jwb.filter(j=>j!==null).length;
+  papan(MAPEL[S.mapel].nama, S.nama);
+  const hati = Array.from({length:CONFIG.MAKS_KELUAR},(_,i)=>i<(S.keluar||0)?"🤍":"❤️").join("");
+  let h = `<div class="penjaga"><span class="hati" aria-hidden="true">${hati}</span><span>Tetap di halaman ini sampai selesai, ya.${S.keluar?` Kamu sudah keluar ${S.keluar} kali.`:""}</span></div>
+  <div class="kemajuan"><span>Soal ${S.cur+1}/${n}</span><span class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="${n}" aria-valuenow="${terjawab}" aria-label="Soal terjawab"><i style="width:${terjawab/n*100}%"></i></span><span>${terjawab} terjawab</span></div>
+  <div class="buku"><span class="no" aria-hidden="true">${S.cur+1}.</span><span class="topik">${esc(q.t)}</span><p class="qtext">${fmt(q.q)}</p><div role="radiogroup" aria-label="Pilihan jawaban">`;
   it.o.forEach((oi,k)=>{
-    h += `<button class="opt ${S.jwb[S.cur]===k?"sel":""}" onclick="jawab(${k})"><span class="l">${"ABCD"[k]}</span><span>${fmt(q.o[oi])}</span></button>`;
+    const sel = S.jwb[S.cur]===k;
+    h += `<button class="opsi ${sel?"pilih":""}" role="radio" aria-checked="${sel}" onclick="jawab(${k})"><span class="bulat">${"ABCD"[k]}</span><span>${fmt(q.o[oi])}</span></button>`;
   });
-  h += `<div class="nav" style="margin-top:10px"><button onclick="ke(${S.cur-1})" ${S.cur===0?"disabled":""}>← Sebelumnya</button><button onclick="ke(${S.cur+1})" ${S.cur===bank.length-1?"disabled":""}>Berikutnya →</button></div></div>`;
-  h += `<div class="card"><p class="eyebrow">Nomor soal</p><div class="nums">`;
-  S.jwb.forEach((j,n)=>{ h += `<button class="${j!==null?"ans":""} ${n===S.cur?"cur":""}" onclick="ke(${n})">${n+1}</button>`; });
-  const sisa = S.jwb.filter(j=>j===null).length;
-  h += `</div><p class="note">Terjawab ${bank.length-sisa} dari ${bank.length}. Jawaban masih bisa diganti sebelum selesai.</p><button class="btn pri" onclick="bukaModal()">Selesai &amp; lihat nilai</button></div>`;
+  h += `</div></div><details class="daftar" ${store.get("ulangan_daftar_buka",false)?"open":""} ontoggle="store.set('ulangan_daftar_buka',this.open)"><summary>Lembar jawaban (${terjawab}/${n})</summary><div class="nums">`;
+  S.jwb.forEach((j,i)=>{ h += `<button class="${j!==null?"isi":""} ${i===S.cur?"kini":""}" onclick="ke(${i})" aria-label="Soal ${i+1}${j!==null?", sudah dijawab":""}">${i+1}</button>`; });
+  h += `</div><div class="legenda"><span class="l-isi">Sudah dijawab</span><span>Belum</span></div></details>`;
   app.innerHTML = h;
+  const akhir = S.cur===n-1;
+  bawah(`<button class="btn btn-garis" onclick="ke(${S.cur-1})" ${S.cur===0?"disabled":""}>Sebelumnya</button>` +
+        (akhir ? `<button class="btn btn-utama" onclick="bukaModal()">Kumpulkan</button>` : `<button class="btn btn-papan" onclick="ke(${S.cur+1})">Berikutnya</button>`));
 }
-function jawab(k){ S.jwb[S.cur]=k; simpan(); if(S.cur<S.jwb.length-1){ layarSoal(); setTimeout(()=>ke(S.cur+1),180);} else layarSoal(); }
-function ke(n){ if(n<0||n>=S.jwb.length) return; S.cur=n; simpan(); layarSoal(); window.scrollTo(0,0); }
+function jawab(k){ S.jwb[S.cur]=k; simpan(); layarSoal(); if(S.cur<S.jwb.length-1) setTimeout(()=>ke(S.cur+1),260); }
+function ke(n){ if(n<0||n>=S.jwb.length) return; S.cur=n; simpan(); layarSoal(); atas(); }
 function bukaModal(){
   const sisa = S.jwb.filter(j=>j===null).length;
-  $("#modalTxt").textContent = sisa ? `Masih ada ${sisa} soal yang belum dijawab. Soal yang tidak dijawab dihitung salah.` : "Semua soal sudah dijawab. Nilai akan langsung masuk ranking.";
-  $("#modal").style.display="flex";
+  $("#modalTxt").textContent = sisa ? `Masih ada ${sisa} soal yang belum dijawab. Soal yang kosong dihitung salah.` : "Semua soal sudah dijawab. Setelah dikumpulkan, jawaban tidak bisa diubah lagi.";
+  $("#modal").classList.add("buka");
 }
-function tutupModal(){ $("#modal").style.display="none"; }
+function tutupModal(){ $("#modal").classList.remove("buka"); }
 
 function startTimer(){
   $("#timer").style.display="inline-block";
@@ -286,7 +531,8 @@ function startTimer(){
     const sisa = Math.max(0, CONFIG.DURASI_MENIT*60 - Math.floor((Date.now()-S.mulai)/1000));
     $("#timer").textContent = String(Math.floor(sisa/60)).padStart(2,"0")+":"+String(sisa%60).padStart(2,"0");
     $("#timer").classList.toggle("low", sisa<=300);
-    if(sisa===0){ stopTimer(); alert("Waktu habis! Jawabanmu dikumpulkan otomatis."); selesai(); }
+    if(Date.now()-(S.detak||0)>60000 && !document.hidden){ S.detak=Date.now(); simpan(); lapor("progres"); }
+    if(sisa===0){ stopTimer(); S.habis=true; S.alasan="Waktu habis"; selesai(); }
   };
   f(); tick = setInterval(f,1000);
 }
@@ -300,48 +546,76 @@ function hitung(){
 function selesai(){
   tutupModal(); if(!S||S.selesai) return;
   S.selesai = Date.now(); stopTimer();
-  const r = hitung();
-  S.hasil = r; simpan();
-  const rec = {waktu:new Date(S.selesai).toISOString(), kelas:S.kelas, mapel:S.mapel, nama:S.nama, benar:r.benar, total:r.total, nilai:r.nilai, durasi:Math.round((S.selesai-S.mulai)/1000)};
-  S.rec = rec;
-  const lokal = store.get("ulangan_nilai_lokal", []); lokal.push(rec); store.set("ulangan_nilai_lokal", lokal);
+  const r = hitung(); S.hasil = r;
+  S.rec = {waktu:new Date(S.selesai).toISOString(), kelas:S.kelas, mapel:S.mapel, nama:S.nama, benar:r.benar, total:r.total, nilai:r.nilai, durasi:Math.round((S.selesai-S.mulai)/1000), keluar:S.keluar||0, alasan:S.alasan||"Dikumpulkan siswa", sesi:S.id};
+  const lokal = store.get("ulangan_nilai_lokal", []); lokal.push(S.rec); store.set("ulangan_nilai_lokal", lokal);
   S.terkirim = CONFIG.SCRIPT_URL ? "mengirim" : "lokal"; simpan();
-  kirim();
-  layarHasil();
+  layarHasil(true); kirim();
 }
 function kirim(){
   if(!CONFIG.SCRIPT_URL) return;
-  S.terkirim="mengirim"; simpan();
-  fetch(CONFIG.SCRIPT_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(S.rec)})
-    .then(()=>{S.terkirim="ok";simpan();if(document.querySelector(".score"))layarHasil()})
-    .catch(()=>{S.terkirim="gagal";simpan();if(document.querySelector(".score"))layarHasil()});
+  S.terkirim="mengirim"; simpan(); perbaruiStatus();
+  const body = JSON.stringify({aksi:"nilai", total:S.rec.total, terjawab:S.jwb.filter(j=>j!==null).length, ...S.rec});
+  if(document.hidden){ kirimData(body).then(()=>{S.terkirim="ok";simpan();perbaruiStatus()}); return; }
+  fetch(CONFIG.SCRIPT_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body})
+    .then(()=>{S.terkirim="ok";simpan();perbaruiStatus()})
+    .catch(()=>{S.terkirim="gagal";simpan();perbaruiStatus()});
 }
-const fmtDur = d => `${Math.floor(d/60)} menit ${d%60} detik`;
-function layarHasil(){
+function perbaruiStatus(){
+  const el=$("#status"); if(!el) return;
+  const t = {lokal:["","Nilai tersimpan di perangkat ini."], mengirim:["","Mengirim nilai ke ranking…"], ok:["ok","✓ Nilai sudah masuk ranking kelas."], gagal:["gagal","Nilai belum terkirim. Periksa internet, lalu tekan Kirim ulang."]}[S.terkirim];
+  el.className="status "+t[0]; el.textContent=t[1];
+  $("#kirimUlang").hidden = S.terkirim!=="gagal";
+}
+const fmtDur = d => `${Math.floor(d/60)}:${String(d%60).padStart(2,"0")}`;
+function pesanNilai(n){ return n>=90?"Luar biasa!":n>=75?"Hebat, pertahankan!":n>=60?"Cukup baik, terus belajar ya.":"Jangan menyerah, ayo belajar lagi!"; }
+function layarHasil(baru){
   const r = S.hasil, dur = Math.round((S.selesai-S.mulai)/1000);
-  $("#judul").textContent = `Hasil ${MAPEL[S.mapel].nama}`;
-  const status = {lokal:"Nilai tersimpan di perangkat ini.", mengirim:"Mengirim nilai ke ranking…", ok:"✔ Nilai sudah masuk ranking.", gagal:"⚠ Gagal mengirim nilai. Periksa internet, lalu tekan Kirim ulang."}[S.terkirim];
-  let h = `<div class="card" style="text-align:center"><p class="eyebrow">${esc(S.nama)} · Kelas ${S.kelas} · ${MAPEL[S.mapel].nama}</p>
-  <div class="score">${r.nilai}</div><div class="stats"><span>Benar <b>${r.benar}</b></span><span>Salah <b>${r.total-r.benar}</b></span><span>Waktu <b>${fmtDur(dur)}</b></span></div>
-  <p class="note" style="margin-top:10px">${status}</p>
-  ${S.terkirim==="gagal"?`<button class="btn" onclick="kirim();layarHasil()">Kirim ulang</button>`:""}
-  <button class="btn pri" onclick="layarRanking('${S.mapel}')">🏆 Lihat ranking</button>
-  ${CONFIG.TAMPILKAN_PEMBAHASAN?`<button class="btn ghost" onclick="layarTinjau()">Tinjau jawaban</button>`:""}
-  <button class="btn ghost" onclick="keluarSesi()">Kembali ke menu</button></div>`;
-  app.innerHTML = h;
+  papan("Hasil " + MAPEL[S.mapel].nama, S.nama);
+  bawah();
+  app.innerHTML = `<div class="buku hasil">
+    ${S.habis?`<p class="ket">Waktu habis, jawabanmu dikumpulkan otomatis.</p>`:""}
+    ${(S.alasan||"").startsWith("Keluar")?`<p class="ket" style="color:var(--merah);font-weight:800">Kamu keluar dari halaman ${S.keluar} kali, jadi jawabanmu dikumpulkan otomatis.</p>`:""}
+    <div class="stempel" aria-label="Nilai ${r.nilai}">
+      <svg viewBox="0 0 170 150" aria-hidden="true"><path d="M150 40 C 135 8, 40 4, 18 52 C 2 92, 40 142, 95 138 C 150 134, 172 92, 152 52 C 145 38, 128 26, 112 22" ${baru?"":'style="animation:none;stroke-dashoffset:0"'}/></svg>
+      <span class="skor" id="skor">${r.nilai}</span>
+    </div>
+    <p class="pesan">${pesanNilai(r.nilai)}</p>
+    <div class="ringkas"><div><b>${r.benar}</b><span>benar</span></div><div><b>${r.total-r.benar}</b><span>salah/kosong</span></div><div><b>${fmtDur(dur)}</b><span>waktu</span></div></div>
+    <p class="status" id="status" role="status"></p>
+    <button class="btn btn-garis" id="kirimUlang" hidden onclick="kirim()">Kirim ulang</button>
+    <button class="btn btn-papan" onclick="layarRanking('${S.mapel}')">🏆 Lihat ranking kelas</button>
+    ${CONFIG.TAMPILKAN_PEMBAHASAN?`<button class="btn btn-garis" onclick="layarTinjau()">Lihat jawaban &amp; pembahasan</button>`:""}
+    <button class="btn btn-teks" onclick="keluarSesi()">Kembali ke menu</button></div>`;
+  perbaruiStatus(); atas();
+  if(baru && !matchMedia("(prefers-reduced-motion: reduce)").matches){
+    const el=$("#skor"), t0=performance.now();
+    if(r.nilai>=75) konfeti();
+    (function step(t){ const p=Math.min(1,(t-t0)/900); el.textContent=Math.round(r.nilai*(1-Math.pow(1-p,3))); if(p<1) requestAnimationFrame(step); })(t0);
+  }
+}
+function konfeti(){
+  const w=document.createElement("div"); w.className="konfeti"; w.setAttribute("aria-hidden","true");
+  const warna=["#b8262e","#f5c84c","#2f5d9e","#2b7a55","#ffffff","#d9935a"];
+  for(let i=0;i<70;i++){ const c=document.createElement("i"); c.style.left=Math.random()*100+"vw"; c.style.background=warna[i%warna.length]; c.style.animationDuration=(1.8+Math.random()*1.6)+"s"; c.style.animationDelay=(Math.random()*.5)+"s"; w.appendChild(c); }
+  document.body.appendChild(w); setTimeout(()=>w.remove(),4200);
 }
 function keluarSesi(){ S=null; store.del("ulangan_sesi"); layarMenu(); }
 function layarTinjau(){
   const bank = bankS();
-  let h = `<div class="card"><p class="eyebrow">Tinjau jawaban</p><h2>${MAPEL[S.mapel].nama} · Nilai ${S.hasil.nilai}</h2>`;
+  papan("Pembahasan " + MAPEL[S.mapel].nama, S.nama);
+  let h = `<div class="buku">`;
   S.soal.forEach((it,n)=>{
     const q = bank[it.i], j = S.jwb[n];
-    h += `<div class="rv"><div class="qhead"><span>Soal ${n+1}</span><span>${j===null?"Tidak dijawab":(it.o[j]===0?"✔ Benar":"✘ Salah")}</span></div><p class="qtext">${fmt(q.q)}</p>`;
-    it.o.forEach((oi,k)=>{ const c = oi===0?"ok":(j===k?"no":""); h += `<div class="opt ${c}"><span class="l">${"ABCD"[k]}</span><span>${fmt(q.o[oi])}</span></div>`; });
-    h += `<p class="exp">💡 ${fmt(q.p)}</p></div>`;
+    h += `<div class="tinjau-item"><span class="topik">Soal ${n+1} · ${j===null?"tidak dijawab":(it.o[j]===0?"benar":"salah")}</span><p class="qtext">${fmt(q.q)}</p>`;
+    it.o.forEach((oi,k)=>{
+      const c = oi===0?"benar":(j===k?"salah":""), tanda = oi===0?"Kunci":(j===k?"Jawabanmu":"");
+      h += `<div class="opsi ${c}"><span class="bulat">${"ABCD"[k]}</span><span>${fmt(q.o[oi])}</span>${tanda?`<span class="tanda">${tanda}</span>`:""}</div>`;
+    });
+    h += `<p class="bahas">${fmt(q.p)}</p></div>`;
   });
-  app.innerHTML = h + `<button class="btn" onclick="layarHasil()">← Kembali ke nilai</button></div>`;
-  window.scrollTo(0,0);
+  app.innerHTML = h + `</div>`;
+  bawah(`<button class="btn btn-papan" onclick="layarHasil(false)">Kembali ke nilai</button>`); atas();
 }
 
 /* ---------- Ranking ---------- */
@@ -351,7 +625,6 @@ async function ambilNilai(){
   const r = await fetch(CONFIG.SCRIPT_URL+"?kelas="+encodeURIComponent(profil.kelas)+"&t="+Date.now());
   return {data:await r.json(), sumber:"online"};
 }
-// Satu siswa dihitung satu kali per mapel: nilai PERCOBAAN PERTAMA.
 function pertama(data, kelas, mapel){
   const peta = {};
   data.filter(d=>String(d.kelas)===String(kelas) && d.mapel===mapel)
@@ -359,43 +632,162 @@ function pertama(data, kelas, mapel){
       .forEach(d=>{ const k=kunciNama(d.nama); if(!peta[k]) peta[k]={...d, nilai:+d.nilai, durasi:+d.durasi}; });
   return Object.values(peta);
 }
-function urutkan(arr){ return arr.sort((a,b)=> b.nilai-a.nilai || a.durasi-b.durasi || a.nama.localeCompare(b.nama)); }
+const urutkan = arr => arr.sort((a,b)=> b.nilai-a.nilai || a.durasi-b.durasi || a.nama.localeCompare(b.nama));
+function kembaliDariRanking(){ (S&&S.selesai) ? layarHasil(false) : layarMenu(); }
 async function layarRanking(tab){
   stopTimer(); if(tab) tabRank = tab;
-  $("#judul").textContent = `Ranking Kelas ${profil.kelas}`;
-  app.innerHTML = `<div class="card"><p class="eyebrow">Kelas ${profil.kelas}</p><h1>🏆 Ranking nilai</h1><p class="sub">Memuat data…</p></div>`;
+  papan("Ranking Kelas " + profil.kelas);
+  bawah(`<button class="btn btn-garis" onclick="layarRanking()">Muat ulang</button><button class="btn btn-papan" onclick="kembaliDariRanking()">Kembali</button>`);
+  const tabs = `<div class="segmen" role="tablist">${["mtk","ipas","gab"].map(t=>`<button role="tab" aria-selected="${tabRank===t}" class="${tabRank===t?"on":""}" onclick="layarRanking('${t}')">${t==="gab"?"Gabungan":MAPEL[t].nama}</button>`).join("")}</div>`;
+  const kepala = sub => `<div class="rank-kepala"><div><h1>Papan juara</h1><p>${sub}</p></div></div>`;
+  app.innerHTML = kepala("Memuat nilai terbaru…") + tabs;
   let res;
-  try{ res = await ambilNilai(); }catch(e){ app.innerHTML = `<div class="card"><h2>Ranking belum bisa dimuat</h2><p class="sub">Periksa koneksi internet lalu coba lagi.</p><button class="btn" onclick="layarRanking()">Coba lagi</button><button class="btn ghost" onclick="${S&&S.selesai?"layarHasil()":"layarMenu()"}">← Kembali</button></div>`; return; }
+  try{ res = await ambilNilai(); }
+  catch(e){ app.innerHTML = kepala("Kelas " + profil.kelas) + tabs + `<div class="kosong"><b>Ranking belum bisa dimuat</b>Periksa koneksi internet, lalu tekan Muat ulang.</div>`; return; }
   const kls = profil.kelas, me = kunciNama(profil.nama||"");
-  let rows, kol;
-  if(tabRank==="gab"){
+  let rows, gab = tabRank==="gab";
+  if(gab){
     const a = pertama(res.data,kls,"mtk"), b = pertama(res.data,kls,"ipas"), peta={};
     a.forEach(x=>peta[kunciNama(x.nama)]={nama:x.nama, mtk:x.nilai, ipas:null, durasi:x.durasi});
     b.forEach(x=>{const k=kunciNama(x.nama); if(peta[k]){peta[k].ipas=x.nilai;peta[k].durasi+=x.durasi}else peta[k]={nama:x.nama,mtk:null,ipas:x.nilai,durasi:x.durasi}});
     rows = Object.values(peta).filter(x=>x.mtk!==null&&x.ipas!==null).map(x=>({...x, nilai:Math.round((x.mtk+x.ipas)/2*10)/10}));
-    kol = "gab";
-  } else { rows = pertama(res.data,kls,tabRank); kol = "mapel"; }
+  } else rows = pertama(res.data,kls,tabRank);
   urutkan(rows);
-  let h = `<div class="card"><p class="eyebrow">Kelas ${kls} · ${res.sumber==="lokal"?"tersimpan di perangkat ini":"data online"}</p><h1>🏆 Ranking nilai</h1>
-  <div class="tabs">${["mtk","ipas","gab"].map(t=>`<button class="${tabRank===t?"on":""}" onclick="layarRanking('${t}')">${t==="gab"?"Gabungan":MAPEL[t].nama}</button>`).join("")}</div>`;
-  if(!rows.length){ h += `<p class="sub">${kol==="gab"?"Belum ada siswa yang menyelesaikan kedua ulangan.":"Belum ada nilai untuk ulangan ini."}</p>`; }
-  else{
-    h += `<table><thead><tr><th>#</th><th>Nama</th>${kol==="gab"?"<th class='n'>MTK</th><th class='n'>IPAS</th><th class='n'>Rata²</th>":"<th class='n'>Benar</th><th class='n'>Nilai</th><th class='n'>Waktu</th>"}</tr></thead><tbody>`;
-    rows.forEach((r,i)=>{
-      const m = i<3?`m${i+1}`:"";
-      h += `<tr class="${kunciNama(r.nama)===me?"me":""}"><td><span class="medal ${m}">${i+1}</span></td><td>${esc(r.nama)}</td>${kol==="gab"?`<td class="n">${r.mtk}</td><td class="n">${r.ipas}</td><td class="n"><b>${r.nilai}</b></td>`:`<td class="n">${r.benar}/${r.total}</td><td class="n"><b>${r.nilai}</b></td><td class="n">${Math.floor(r.durasi/60)}:${String(r.durasi%60).padStart(2,"0")}</td>`}</tr>`;
-    });
-    h += `</tbody></table>`;
+  const sub = `${rows.length} siswa${gab?" sudah mengerjakan kedua ulangan":" sudah mengerjakan"}`;
+  let h = kepala(sub) + tabs;
+  if(!rows.length){
+    h += `<div class="kosong"><b>Belum ada nilai</b>${gab?"Ranking gabungan muncul setelah siswa menyelesaikan ulangan Matematika dan IPAS.":"Jadilah yang pertama menyelesaikan ulangan ini!"}</div>`;
+  } else {
+    const det = r => gab ? `MTK ${r.mtk}, IPAS ${r.ipas}` : `${r.benar}/${r.total} benar, ${fmtDur(r.durasi)}`;
+    const juara = (r,i) => r ? `<div class="juara j${i+1}">${i===0?'<span class="mahkota" aria-hidden="true">👑</span>':""}<div class="ava">${esc(inisial(r.nama))}</div><div class="nm">${esc(r.nama)}</div><div class="nil">${r.nilai}</div><div class="tiang">${i+1}</div></div>` : `<div class="juara"></div>`;
+    h += `<div class="podium">${juara(rows[1],1)}${juara(rows[0],0)}${juara(rows[2],2)}</div><ol class="daftar-rank">`;
+    rows.forEach((r,i)=>{ h += `<li class="${kunciNama(r.nama)===me?"saya":""}"><span class="pk">${i+1}</span><span class="nm">${esc(r.nama)}${kunciNama(r.nama)===me?" (kamu)":""}<span class="kecil">${det(r)}</span></span><span class="nl">${r.nilai}</span></li>`; });
+    h += `</ol><p class="catatan">Diurutkan dari nilai tertinggi. Jika nilainya sama, yang lebih cepat selesai berada di atas. Yang dihitung adalah percobaan pertama setiap siswa.</p>`;
   }
-  h += `<p class="note" style="margin-top:10px">Peringkat diurutkan dari nilai tertinggi. Jika nilai sama, yang lebih cepat selesai berada di atas. Setiap siswa dihitung dari percobaan pertamanya.</p>
-  <button class="btn ghost" onclick="layarRanking()">↻ Muat ulang</button>
-  <button class="btn" onclick="${S&&S.selesai?"layarHasil()":"layarMenu()"}">← Kembali</button></div>`;
   app.innerHTML = h;
 }
 
+/* ---------- Guru (admin) ---------- */
+let G = {data:null, tab:"pantau", kelas:"5", mapel:"semua", hari:"ini", timer:null};
+const sandiGuru = { get(){ try{return sessionStorage.getItem("ulangan_guru")||""}catch(e){return ""} }, set(v){ try{sessionStorage.setItem("ulangan_guru",v)}catch(e){} }, del(){ try{sessionStorage.removeItem("ulangan_guru")}catch(e){} } };
+async function adminAmbil(pw){
+  const r = await fetch(CONFIG.SCRIPT_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({aksi:"admin",password:pw})});
+  return r.json();
+}
+function layarLoginGuru(pesan){
+  stopTimer(); bawah(); hentiGuru(); papan("Ruang guru");
+  app.innerHTML = `<div class="buku"><h2>Masuk sebagai guru</h2>
+  <p class="ket">Halaman ini untuk guru: memantau siswa yang sedang ulangan, melihat siapa yang keluar dari web, ranking, dan rekap nilai.</p>
+  <label class="lbl" for="pw">Kata sandi guru</label>
+  <input class="input" id="pw" type="password" autocomplete="current-password">
+  ${pesan?`<p class="status gagal" role="alert">${esc(pesan)}</p>`:""}
+  <button class="btn btn-papan" id="btnMasuk" onclick="masukGuru()">Masuk</button>
+  <button class="btn btn-teks" onclick="layarKelas()">Kembali ke halaman siswa</button></div>`;
+  const i=$("#pw"); i.focus(); i.addEventListener("keydown",e=>{if(e.key==="Enter")masukGuru()}); atas();
+}
+async function masukGuru(){
+  const pw = $("#pw").value; if(!pw) return $("#pw").focus();
+  const b=$("#btnMasuk"); b.disabled=true; b.textContent="Memeriksa…";
+  try{ const d = await adminAmbil(pw); if(!d.ok) return layarLoginGuru(d.error||"Gagal masuk."); sandiGuru.set(pw); G.data=d; layarGuru(); }
+  catch(e){ layarLoginGuru("Tidak bisa terhubung. Periksa koneksi internet."); }
+}
+function keluarGuru(){ sandiGuru.del(); G.data=null; hentiGuru(); layarKelas(); }
+function hentiGuru(){ clearInterval(G.timer); G.timer=null; }
+async function muatGuru(diam){
+  const pw=sandiGuru.get(); if(!pw) return layarLoginGuru();
+  if(!diam){ const s=$("#guruStatus"); if(s) s.textContent="Memuat data terbaru…"; }
+  try{ const d=await adminAmbil(pw); if(!d.ok){ sandiGuru.del(); return layarLoginGuru(d.error); } G.data=d; renderGuru(); }
+  catch(e){ const s=$("#guruStatus"); if(s) s.textContent="Gagal memuat. Periksa koneksi internet."; }
+}
+const jam = x => { const d=new Date(x); if(isNaN(d)) return ""; const hariIni=new Date().toDateString()===d.toDateString(); return d.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"})+(hariIni?"":", "+d.toLocaleDateString("id-ID",{day:"numeric",month:"short"})); };
+const namaMapel = m => (MAPEL[m]||{}).nama || m;
+function saringGuru(arr, kunciWaktu){
+  return arr.filter(r=>String(r.kelas)===G.kelas && (G.mapel==="semua"||r.mapel===G.mapel) && (G.hari==="semua"|| new Date(r[kunciWaktu]).toDateString()===new Date().toDateString()));
+}
+function layarGuru(tab){
+  stopTimer(); if(tab) G.tab=tab; papan("Ruang guru", "Kelas " + G.kelas);
+  bawah(`<button class="btn btn-garis" onclick="keluarGuru()">Keluar</button><button class="btn btn-papan" onclick="muatGuru()">Muat ulang</button>`);
+  hentiGuru(); G.timer = setInterval(()=>{ if(!document.hidden) muatGuru(true); }, 20000);
+  renderGuru();
+}
+function renderGuru(){
+  if(!G.data) return;
+  const tabs = [["pantau","Pantauan"],["rank","Ranking"],["aktivitas","Keluar-masuk"],["rekap","Rekap nilai"]];
+  const opsiKelas = KELAS_AKTIF.map(k=>`<option value="${k}" ${G.kelas===k?"selected":""}>Kelas ${k}</option>`).join("");
+  const opsiMapel = `<option value="semua">Semua mapel</option>`+Object.keys(MAPEL).map(m=>`<option value="${m}" ${G.mapel===m?"selected":""}>${MAPEL[m].nama}</option>`).join("");
+  let h = `<div class="halo"><div class="inisial" style="background:var(--papan);color:var(--kapur)">👩‍🏫</div><div><h1>Ruang guru</h1><p id="guruStatus">Diperbarui ${jam(G.data.sekarang)}, otomatis setiap 20 detik.</p></div></div>
+  <div class="admin-tabs" role="tablist">${tabs.map(([k,l])=>`<button role="tab" aria-selected="${G.tab===k}" class="${G.tab===k?"on":""}" onclick="layarGuru('${k}')">${l}</button>`).join("")}</div>
+  <div class="saring"><select aria-label="Kelas" onchange="G.kelas=this.value;renderGuru()">${opsiKelas}</select>
+  <select aria-label="Mapel" onchange="G.mapel=this.value;renderGuru()">${opsiMapel}</select>
+  <select aria-label="Waktu" onchange="G.hari=this.value;renderGuru()"><option value="ini" ${G.hari==="ini"?"selected":""}>Hari ini</option><option value="semua" ${G.hari==="semua"?"selected":""}>Semua waktu</option></select></div>`;
+  h += ({pantau:guruPantau, rank:guruRank, aktivitas:guruAktivitas, rekap:guruRekap})[G.tab]();
+  app.innerHTML = h;
+}
+function statusSesi(p){
+  const diam = (Date.now()-new Date(p.terakhir))/60000;
+  if(p.status==="selesai") return ["selesai","Selesai"];
+  if(p.status==="keluar") return ["keluar","Sedang keluar"];
+  if(diam>3) return ["diam","Tidak aktif"];
+  return ["kerja","Mengerjakan"];
+}
+function guruPantau(){
+  const rows = saringGuru(G.data.pantauan,"terakhir").map(p=>({...p, st:statusSesi(p)}));
+  const urut = {keluar:0, kerja:1, diam:2, selesai:3};
+  rows.sort((a,b)=> urut[a.st[0]]-urut[b.st[0]] || b.keluar-a.keluar || new Date(b.terakhir)-new Date(a.terakhir));
+  const n = k => rows.filter(r=>r.st[0]===k).length;
+  let h = `<div class="ringkasan"><div><b>${n("kerja")}</b><span>sedang mengerjakan</span></div><div><b style="color:var(--merah)">${n("keluar")}</b><span>sedang keluar dari web</span></div><div><b>${rows.filter(r=>+r.keluar>0).length}</b><span>pernah keluar</span></div><div><b style="color:var(--hijau)">${n("selesai")}</b><span>sudah selesai</span></div></div>`;
+  if(!rows.length) return h + `<div class="kosong"><b>Belum ada siswa yang mulai</b>Siswa akan muncul di sini begitu mereka menekan salah satu ulangan.</div>`;
+  h += `<div class="kartu scroll"><table class="tabel"><thead><tr><th>Nama</th><th>Mapel</th><th>Status</th><th class="n">Dijawab</th><th class="n">Keluar</th><th class="n">Terakhir</th></tr></thead><tbody>`;
+  rows.forEach(r=>{ h += `<tr><td><b>${esc(r.nama)}</b></td><td>${esc(namaMapel(r.mapel))}</td><td><span class="lencana l-${r.st[0]}">${r.st[1]}</span></td><td class="n">${r.terjawab}/${r.total}</td><td class="n"><span class="keluar-n ${+r.keluar>0?"bahaya":""}">${r.keluar}×</span></td><td class="n">${jam(r.terakhir)}</td></tr>`; });
+  return h + `</tbody></table></div><p class="catatan">"Tidak aktif" berarti tidak ada kabar dari HP siswa lebih dari 3 menit, misalnya internet putus atau HP terkunci.</p>`;
+}
+function guruRank(){
+  const nilai = G.data.nilai.filter(r=>G.hari==="semua"||new Date(r.waktu).toDateString()===new Date().toDateString());
+  const blok = m => {
+    const rows = urutkan(pertama(nilai.map(r=>({...r,kelas:String(r.kelas)})), G.kelas, m));
+    let h = `<h2 style="font-size:22px;margin:4px 2px 8px">${MAPEL[m].nama}</h2>`;
+    if(!rows.length) return h + `<div class="kosong" style="margin-bottom:14px">Belum ada nilai.</div>`;
+    h += `<div class="kartu scroll"><table class="tabel"><thead><tr><th>#</th><th>Nama</th><th class="n">Nilai</th><th class="n">Benar</th><th class="n">Waktu</th><th class="n">Keluar</th><th>Keterangan</th></tr></thead><tbody>`;
+    rows.forEach((r,i)=>{ h += `<tr><td><b>${i+1}</b></td><td><b>${esc(r.nama)}</b></td><td class="n"><b style="color:var(--merah)">${r.nilai}</b></td><td class="n">${r.benar}/${r.total}</td><td class="n">${fmtDur(r.durasi)}</td><td class="n"><span class="keluar-n ${+r.keluar>0?"bahaya":""}">${+r.keluar||0}×</span></td><td>${esc(r.alasan||"")}</td></tr>`; });
+    return h + `</tbody></table></div>`;
+  };
+  return (G.mapel==="semua"?Object.keys(MAPEL):[G.mapel]).map(blok).join("") + `<p class="catatan">Setiap siswa dihitung dari percobaan pertamanya. Nilai sama diurutkan dari yang lebih cepat selesai.</p>`;
+}
+function guruAktivitas(){
+  const rows = saringGuru(G.data.aktivitas,"waktu").filter(r=>r.jenis!=="progres").reverse();
+  const label = {mulai:["kerja","Mulai"], keluar:["keluar","Keluar"], kembali:["diam","Kembali"], selesai:["selesai","Selesai"]};
+  if(!rows.length) return `<div class="kosong"><b>Belum ada aktivitas</b>Setiap siswa yang mulai, keluar dari web, kembali, atau selesai akan tercatat di sini.</div>`;
+  const keluarPer = {}; rows.filter(r=>r.jenis==="keluar").forEach(r=>{ keluarPer[r.nama]=(keluarPer[r.nama]||0)+1; });
+  const top = Object.entries(keluarPer).sort((a,b)=>b[1]-a[1]);
+  let h = top.length ? `<div class="kartu" style="padding:12px 14px"><b>Paling sering keluar:</b> ${top.slice(0,5).map(([n,c])=>`${esc(n)} (${c}×)`).join(", ")}</div>` : "";
+  h += `<div class="kartu scroll"><table class="tabel"><thead><tr><th>Jam</th><th>Nama</th><th>Kejadian</th><th>Keterangan</th></tr></thead><tbody>`;
+  rows.slice(0,300).forEach(r=>{ const l=label[r.jenis]||["diam",r.jenis]; h += `<tr><td class="waktu-kecil">${jam(r.waktu)}</td><td><b>${esc(r.nama)}</b><br><span class="waktu-kecil">${esc(namaMapel(r.mapel))}</span></td><td><span class="lencana l-${l[0]}">${l[1]}</span></td><td>${esc(r.keterangan||"")}</td></tr>`; });
+  return h + `</tbody></table></div>`;
+}
+function guruRekap(){
+  const rows = saringGuru(G.data.nilai,"waktu").slice().sort((a,b)=>new Date(b.waktu)-new Date(a.waktu));
+  let h = `<button class="btn btn-utama" style="margin:0 0 10px" onclick="unduhRekap()" ${rows.length?"":"disabled"}>Unduh rekap (Excel/CSV)</button>`;
+  if(CONFIG.SHEET_URL) h += `<a class="btn btn-garis" style="margin:0 0 14px;text-decoration:none" href="${CONFIG.SHEET_URL}" target="_blank" rel="noopener">Buka Google Sheet nilai</a>`;
+  if(!rows.length) return h + `<div class="kosong"><b>Belum ada nilai</b>Ubah saringan waktu ke "Semua waktu" untuk melihat nilai hari sebelumnya.</div>`;
+  h += `<div class="kartu scroll"><table class="tabel"><thead><tr><th>Waktu</th><th>Nama</th><th>Mapel</th><th class="n">Nilai</th><th class="n">Keluar</th><th>Keterangan</th></tr></thead><tbody>`;
+  rows.forEach(r=>{ h += `<tr><td class="waktu-kecil">${jam(r.waktu)}</td><td><b>${esc(r.nama)}</b></td><td>${esc(namaMapel(r.mapel))}</td><td class="n"><b>${r.nilai}</b></td><td class="n">${+r.keluar||0}×</td><td>${esc(r.alasan||"")}</td></tr>`; });
+  return h + `</tbody></table></div>`;
+}
+function unduhRekap(){
+  const rows = saringGuru(G.data.nilai,"waktu");
+  const kol = ["waktu","kelas","mapel","nama","benar","total","nilai","durasi","keluar","alasan"];
+  const cel = v => `"${String(v==null?"":v).replace(/"/g,'""')}"`;
+  const csv = "﻿" + ["Waktu;Kelas;Mapel;Nama;Benar;Total soal;Nilai;Durasi (detik);Keluar web;Keterangan"]
+    .concat(rows.map(r=>kol.map(k=> k==="waktu"? cel(new Date(r.waktu).toLocaleString("id-ID")) : k==="mapel"? cel(namaMapel(r.mapel)) : cel(r[k])).join(";"))).join("\r\n");
+  const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
+  a.download=`rekap-nilai-kelas${G.kelas}-${new Date().toISOString().slice(0,10)}.csv`; document.body.appendChild(a); a.click(); a.remove();
+}
+
 /* ---------- Mulai ---------- */
-if(S && !S.selesai){ profil.kelas=S.kelas; profil.nama=S.nama; layarSoal(); }
-else if(S && S.selesai){ profil.kelas=S.kelas; profil.nama=S.nama; layarHasil(); }
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") tutupModal(); });
+if(S && !S.selesai){ profil.kelas=S.kelas; profil.nama=S.nama; layarSoal(); if(S.keluarSejak) siswaKembali(); }
+else if(S && S.selesai){ profil.kelas=S.kelas; profil.nama=S.nama; layarHasil(false); }
+else if(profil.kelas && profil.nama && KELAS_AKTIF.includes(profil.kelas)) layarMenu();
 else layarKelas();
 </script>
 </body>

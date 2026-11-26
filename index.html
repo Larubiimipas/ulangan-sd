@@ -54,9 +54,9 @@ main{max-width:720px;margin:0 auto;padding:20px 14px 120px}
 .sambut h1{font-size:clamp(28px,7vw,40px);font-weight:800;color:var(--tinta)}
 .sambut p{margin:6px 0 0;color:var(--abu);font-size:16px;max-width:52ch}
 
-.kelas-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.kelas-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .kelas{background:var(--kertas);border:2px solid #d5dee8;border-radius:var(--r);padding:14px 8px 12px;text-align:center}
-.kelas .angka{font:800 52px/1 var(--fd);color:#c3ccd6}
+.kelas .angka{font:800 44px/1 var(--fd);color:#c3ccd6;white-space:nowrap}
 .kelas .kata-kelas{display:block;font:800 17px/1 var(--fd);color:#aab4bf;margin-bottom:2px}
 .kelas.on .kata-kelas{color:var(--merah)}
 .kelas small{display:block;font-size:13px;color:var(--abu);margin-top:4px}
@@ -294,6 +294,7 @@ body.lebar main{max-width:1040px}
   .tabel th,.tabel td{padding:7px 6px}
   .admin-tabs button{font-size:14px}
   .link-guru{margin-top:22px}
+  .kelas small{font-size:12px;white-space:nowrap}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.stempel svg path{stroke-dashoffset:0}}
 </style>
@@ -331,7 +332,10 @@ const CONFIG = {
   MAKS_KELUAR: 3,             // keluar sebanyak ini → jawaban dikumpulkan otomatis
   SHEET_URL: "https://docs.google.com/spreadsheets/d/16aKAgU24CTsNJUC4khLV9oitSvTRJqUffOGcbB7sDfc/edit" // hanya bisa dibuka pemilik
 };
-const KELAS_AKTIF = ["5"];
+// Daftar kelas/rombel di halaman awal. Kelas 5 dibagi 5A dan 5B: masing-masing punya
+// guru, kata sandi, kode ulangan, dan nilai sendiri, tetapi memakai bank soal Kelas 5.
+const DAFTAR_KELAS = ["1","2","3","4","5A","5B","6"];
+const KELAS_AKTIF = ["5A","5B"];
 // Jumlah soal per bab yang diambil acak dari bank soal untuk setiap siswa (total 40).
 // Bab Bilangan Cacah: 5 subbab A–E masing-masing 4 soal.
 // Bab KPK & FPB: subbab A, B, C masing-masing 5 soal.
@@ -481,7 +485,7 @@ ipas: [
 ]
 };
 
-const DATA = {"5": BANK};
+const DATA = {"5": BANK, "5A": BANK, "5B": BANK};   // "5" tetap ada untuk sesi lama
 
 const $ = s => document.querySelector(s);
 const app = $("#app");
@@ -510,9 +514,9 @@ function atas(){ window.scrollTo({top:0}); }
 /* ---------- Pilih kelas ---------- */
 function layarKelas(){
   stopTimer(); bawah(); papan("Ulangan Online");
-  let h = `<div class="awan"><span class="maskot" aria-hidden="true">🦉</span><div class="gelembung"><b>Halo, anak hebat!</b>Pilih kelasmu dulu, ya. Saat ini ulangan tersedia untuk Kelas 5.</div></div><div class="kelas-grid">`;
-  for(let k=1;k<=6;k++){
-    const on = KELAS_AKTIF.includes(String(k));
+  let h = `<div class="awan"><span class="maskot" aria-hidden="true">🦉</span><div class="gelembung"><b>Halo, anak hebat!</b>Pilih kelasmu dulu, ya. Saat ini ulangan tersedia untuk Kelas 5A dan 5B.</div></div><div class="kelas-grid">`;
+  for(const k of DAFTAR_KELAS){
+    const on = KELAS_AKTIF.includes(k);
     h += `<button class="kelas ${on?"on":""}" ${on?`onclick="pilihKelas('${k}')"`:"disabled"} aria-label="Kelas ${k}${on?"":", belum tersedia"}"><span class="kata-kelas">Kelas</span><span class="angka">${k}</span><small>${on?"Mulai":"Belum ada"}</small></button>`;
   }
   app.innerHTML = h + `</div>`; atas();

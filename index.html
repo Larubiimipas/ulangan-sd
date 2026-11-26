@@ -92,6 +92,9 @@ label.lbl{display:block;font-weight:800;margin:14px 0 6px}
 .btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
 
 /* ---------- menu mapel ---------- */
+.balik{display:inline-flex;align-items:center;gap:6px;background:#fff;border:2px solid var(--garis);color:var(--papan);font:700 14px var(--fb);padding:7px 14px 7px 10px;border-radius:999px;margin:0 2px 14px;cursor:pointer}
+.balik:hover{border-color:var(--papan)}
+.balik:focus-visible{outline:3px solid var(--kuning);outline-offset:2px}
 .halo{display:flex;align-items:center;gap:12px;margin:0 2px 16px}
 .inisial{width:48px;height:48px;border-radius:50%;background:var(--kuning);color:var(--tinta);display:grid;place-items:center;font:800 20px var(--fd);flex:none}
 .halo h1{font-size:26px;font-weight:800}
@@ -518,7 +521,7 @@ function simpanNama(){
 function layarMenu(){
   stopTimer(); bawah(); papan("Kelas " + profil.kelas);
   const d = DATA[profil.kelas];
-  let h = `<div class="halo"><div class="inisial">${esc(inisial(profil.nama))}</div><div><h1>Halo, ${esc(namaDepan(profil.nama))}!</h1><p>Pilih mata pelajaran, lalu masukkan kode ulangan dari gurumu.</p></div></div>`;
+  let h = `<button class="balik" onclick="layarKelas()" aria-label="Kembali ke pilihan kelas"><span aria-hidden="true">←</span> Pilihan kelas</button><div class="halo"><div class="inisial">${esc(inisial(profil.nama))}</div><div><h1>Halo, ${esc(namaDepan(profil.nama))}!</h1><p>Pilih mata pelajaran, lalu masukkan kode ulangan dari gurumu.</p></div></div>`;
   for(const m in MAPEL){
     if(!d[m]) continue;
     const topik = [...new Set(d[m].map(x=>x.t))];
@@ -526,7 +529,7 @@ function layarMenu(){
       <h3>${MAPEL[m].nama}</h3><p>${topik.map(esc).join(", ")}</p>
       <span class="chip">${jumlahSoal(m)} soal</span><span class="chip">🔑 Pakai kode dari guru</span></span></button>`;
   }
-  app.innerHTML = h + `<button class="btn btn-papan" onclick="layarRanking()">🏆 Lihat ranking kelas</button><button class="btn btn-teks" onclick="layarNama()">Bukan ${esc(namaDepan(profil.nama))}? Ganti nama</button>`;
+  app.innerHTML = h + `<button class="btn btn-papan" onclick="layarRanking()">🏆 Lihat ranking kelas</button><button class="btn btn-teks" onclick="layarNama()">Bukan ${esc(namaDepan(profil.nama))}? Ganti nama</button><button class="btn btn-teks" onclick="layarKelas()">Kembali ke pilihan kelas</button>`;
   atas();
 }
 

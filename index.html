@@ -312,7 +312,7 @@ const CONFIG = {
 const KELAS_AKTIF = ["5"];
 // Jumlah soal per bab yang diambil acak dari bank soal untuk setiap siswa (total 40)
 const KOMPOSISI = {
-  mtk: {"Bilangan Cacah":20, "KPK & FPB":15, "Pecahan":5},
+  mtk: {"Bilangan Cacah":15, "KPK & FPB":20, "Pecahan":5},
   ipas: {"Letak Indonesia":22, "Potensi Daerah":18}
 };
 const jumlahSoal = m => Object.values(KOMPOSISI[m]||{}).reduce((a,b)=>a+b,0);

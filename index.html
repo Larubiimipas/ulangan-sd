@@ -57,6 +57,8 @@ main{max-width:720px;margin:0 auto;padding:20px 14px 120px}
 .kelas-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .kelas{background:var(--kertas);border:2px solid #d5dee8;border-radius:var(--r);padding:14px 8px 12px;text-align:center}
 .kelas .angka{font:800 52px/1 var(--fd);color:#c3ccd6}
+.kelas .kata-kelas{display:block;font:800 17px/1 var(--fd);color:#aab4bf;margin-bottom:2px}
+.kelas.on .kata-kelas{color:var(--merah)}
 .kelas small{display:block;font-size:13px;color:var(--abu);margin-top:4px}
 .kelas.on{border-color:var(--merah);background:#fff;box-shadow:0 6px 0 var(--merah)}
 .kelas.on .angka{color:var(--merah)}
@@ -422,7 +424,7 @@ function layarKelas(){
   let h = `<div class="awan"><span class="maskot" aria-hidden="true">🦉</span><div class="gelembung"><b>Halo, anak hebat!</b>Pilih kelasmu dulu, ya. Saat ini ulangan tersedia untuk Kelas 5.</div></div><div class="kelas-grid">`;
   for(let k=1;k<=6;k++){
     const on = KELAS_AKTIF.includes(String(k));
-    h += `<button class="kelas ${on?"on":""}" ${on?`onclick="pilihKelas('${k}')"`:"disabled"} aria-label="Kelas ${k}${on?"":", belum tersedia"}"><span class="angka">${k}</span><small>${on?"Mulai":"Segera"}</small></button>`;
+    h += `<button class="kelas ${on?"on":""}" ${on?`onclick="pilihKelas('${k}')"`:"disabled"} aria-label="Kelas ${k}${on?"":", belum tersedia"}"><span class="kata-kelas">Kelas</span><span class="angka">${k}</span><small>${on?"Mulai":"Belum ada"}</small></button>`;
   }
   app.innerHTML = h + `</div><button class="link-guru" onclick="layarLoginGuru()">Masuk sebagai guru</button>`; atas();
 }

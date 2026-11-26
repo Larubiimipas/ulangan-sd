@@ -310,20 +310,49 @@ const CONFIG = {
   SHEET_URL: "https://docs.google.com/spreadsheets/d/16aKAgU24CTsNJUC4khLV9oitSvTRJqUffOGcbB7sDfc/edit" // hanya bisa dibuka pemilik
 };
 const KELAS_AKTIF = ["5"];
-// Jumlah soal per bab yang diambil acak dari bank soal untuk setiap siswa (total 40)
+// Jumlah soal per bab yang diambil acak dari bank soal untuk setiap siswa (total 40).
+// Bab Bilangan Cacah: 5 subbab A–E masing-masing 4 soal.
+// Bab Pecahan: hanya subbab A, B, C (2 + 2 + 1 = 5 soal).
 const KOMPOSISI = {
-  mtk: {"Bilangan Cacah":15, "KPK & FPB":20, "Pecahan":5},
+  mtk: {"Bilangan Cacah": {A:4, B:4, C:4, D:4, E:4}, "KPK & FPB":15, "Pecahan": {A:2, B:2, C:1}},
   ipas: {"Letak Indonesia":22, "Potensi Daerah":18}
 };
-const jumlahSoal = m => Object.values(KOMPOSISI[m]||{}).reduce((a,b)=>a+b,0);
+const NAMA_SUBBAB = {
+  "Bilangan Cacah": {A:"Membaca & menulis lambang", B:"Nilai tempat", C:"Membandingkan & mengurutkan", D:"Komposisi & dekomposisi", E:"Operasi hitung"},
+  "Pecahan": {A:"Arti pecahan", B:"Membandingkan & mengurutkan", C:"Penjumlahan", D:"Pengurangan"}
+};
+function subBab(q){
+  const x = q.q;
+  if(q.t==="Pecahan"){
+    if(/Tanda yang tepat|Urutan pecahan/.test(x)) return "B";
+    if(/ \+ /.test(x)) return "C";
+    if(/−|dipakai|Sisa/.test(x)) return "D";
+    return "A";
+  }
+  if(q.t!=="Bilangan Cacah") return "";
+  if(/dibaca|Lambang bilangan/.test(x)) return "A";
+  if(/nilai tempat|Nilai angka|Selisih nilai angka/.test(x)) return "B";
+  if(/Tanda yang tepat|terbesar|terkecil|Urutan bilangan/.test(x)) return "C";
+  if(/Bentuk panjang|terdiri atas/.test(x) || (x.match(/\+/g)||[]).length>=2) return "D";
+  return "E";
+}
+const jumlahSoal = m => Object.values(KOMPOSISI[m]||{}).reduce((a,b)=>a+(typeof b==="object"?Object.values(b).reduce((x,y)=>x+y,0):b),0);
 function pilihSoal(m, bank){
   const pilih = [];
   for(const [bab, n] of Object.entries(KOMPOSISI[m]||{})){
-    const idx = bank.map((q,i)=>q.t===bab?i:-1).filter(i=>i>=0);
-    pilih.push(...acak(idx).slice(0,n));
+    if(typeof n==="object"){
+      for(const [sb, k] of Object.entries(n)){
+        const idx = bank.map((q,i)=>q.t===bab && subBab(q)===sb ? i : -1).filter(i=>i>=0);
+        pilih.push(...acak(idx).slice(0,k));
+      }
+    } else {
+      const idx = bank.map((q,i)=>q.t===bab?i:-1).filter(i=>i>=0);
+      pilih.push(...acak(idx).slice(0,n));
+    }
   }
   return acak(pilih);
-}   // tambahkan "4", "6", dst. jika soalnya sudah ada
+}
+const labelTopik = q => { const sb=subBab(q); return sb ? `${q.t} · ${sb}. ${NAMA_SUBBAB[q.t][sb]}` : q.t; };   // tambahkan "4", "6", dst. jika soalnya sudah ada
 const MAPEL = {
   mtk:{nama:"Matematika", ikon:"×÷", warna:"#2f5d9e"},
   ipas:{nama:"IPAS", ikon:"🌏", warna:"#2b7a55"}
@@ -485,7 +514,19 @@ mtk: [
 {"t": "Pecahan", "q": "3/4 − 1/2 = ....", "o": ["1/4", "2/2", "5/4", "3/8"], "p": "Samakan penyebut: 3/4 − 1/2 = 1/4."},
 {"t": "Pecahan", "q": "5/6 − 1/3 = ....", "o": ["1/2", "4/3", "7/6", "3/4"], "p": "Samakan penyebut: 5/6 − 1/3 = 1/2."},
 {"t": "Pecahan", "q": "Kakak memiliki 7/8 meter pita. Sebanyak 1/4 meter dipakai untuk hiasan. Sisa pita Kakak adalah ... meter.", "o": ["5/8", "6/4", "9/8", "11/16"], "p": "Samakan penyebut: 7/8 − 1/4 = 5/8."},
-{"t": "Pecahan", "q": "Ember berisi 4/5 liter air. Sebanyak 1/2 liter dipakai menyiram bunga. Sisa air di ember adalah ... liter.", "o": ["3/10", "3/3", "13/10", "7/20"], "p": "Samakan penyebut: 4/5 − 1/2 = 3/10."}
+{"t": "Pecahan", "q": "Ember berisi 4/5 liter air. Sebanyak 1/2 liter dipakai menyiram bunga. Sisa air di ember adalah ... liter.", "o": ["3/10", "3/3", "13/10", "7/20"], "p": "Samakan penyebut: 4/5 − 1/2 = 3/10."},
+{"t": "Bilangan Cacah", "q": "40.000 + 300 + 6 = ....", "o": ["40.306", "40.316", "43.006", "39.306"], "p": "Jumlahkan nilai tiap tempat: 40.306. Tempat yang kosong diisi angka 0."},
+{"t": "Bilangan Cacah", "q": "70.000 + 5.000 + 80 = ....", "o": ["75.080", "75.090", "74.080", "70.580"], "p": "Jumlahkan nilai tiap tempat: 75.080. Tempat yang kosong diisi angka 0."},
+{"t": "Bilangan Cacah", "q": "90.000 + 400 + 50 + 7 = ....", "o": ["90.457", "89.457", "94.057", "90.467"], "p": "Jumlahkan nilai tiap tempat: 90.457. Tempat yang kosong diisi angka 0."},
+{"t": "Bilangan Cacah", "q": "60.000 + 3.000 + 9 = ....", "o": ["63.009", "63.019", "60.309", "62.009"], "p": "Jumlahkan nilai tiap tempat: 63.009. Tempat yang kosong diisi angka 0."},
+{"t": "Bilangan Cacah", "q": "10.000 + 8.000 + 700 + 50 = ....", "o": ["18.750", "18.760", "17.850", "19.750"], "p": "Jumlahkan nilai tiap tempat: 18.750. Tempat yang kosong diisi angka 0."},
+{"t": "Bilangan Cacah", "q": "Bilangan yang terdiri atas 5 puluh ribuan, 2 ribuan, 6 ratusan, 0 puluhan, 4 satuan adalah ....", "o": ["52.604", "40.625", "62.604", "52.064"], "p": "Susun angkanya sesuai nilai tempat: 52.604."},
+{"t": "Bilangan Cacah", "q": "Bilangan yang terdiri atas 8 puluh ribuan, 7 ribuan, 0 ratusan, 3 puluhan, 0 satuan adalah ....", "o": ["87.030", "87.031", "97.030", "87.300"], "p": "Susun angkanya sesuai nilai tempat: 87.030."},
+{"t": "Pecahan", "q": "Pada pecahan 3/7, angka 3 disebut ....", "o": ["pembilang", "penyebut", "pecahan", "bilangan bulat"], "p": "Angka di atas garis pecahan disebut pembilang, angka di bawah disebut penyebut."},
+{"t": "Pecahan", "q": "Pada pecahan 5/9, angka yang menjadi penyebut adalah ....", "o": ["9", "5", "14", "4"], "p": "Penyebut adalah angka di bawah garis pecahan, yaitu 9."},
+{"t": "Pecahan", "q": "Pecahan \"tiga perlima\" ditulis ....", "o": ["3/5", "5/3", "3/8", "1/5"], "p": "Tiga perlima: pembilang 3, penyebut 5, ditulis 3/5."},
+{"t": "Pecahan", "q": "Pecahan 2/9 dibaca ....", "o": ["dua persembilan", "sembilan perdua", "dua sembilan", "dua per sembilan puluh"], "p": "2/9 dibaca dua persembilan."},
+{"t": "Pecahan", "q": "Dalam sebuah kotak ada 8 kelereng. Sebanyak 3 kelereng berwarna merah. Pecahan yang menunjukkan kelereng merah adalah ....", "o": ["3/8", "5/8", "8/3", "3/5"], "p": "3 kelereng merah dari 8 kelereng = 3/8."}
 ],
 ipas: [
 // ===== Bab 1 Letak Negara Indonesia (22 soal) =====
@@ -838,7 +879,7 @@ function layarSoal(){
   let h = `<div class="penjaga"><span class="hati" aria-hidden="true">${hati}</span><span>Tetap di halaman ini sampai selesai, ya.${S.keluar?` Kamu sudah keluar ${S.keluar} kali.`:""}</span></div>
   <div class="ujian"><div class="kiri">
   <div class="kemajuan"><span>Soal ${S.cur+1}/${n}</span><span class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="${n}" aria-valuenow="${terjawab}" aria-label="Soal terjawab"><i style="width:${terjawab/n*100}%"></i></span><span>${terjawab} terjawab</span></div>
-  <div class="buku"><span class="no" aria-hidden="true">${S.cur+1}.</span><span class="topik">${esc(q.t)}</span><p class="qtext">${fmt(q.q)}</p><div role="radiogroup" aria-label="Pilihan jawaban">`;
+  <div class="buku"><span class="no" aria-hidden="true">${S.cur+1}.</span><span class="topik">${esc(labelTopik(q))}</span><p class="qtext">${fmt(q.q)}</p><div role="radiogroup" aria-label="Pilihan jawaban">`;
   it.o.forEach((oi,k)=>{
     const sel = S.jwb[S.cur]===k;
     h += `<button class="opsi ${sel?"pilih":""}" role="radio" aria-checked="${sel}" onclick="jawab(${k})"><span class="bulat">${"ABCD"[k]}</span><span>${fmt(q.o[oi])}</span></button>`;

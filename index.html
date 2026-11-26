@@ -309,7 +309,21 @@ const CONFIG = {
   MAKS_KELUAR: 3,             // keluar sebanyak ini → jawaban dikumpulkan otomatis
   SHEET_URL: "https://docs.google.com/spreadsheets/d/16aKAgU24CTsNJUC4khLV9oitSvTRJqUffOGcbB7sDfc/edit" // hanya bisa dibuka pemilik
 };
-const KELAS_AKTIF = ["5"];   // tambahkan "4", "6", dst. jika soalnya sudah ada
+const KELAS_AKTIF = ["5"];
+// Jumlah soal per bab yang diambil acak dari bank soal untuk setiap siswa (total 40)
+const KOMPOSISI = {
+  mtk: {"Bilangan Cacah":20, "KPK & FPB":15, "Pecahan":5},
+  ipas: {"Letak Indonesia":22, "Potensi Daerah":18}
+};
+const jumlahSoal = m => Object.values(KOMPOSISI[m]||{}).reduce((a,b)=>a+b,0);
+function pilihSoal(m, bank){
+  const pilih = [];
+  for(const [bab, n] of Object.entries(KOMPOSISI[m]||{})){
+    const idx = bank.map((q,i)=>q.t===bab?i:-1).filter(i=>i>=0);
+    pilih.push(...acak(idx).slice(0,n));
+  }
+  return acak(pilih);
+}   // tambahkan "4", "6", dst. jika soalnya sudah ada
 const MAPEL = {
   mtk:{nama:"Matematika", ikon:"×÷", warna:"#2f5d9e"},
   ipas:{nama:"IPAS", ikon:"🌏", warna:"#2b7a55"}
@@ -360,7 +374,118 @@ mtk: [
 {t:"Pecahan",q:"Tanda yang tepat untuk 2/3 ... 3/5 adalah ....",o:[">","<","=","≤"],p:"Samakan penyebut: 2/3 = 10/15 dan 3/5 = 9/15. Jadi 2/3 > 3/5."},
 {t:"Pecahan",q:"Urutan pecahan 1/2, 3/4, 2/5 dari yang terkecil adalah ....",o:["2/5, 1/2, 3/4","1/2, 2/5, 3/4","3/4, 1/2, 2/5","2/5, 3/4, 1/2"],p:"Penyebut 20: 1/2 = 10/20, 3/4 = 15/20, 2/5 = 8/20. Urutannya 2/5, 1/2, 3/4."},
 {t:"Pecahan",q:"1/4 + 2/3 = ....",o:["11/12","3/7","3/12","2/12"],p:"1/4 = 3/12 dan 2/3 = 8/12. 3/12 + 8/12 = 11/12."},
-{t:"Pecahan",q:"Ibu mempunyai 3/4 kg gula. Sebanyak 1/3 kg dipakai untuk membuat kue. Sisa gula Ibu adalah ... kg.",o:["5/12","2/1","1/2","4/7"],p:"3/4 = 9/12 dan 1/3 = 4/12. 9/12 − 4/12 = 5/12 kg."}
+{t:"Pecahan",q:"Ibu mempunyai 3/4 kg gula. Sebanyak 1/3 kg dipakai untuk membuat kue. Sisa gula Ibu adalah ... kg.",o:["5/12","2/1","1/2","4/7"],p:"3/4 = 9/12 dan 1/3 = 4/12. 9/12 − 4/12 = 5/12 kg."},
+// ===== Tambahan bank soal (110) =====
+{"t": "Bilangan Cacah", "q": "Bilangan 72.217 dibaca ....", "o": ["tujuh puluh dua ribu dua ratus tujuh belas", "tujuh puluh dua ribu seratus dua puluh tujuh", "tujuh puluh dua ribu tiga ratus tujuh belas", "delapan puluh dua ribu dua ratus tujuh belas"], "p": "72.217 dibaca tujuh puluh dua ribu dua ratus tujuh belas."},
+{"t": "Bilangan Cacah", "q": "Bilangan 38.747 dibaca ....", "o": ["tiga puluh delapan ribu tujuh ratus empat puluh tujuh", "tiga puluh delapan ribu empat ratus tujuh puluh tujuh", "tiga puluh delapan ribu delapan ratus empat puluh tujuh", "empat puluh delapan ribu tujuh ratus empat puluh tujuh"], "p": "38.747 dibaca tiga puluh delapan ribu tujuh ratus empat puluh tujuh."},
+{"t": "Bilangan Cacah", "q": "Bilangan 54.352 dibaca ....", "o": ["lima puluh empat ribu tiga ratus lima puluh dua", "lima puluh empat ribu lima ratus tiga puluh dua", "lima puluh empat ribu empat ratus lima puluh dua", "enam puluh empat ribu tiga ratus lima puluh dua"], "p": "54.352 dibaca lima puluh empat ribu tiga ratus lima puluh dua."},
+{"t": "Bilangan Cacah", "q": "Bilangan 78.083 dibaca ....", "o": ["tujuh puluh delapan ribu delapan puluh tiga", "tujuh puluh delapan ribu delapan ratus tiga", "tujuh puluh delapan ribu seratus delapan puluh tiga", "delapan puluh delapan ribu delapan puluh tiga"], "p": "78.083 dibaca tujuh puluh delapan ribu delapan puluh tiga."},
+{"t": "Bilangan Cacah", "q": "Bilangan 98.047 dibaca ....", "o": ["sembilan puluh delapan ribu empat puluh tujuh", "sembilan puluh delapan ribu empat ratus tujuh", "sembilan puluh delapan ribu seratus empat puluh tujuh", "delapan puluh delapan ribu empat puluh tujuh"], "p": "98.047 dibaca sembilan puluh delapan ribu empat puluh tujuh."},
+{"t": "Bilangan Cacah", "q": "Lambang bilangan dari \"sembilan belas ribu tujuh puluh empat\" adalah ....", "o": ["19.074", "28.074", "19.470", "19.065"], "p": "Sembilan belas ribu tujuh puluh empat ditulis 19.074."},
+{"t": "Bilangan Cacah", "q": "Lambang bilangan dari \"dua puluh tiga ribu tujuh ratus enam belas\" adalah ....", "o": ["23.716", "32.716", "23.707", "23.617"], "p": "Dua puluh tiga ribu tujuh ratus enam belas ditulis 23.716."},
+{"t": "Bilangan Cacah", "q": "Lambang bilangan dari \"empat puluh dua ribu empat ratus tujuh puluh empat\" adalah ....", "o": ["42.474", "51.474", "42.475", "42.465"], "p": "Empat puluh dua ribu empat ratus tujuh puluh empat ditulis 42.474."},
+{"t": "Bilangan Cacah", "q": "Lambang bilangan dari \"empat belas ribu lima puluh empat\" adalah ....", "o": ["14.054", "14.450", "14.045", "23.054"], "p": "Empat belas ribu lima puluh empat ditulis 14.054."},
+{"t": "Bilangan Cacah", "q": "Lambang bilangan dari \"tiga puluh dua ribu lima puluh sembilan\" adalah ....", "o": ["32.059", "32.950", "32.050", "41.059"], "p": "Tiga puluh dua ribu lima puluh sembilan ditulis 32.059."},
+{"t": "Bilangan Cacah", "q": "Angka 7 pada bilangan 27.416 menempati nilai tempat ....", "o": ["ribuan", "satuan", "puluh ribuan", "ratusan"], "p": "Dari kiri: puluh ribuan, ribuan, ratusan, puluhan, satuan. Angka 7 ada di tempat ribuan."},
+{"t": "Bilangan Cacah", "q": "Angka 2 pada bilangan 54.326 menempati nilai tempat ....", "o": ["puluhan", "ribuan", "satuan", "ratusan"], "p": "Dari kiri: puluh ribuan, ribuan, ratusan, puluhan, satuan. Angka 2 ada di tempat puluhan."},
+{"t": "Bilangan Cacah", "q": "Angka 7 pada bilangan 78.964 menempati nilai tempat ....", "o": ["puluh ribuan", "puluhan", "ratusan", "satuan"], "p": "Dari kiri: puluh ribuan, ribuan, ratusan, puluhan, satuan. Angka 7 ada di tempat puluh ribuan."},
+{"t": "Bilangan Cacah", "q": "Angka 4 pada bilangan 81.094 menempati nilai tempat ....", "o": ["satuan", "puluh ribuan", "ribuan", "ratusan"], "p": "Dari kiri: puluh ribuan, ribuan, ratusan, puluhan, satuan. Angka 4 ada di tempat satuan."},
+{"t": "Bilangan Cacah", "q": "Angka 6 pada bilangan 87.462 menempati nilai tempat ....", "o": ["puluhan", "puluh ribuan", "ribuan", "ratusan"], "p": "Dari kiri: puluh ribuan, ribuan, ratusan, puluhan, satuan. Angka 6 ada di tempat puluhan."},
+{"t": "Bilangan Cacah", "q": "Nilai angka 6 pada bilangan 84.658 adalah ....", "o": ["600", "60", "6", "6.000"], "p": "Angka 6 berada di tempat ratusan, nilainya 600."},
+{"t": "Bilangan Cacah", "q": "Nilai angka 1 pada bilangan 33.126 adalah ....", "o": ["100", "10", "1", "10.000"], "p": "Angka 1 berada di tempat ratusan, nilainya 100."},
+{"t": "Bilangan Cacah", "q": "Nilai angka 2 pada bilangan 82.679 adalah ....", "o": ["2.000", "200", "2", "20"], "p": "Angka 2 berada di tempat ribuan, nilainya 2.000."},
+{"t": "Bilangan Cacah", "q": "Nilai angka 9 pada bilangan 69.351 adalah ....", "o": ["9.000", "9", "900", "90"], "p": "Angka 9 berada di tempat ribuan, nilainya 9.000."},
+{"t": "Bilangan Cacah", "q": "Nilai angka 1 pada bilangan 82.417 adalah ....", "o": ["10", "100", "1", "10.000"], "p": "Angka 1 berada di tempat puluhan, nilainya 10."},
+{"t": "Bilangan Cacah", "q": "Bentuk panjang dari 89.692 adalah ....", "o": ["80.000 + 9.000 + 600 + 90 + 2", "80.000 + 900 + 600 + 90 + 2", "80.000 + 9.000 + 60 + 90 + 2", "8.000 + 9.000 + 600 + 90 + 2"], "p": "Uraikan sesuai nilai tempat: 80.000 + 9.000 + 600 + 90 + 2."},
+{"t": "Bilangan Cacah", "q": "Bentuk panjang dari 92.536 adalah ....", "o": ["90.000 + 2.000 + 500 + 30 + 6", "90.000 + 200 + 500 + 30 + 6", "90.000 + 2.000 + 50 + 30 + 6", "9.000 + 2.000 + 500 + 30 + 6"], "p": "Uraikan sesuai nilai tempat: 90.000 + 2.000 + 500 + 30 + 6."},
+{"t": "Bilangan Cacah", "q": "Bentuk panjang dari 52.398 adalah ....", "o": ["50.000 + 2.000 + 300 + 90 + 8", "50.000 + 200 + 300 + 90 + 8", "50.000 + 2.000 + 30 + 90 + 8", "5.000 + 2.000 + 300 + 90 + 8"], "p": "Uraikan sesuai nilai tempat: 50.000 + 2.000 + 300 + 90 + 8."},
+{"t": "Bilangan Cacah", "q": "Bentuk panjang dari 61.882 adalah ....", "o": ["60.000 + 1.000 + 800 + 80 + 2", "60.000 + 100 + 800 + 80 + 2", "60.000 + 1.000 + 80 + 80 + 2", "6.000 + 1.000 + 800 + 80 + 2"], "p": "Uraikan sesuai nilai tempat: 60.000 + 1.000 + 800 + 80 + 2."},
+{"t": "Bilangan Cacah", "q": "Bentuk panjang dari 28.775 adalah ....", "o": ["20.000 + 8.000 + 700 + 70 + 5", "20.000 + 800 + 700 + 70 + 5", "20.000 + 8.000 + 70 + 70 + 5", "2.000 + 8.000 + 700 + 70 + 5"], "p": "Uraikan sesuai nilai tempat: 20.000 + 8.000 + 700 + 70 + 5."},
+{"t": "Bilangan Cacah", "q": "Tanda yang tepat untuk 69.132 ... 69.332 adalah ....", "o": ["<", ">", "=", "≥"], "p": "Bandingkan angka dari kiri. Angka pertama yang berbeda menentukan: 69.132 < 69.332."},
+{"t": "Bilangan Cacah", "q": "Tanda yang tepat untuk 23.529 ... 23.029 adalah ....", "o": [">", "<", "=", "≤"], "p": "Bandingkan angka dari kiri. Angka pertama yang berbeda menentukan: 23.529 > 23.029."},
+{"t": "Bilangan Cacah", "q": "Tanda yang tepat untuk 86.493 ... 87.493 adalah ....", "o": ["<", ">", "=", "≥"], "p": "Bandingkan angka dari kiri. Angka pertama yang berbeda menentukan: 86.493 < 87.493."},
+{"t": "Bilangan Cacah", "q": "Tanda yang tepat untuk 92.349 ... 90.349 adalah ....", "o": [">", "<", "=", "≤"], "p": "Bandingkan angka dari kiri. Angka pertama yang berbeda menentukan: 92.349 > 90.349."},
+{"t": "Bilangan Cacah", "q": "Bilangan terbesar di antara bilangan berikut adalah ....", "o": ["91.721", "11.792", "27.191", "71.912"], "p": "Bandingkan dari angka paling kiri. Jawabannya 91.721."},
+{"t": "Bilangan Cacah", "q": "Bilangan terkecil di antara bilangan berikut adalah ....", "o": ["15.878", "71.858", "81.587", "51.887"], "p": "Bandingkan dari angka paling kiri. Jawabannya 15.878."},
+{"t": "Bilangan Cacah", "q": "Bilangan terbesar di antara bilangan berikut adalah ....", "o": ["73.304", "34.037", "37.034", "43.037"], "p": "Bandingkan dari angka paling kiri. Jawabannya 73.304."},
+{"t": "Bilangan Cacah", "q": "Bilangan terkecil di antara bilangan berikut adalah ....", "o": ["42.153", "54.321", "43.125", "42.351"], "p": "Bandingkan dari angka paling kiri. Jawabannya 42.153."},
+{"t": "Bilangan Cacah", "q": "30.368 + 16.337 = ....", "o": ["46.705", "45.705", "46.805", "46.695"], "p": "30.368 + 16.337 = 46.705."},
+{"t": "Bilangan Cacah", "q": "47.396 + 38.518 = ....", "o": ["85.914", "84.914", "86.014", "85.904"], "p": "47.396 + 38.518 = 85.914."},
+{"t": "Bilangan Cacah", "q": "34.664 + 29.882 = ....", "o": ["64.546", "63.546", "64.646", "64.536"], "p": "34.664 + 29.882 = 64.546."},
+{"t": "Bilangan Cacah", "q": "22.805 + 29.890 = ....", "o": ["52.695", "51.695", "52.795", "52.685"], "p": "22.805 + 29.890 = 52.695."},
+{"t": "Bilangan Cacah", "q": "65.912 − 29.817 = ....", "o": ["36.095", "37.095", "35.995", "36.105"], "p": "65.912 − 29.817 = 36.095."},
+{"t": "Bilangan Cacah", "q": "68.840 − 20.567 = ....", "o": ["48.273", "49.273", "48.173", "48.283"], "p": "68.840 − 20.567 = 48.273."},
+{"t": "Bilangan Cacah", "q": "64.046 − 44.338 = ....", "o": ["19.708", "20.708", "19.608", "19.718"], "p": "64.046 − 44.338 = 19.708."},
+{"t": "Bilangan Cacah", "q": "68.516 − 38.797 = ....", "o": ["29.719", "30.719", "29.619", "29.729"], "p": "68.516 − 38.797 = 29.719."},
+{"t": "Bilangan Cacah", "q": "2.735 × 14 = ....", "o": ["38.290", "41.025", "35.555", "65.640"], "p": "2.735 × 14 = 38.290."},
+{"t": "Bilangan Cacah", "q": "4.675 × 17 = ....", "o": ["79.475", "84.150", "74.800", "126.225"], "p": "4.675 × 17 = 79.475."},
+{"t": "Bilangan Cacah", "q": "3.505 × 15 = ....", "o": ["52.575", "56.080", "49.070", "87.625"], "p": "3.505 × 15 = 52.575."},
+{"t": "Bilangan Cacah", "q": "70.642 : 38 = ....", "o": ["1.859", "1.860", "18.590", "1.858"], "p": "38 × 1.859 = 70.642, jadi 70.642 : 38 = 1.859."},
+{"t": "Bilangan Cacah", "q": "15.174 : 27 = ....", "o": ["562", "563", "5.620", "561"], "p": "27 × 562 = 15.174, jadi 15.174 : 27 = 562."},
+{"t": "Bilangan Cacah", "q": "11.200 : 14 = ....", "o": ["800", "801", "8.000", "799"], "p": "14 × 800 = 11.200, jadi 11.200 : 14 = 800."},
+{"t": "Bilangan Cacah", "q": "Sebuah perpustakaan memiliki 31.900 buku. Perpustakaan itu menerima sumbangan 10.900 buku. Jumlah buku sekarang adalah ....", "o": ["42.800", "21.000", "43.800", "42.700"], "p": "31.900 + 10.900 = 42.800 buku."},
+{"t": "Bilangan Cacah", "q": "Pak Tani memanen 61.756 kg padi. Sebanyak 17.503 kg dijual ke koperasi. Sisa padi Pak Tani adalah ... kg.", "o": ["44.253", "79.259", "45.253", "44.243"], "p": "61.756 − 17.503 = 44.253 kg."},
+{"t": "Bilangan Cacah", "q": "Sebuah toko mengirim 18 karung beras. Setiap karung beratnya 3.000 gram. Berat seluruh beras adalah ... gram.", "o": ["54.000", "57.000", "3.018", "53.900"], "p": "18 × 3.000 = 54.000 gram."},
+{"t": "KPK & FPB", "q": "Kelipatan 3 yang terletak antara 12 dan 23 adalah ....", "o": ["15, 18, 21", "16, 19, 22", "13, 16, 19", "15, 18, 25"], "p": "Kelipatan 3: 3, 6, 9, 12, 15, 18, 21, 24. Yang di antara 12 dan 23: 15, 18, 21."},
+{"t": "KPK & FPB", "q": "Kelipatan 8 yang terletak antara 11 dan 41 adalah ....", "o": ["16, 24, 32, 40", "17, 25, 33, 41", "14, 22, 30, 38", "16, 24, 32, 49"], "p": "Kelipatan 8: 8, 16, 24, 32, 40, 48. Yang di antara 11 dan 41: 16, 24, 32, 40."},
+{"t": "KPK & FPB", "q": "Kelipatan 8 yang terletak antara 10 dan 40 adalah ....", "o": ["16, 24, 32", "17, 25, 33", "14, 22, 30", "16, 24, 41"], "p": "Kelipatan 8: 8, 16, 24, 32, 40, 48. Yang di antara 10 dan 40: 16, 24, 32."},
+{"t": "KPK & FPB", "q": "Kelipatan 6 yang terletak antara 15 dan 38 adalah ....", "o": ["18, 24, 30, 36", "19, 25, 31, 37", "16, 22, 28, 34", "18, 24, 30, 43"], "p": "Kelipatan 6: 6, 12, 18, 24, 30, 36, 42. Yang di antara 15 dan 38: 18, 24, 30, 36."},
+{"t": "KPK & FPB", "q": "Semua faktor dari 20 adalah ....", "o": ["1, 2, 4, 5, 10, 20", "2, 4, 5, 10", "1, 2, 5, 10, 20", "1, 2, 3, 4, 5, 10, 20"], "p": "Faktor 20 adalah bilangan yang habis membagi 20: 1, 2, 4, 5, 10, 20."},
+{"t": "KPK & FPB", "q": "Semua faktor dari 40 adalah ....", "o": ["1, 2, 4, 5, 8, 10, 20, 40", "2, 4, 5, 8, 10, 20", "1, 2, 5, 8, 10, 20, 40", "1, 2, 3, 4, 5, 8, 10, 20, 40"], "p": "Faktor 40 adalah bilangan yang habis membagi 40: 1, 2, 4, 5, 8, 10, 20, 40."},
+{"t": "KPK & FPB", "q": "Semua faktor dari 48 adalah ....", "o": ["1, 2, 3, 4, 6, 8, 12, 16, 24, 48", "2, 3, 4, 6, 8, 12, 16, 24", "1, 2, 4, 6, 8, 12, 16, 24, 48", "1, 2, 3, 4, 5, 6, 8, 12, 16, 24, 48"], "p": "Faktor 48 adalah bilangan yang habis membagi 48: 1, 2, 3, 4, 6, 8, 12, 16, 24, 48."},
+{"t": "KPK & FPB", "q": "Semua faktor dari 30 adalah ....", "o": ["1, 2, 3, 5, 6, 10, 15, 30", "2, 3, 5, 6, 10, 15", "1, 2, 5, 6, 10, 15, 30", "1, 2, 3, 4, 5, 6, 10, 15, 30"], "p": "Faktor 30 adalah bilangan yang habis membagi 30: 1, 2, 3, 5, 6, 10, 15, 30."},
+{"t": "KPK & FPB", "q": "Faktor persekutuan dari 18 dan 24 adalah ....", "o": ["1, 2, 3, 6", "1, 2, 3", "1, 2, 3, 6, 9", "2, 3, 6"], "p": "Faktor 18: 1, 2, 3, 6, 9, 18. Faktor 24: 1, 2, 3, 4, 6, 8, 12, 24. Yang sama: 1, 2, 3, 6."},
+{"t": "KPK & FPB", "q": "Faktor persekutuan dari 16 dan 40 adalah ....", "o": ["1, 2, 4, 8", "1, 2, 4", "1, 2, 4, 8, 16", "2, 4, 8"], "p": "Faktor 16: 1, 2, 4, 8, 16. Faktor 40: 1, 2, 4, 5, 8, 10, 20, 40. Yang sama: 1, 2, 4, 8."},
+{"t": "KPK & FPB", "q": "Faktor persekutuan dari 20 dan 30 adalah ....", "o": ["1, 2, 5, 10", "1, 2, 5", "1, 2, 5, 10, 20", "2, 5, 10"], "p": "Faktor 20: 1, 2, 4, 5, 10, 20. Faktor 30: 1, 2, 3, 5, 6, 10, 15, 30. Yang sama: 1, 2, 5, 10."},
+{"t": "KPK & FPB", "q": "Bilangan prima di antara 10 dan 20 adalah ....", "o": ["11, 13, 17, 19", "11, 13, 15, 17", "12, 13, 17, 19", "11, 13, 17"], "p": "Bilangan prima hanya punya dua faktor. Antara 10 dan 20: 11, 13, 17, 19."},
+{"t": "KPK & FPB", "q": "Bilangan berikut yang merupakan bilangan prima adalah ....", "o": ["29", "27", "33", "39"], "p": "29 hanya habis dibagi 1 dan 29. 27 = 3 × 9, 33 = 3 × 11, 39 = 3 × 13."},
+{"t": "KPK & FPB", "q": "Bilangan berikut yang BUKAN bilangan prima adalah ....", "o": ["21", "23", "31", "37"], "p": "21 = 3 × 7, jadi bukan bilangan prima."},
+{"t": "KPK & FPB", "q": "Faktorisasi prima dari 48 adalah ....", "o": ["2⁴ × 3", "2⁵ × 3", "2⁴ × 3 × 7", "16 × 3"], "p": "48 dipecah menjadi faktor-faktor prima: 2⁴ × 3."},
+{"t": "KPK & FPB", "q": "Faktorisasi prima dari 72 adalah ....", "o": ["2³ × 3²", "2⁴ × 3²", "2³ × 3² × 7", "8 × 9"], "p": "72 dipecah menjadi faktor-faktor prima: 2³ × 3²."},
+{"t": "KPK & FPB", "q": "Faktorisasi prima dari 90 adalah ....", "o": ["2 × 3² × 5", "2² × 3² × 5", "2 × 3² × 5 × 7", "2 × 9 × 5"], "p": "90 dipecah menjadi faktor-faktor prima: 2 × 3² × 5."},
+{"t": "KPK & FPB", "q": "Faktorisasi prima dari 84 adalah ....", "o": ["2² × 3 × 7", "2³ × 3 × 7", "2² × 3 × 7 × 11", "4 × 3 × 7"], "p": "84 dipecah menjadi faktor-faktor prima: 2² × 3 × 7."},
+{"t": "KPK & FPB", "q": "Faktorisasi prima dari 100 adalah ....", "o": ["2² × 5²", "2³ × 5²", "2² × 5² × 7", "4 × 25"], "p": "100 dipecah menjadi faktor-faktor prima: 2² × 5²."},
+{"t": "KPK & FPB", "q": "KPK dari 6 dan 9 adalah ....", "o": ["18", "3", "54", "24"], "p": "6 = 2 × 3, 9 = 3². KPK = 18."},
+{"t": "KPK & FPB", "q": "KPK dari 10 dan 15 adalah ....", "o": ["30", "5", "150", "40"], "p": "10 = 2 × 5, 15 = 3 × 5. KPK = 30."},
+{"t": "KPK & FPB", "q": "KPK dari 8 dan 20 adalah ....", "o": ["40", "4", "160", "48"], "p": "8 = 2³, 20 = 2² × 5. KPK = 40."},
+{"t": "KPK & FPB", "q": "KPK dari 14 dan 21 adalah ....", "o": ["42", "7", "294", "56"], "p": "14 = 2 × 7, 21 = 3 × 7. KPK = 42."},
+{"t": "KPK & FPB", "q": "KPK dari 9 dan 12 adalah ....", "o": ["36", "3", "108", "45"], "p": "9 = 3², 12 = 2² × 3. KPK = 36."},
+{"t": "KPK & FPB", "q": "KPK dari 16 dan 24 adalah ....", "o": ["48", "8", "384", "64"], "p": "16 = 2⁴, 24 = 2³ × 3. KPK = 48."},
+{"t": "KPK & FPB", "q": "FPB dari 24 dan 36 adalah ....", "o": ["12", "6", "72", "24"], "p": "24 = 2³ × 3, 36 = 2² × 3². FPB = 12."},
+{"t": "KPK & FPB", "q": "FPB dari 28 dan 42 adalah ....", "o": ["14", "7", "84", "28"], "p": "28 = 2² × 7, 42 = 2 × 3 × 7. FPB = 14."},
+{"t": "KPK & FPB", "q": "FPB dari 32 dan 48 adalah ....", "o": ["16", "8", "96", "32"], "p": "32 = 2⁵, 48 = 2⁴ × 3. FPB = 16."},
+{"t": "KPK & FPB", "q": "FPB dari 45 dan 60 adalah ....", "o": ["15", "5", "180", "30"], "p": "45 = 3² × 5, 60 = 2² × 3 × 5. FPB = 15."},
+{"t": "KPK & FPB", "q": "FPB dari 54 dan 72 adalah ....", "o": ["18", "9", "216", "36"], "p": "54 = 2 × 3³, 72 = 2³ × 3². FPB = 18."},
+{"t": "KPK & FPB", "q": "FPB dari 40 dan 56 adalah ....", "o": ["8", "4", "280", "16"], "p": "40 = 2³ × 5, 56 = 2³ × 7. FPB = 8."},
+{"t": "KPK & FPB", "q": "KPK dari 4, 6, dan 10 adalah ....", "o": ["60", "24", "120", "30"], "p": "4 = 2², 6 = 2 × 3, 10 = 2 × 5. KPK = 2² × 3 × 5 = 60."},
+{"t": "KPK & FPB", "q": "Lampu merah menyala setiap 6 detik dan lampu hijau setiap 8 detik. Keduanya menyala bersamaan, lalu akan menyala bersamaan lagi setelah ... detik.", "o": ["24", "14", "48", "2"], "p": "KPK dari 6 dan 8 = 24 detik."},
+{"t": "KPK & FPB", "q": "Rina les menari setiap 3 hari sekali, Sinta setiap 5 hari sekali. Hari ini mereka les bersama. Mereka akan les bersama lagi ... hari lagi.", "o": ["15", "8", "30", "5"], "p": "KPK dari 3 dan 5 = 15 hari."},
+{"t": "KPK & FPB", "q": "Bus A berangkat dari terminal setiap 15 menit, bus B setiap 20 menit. Pukul 07.00 keduanya berangkat bersama. Keduanya berangkat bersama lagi pukul ....", "o": ["08.00", "07.35", "07.30", "07.20"], "p": "KPK dari 15 dan 20 = 60 menit. 07.00 + 60 menit = 08.00."},
+{"t": "KPK & FPB", "q": "Ayah ronda setiap 4 hari, Paman setiap 6 hari. Pada 2 Mei mereka ronda bersama. Mereka ronda bersama lagi pada tanggal ....", "o": ["14 Mei", "12 Mei", "10 Mei", "26 Mei"], "p": "KPK dari 4 dan 6 = 12. 2 Mei + 12 hari = 14 Mei."},
+{"t": "KPK & FPB", "q": "Bu Guru memiliki 30 pensil dan 45 buku tulis yang akan dibagikan sama banyak kepada beberapa kelompok. Banyak kelompok paling banyak adalah ....", "o": ["15", "5", "3", "90"], "p": "FPB dari 30 dan 45 = 15 kelompok."},
+{"t": "KPK & FPB", "q": "Ada 36 kue cokelat dan 48 kue keju akan dimasukkan ke dalam kotak dengan isi sama banyak. Paling banyak kotak yang diperlukan adalah ....", "o": ["12", "6", "24", "144"], "p": "FPB dari 36 dan 48 = 12 kotak."},
+{"t": "KPK & FPB", "q": "Sebanyak 24 kelereng merah dan 40 kelereng biru dibagi sama banyak ke beberapa kantong. Jika dibuat kantong sebanyak-banyaknya, setiap kantong berisi ... kelereng merah.", "o": ["3", "8", "5", "4"], "p": "FPB dari 24 dan 40 = 8 kantong. Setiap kantong berisi 24 : 8 = 3 kelereng merah."},
+{"t": "KPK & FPB", "q": "Pak RT membagikan 60 kg beras dan 36 kg gula sama banyak kepada warga. Paling banyak warga yang menerima adalah ... orang.", "o": ["12", "6", "18", "180"], "p": "FPB dari 60 dan 36 = 12 orang."},
+{"t": "Pecahan", "q": "Sebuah pizza dipotong menjadi 6 bagian sama besar. Dodi mengambil 1 bagian. Pecahan bagian yang diambil Dodi adalah ....", "o": ["1/6", "6/1", "5/6", "1/5"], "p": "1 bagian dari 6 bagian sama besar = 1/6."},
+{"t": "Pecahan", "q": "Sebatang cokelat dipotong menjadi 10 bagian sama besar. Lala mengambil 3 bagian. Pecahan bagian yang diambil Lala adalah ....", "o": ["3/10", "10/3", "7/10", "3/7"], "p": "3 bagian dari 10 bagian sama besar = 3/10."},
+{"t": "Pecahan", "q": "Sebuah martabak dipotong menjadi 12 bagian sama besar. Ayah mengambil 5 bagian. Pecahan bagian yang diambil Ayah adalah ....", "o": ["5/12", "12/5", "7/12", "5/7"], "p": "5 bagian dari 12 bagian sama besar = 5/12."},
+{"t": "Pecahan", "q": "Sebuah semangka dipotong menjadi 5 bagian sama besar. Nina mengambil 2 bagian. Pecahan bagian yang diambil Nina adalah ....", "o": ["2/5", "5/2", "3/5", "2/3"], "p": "2 bagian dari 5 bagian sama besar = 2/5."},
+{"t": "Pecahan", "q": "Tanda yang tepat untuk 3/4 ... 2/3 adalah ....", "o": [">", "<", "=", "≤"], "p": "Samakan penyebutnya lalu bandingkan pembilangnya: 3/4 > 2/3."},
+{"t": "Pecahan", "q": "Tanda yang tepat untuk 2/5 ... 1/2 adalah ....", "o": ["<", ">", "=", "≥"], "p": "Samakan penyebutnya lalu bandingkan pembilangnya: 2/5 < 1/2."},
+{"t": "Pecahan", "q": "Tanda yang tepat untuk 5/6 ... 7/9 adalah ....", "o": [">", "<", "=", "≤"], "p": "Samakan penyebutnya lalu bandingkan pembilangnya: 5/6 > 7/9."},
+{"t": "Pecahan", "q": "Tanda yang tepat untuk 3/8 ... 2/5 adalah ....", "o": ["<", ">", "=", "≥"], "p": "Samakan penyebutnya lalu bandingkan pembilangnya: 3/8 < 2/5."},
+{"t": "Pecahan", "q": "Urutan pecahan 1/3, 1/2, 1/4 dari yang terkecil adalah ....", "o": ["1/4, 1/3, 1/2", "1/2, 1/3, 1/4", "1/3, 1/4, 1/2", "1/4, 1/2, 1/3"], "p": "Samakan penyebutnya, lalu urutkan: 1/4, 1/3, 1/2."},
+{"t": "Pecahan", "q": "Urutan pecahan 2/3, 3/4, 1/2 dari yang terbesar adalah ....", "o": ["3/4, 2/3, 1/2", "1/2, 2/3, 3/4", "2/3, 3/4, 1/2", "3/4, 1/2, 2/3"], "p": "Samakan penyebutnya, lalu urutkan: 3/4, 2/3, 1/2."},
+{"t": "Pecahan", "q": "Urutan pecahan 3/5, 1/2, 7/10 dari yang terkecil adalah ....", "o": ["1/2, 3/5, 7/10", "7/10, 3/5, 1/2", "3/5, 1/2, 7/10", "1/2, 7/10, 3/5"], "p": "Samakan penyebutnya, lalu urutkan: 1/2, 3/5, 7/10."},
+{"t": "Pecahan", "q": "1/2 + 1/3 = ....", "o": ["5/6", "2/5", "1", "1/6"], "p": "Samakan penyebut: 1/2 + 1/3 = 5/6."},
+{"t": "Pecahan", "q": "2/5 + 1/4 = ....", "o": ["13/20", "3/9", "7/10", "3/20"], "p": "Samakan penyebut: 2/5 + 1/4 = 13/20."},
+{"t": "Pecahan", "q": "1/6 + 2/3 = ....", "o": ["5/6", "3/9", "1", "1/2"], "p": "Samakan penyebut: 1/6 + 2/3 = 5/6."},
+{"t": "Pecahan", "q": "3/8 + 1/4 = ....", "o": ["5/8", "4/12", "3/4", "1/8"], "p": "Samakan penyebut: 3/8 + 1/4 = 5/8."},
+{"t": "Pecahan", "q": "2/7 + 1/2 = ....", "o": ["11/14", "3/9", "6/7", "3/14"], "p": "Samakan penyebut: 2/7 + 1/2 = 11/14."},
+{"t": "Pecahan", "q": "3/4 − 1/2 = ....", "o": ["1/4", "2/2", "5/4", "3/8"], "p": "Samakan penyebut: 3/4 − 1/2 = 1/4."},
+{"t": "Pecahan", "q": "5/6 − 1/3 = ....", "o": ["1/2", "4/3", "7/6", "3/4"], "p": "Samakan penyebut: 5/6 − 1/3 = 1/2."},
+{"t": "Pecahan", "q": "Kakak memiliki 7/8 meter pita. Sebanyak 1/4 meter dipakai untuk hiasan. Sisa pita Kakak adalah ... meter.", "o": ["5/8", "6/4", "9/8", "11/16"], "p": "Samakan penyebut: 7/8 − 1/4 = 5/8."},
+{"t": "Pecahan", "q": "Ember berisi 4/5 liter air. Sebanyak 1/2 liter dipakai menyiram bunga. Sisa air di ember adalah ... liter.", "o": ["3/10", "3/3", "13/10", "7/20"], "p": "Samakan penyebut: 4/5 − 1/2 = 3/10."}
 ],
 ipas: [
 // ===== Bab 1 Letak Negara Indonesia (22 soal) =====
@@ -404,7 +529,122 @@ ipas: [
 {t:"Potensi Daerah",q:"Pelaku ekonomi yang menghasilkan barang atau jasa disebut ....",o:["produsen","konsumen","distributor","pembeli"],p:"Produsen adalah pihak yang menghasilkan barang atau jasa."},
 {t:"Potensi Daerah",q:"Orang yang menggunakan atau memakai barang dan jasa disebut ....",o:["konsumen","produsen","distributor","agen"],p:"Konsumen adalah pemakai barang dan jasa."},
 {t:"Potensi Daerah",q:"Sikap konsumen yang bijak adalah ....",o:["membeli barang sesuai kebutuhan, bukan sekadar keinginan","membeli barang karena ikut-ikutan teman","membeli barang yang paling mahal","menghabiskan uang saku setiap hari"],p:"Konsumen bijak mendahulukan kebutuhan dan berhemat."},
-{t:"Potensi Daerah",q:"Kebiasaan menyisihkan sebagian uang saku untuk keperluan di masa depan disebut ....",o:["menabung","berutang","boros","berbelanja"],p:"Menabung adalah menyisihkan uang untuk masa depan."}
+{t:"Potensi Daerah",q:"Kebiasaan menyisihkan sebagian uang saku untuk keperluan di masa depan disebut ....",o:["menabung","berutang","boros","berbelanja"],p:"Menabung adalah menyisihkan uang untuk masa depan."},
+// ===== Tambahan bank soal (114) =====
+{"t": "Letak Indonesia", "q": "Selat yang memisahkan Pulau Jawa dan Pulau Bali adalah ....", "o": ["Selat Bali", "Selat Sunda", "Selat Lombok", "Selat Makassar"], "p": "Selat Bali terletak di antara Pulau Jawa (Banyuwangi) dan Pulau Bali."},
+{"t": "Letak Indonesia", "q": "Selat yang memisahkan Pulau Bali dan Pulau Lombok adalah ....", "o": ["Selat Lombok", "Selat Bali", "Selat Alas", "Selat Sunda"], "p": "Selat Lombok berada di antara Pulau Bali dan Pulau Lombok."},
+{"t": "Letak Indonesia", "q": "Selat yang terletak di antara Pulau Sumatra dan Semenanjung Malaysia adalah ....", "o": ["Selat Malaka", "Selat Sunda", "Selat Karimata", "Selat Makassar"], "p": "Selat Malaka memisahkan Pulau Sumatra dan Semenanjung Malaysia."},
+{"t": "Letak Indonesia", "q": "Selat Karimata terletak di antara Pulau Belitung dan Pulau ....", "o": ["Kalimantan", "Jawa", "Sulawesi", "Bali"], "p": "Selat Karimata menghubungkan Laut Cina Selatan dengan Laut Jawa, di antara Belitung dan Kalimantan."},
+{"t": "Letak Indonesia", "q": "Laut yang terletak di sebelah utara Pulau Jawa adalah ....", "o": ["Laut Jawa", "Laut Banda", "Laut Arafura", "Laut Sulawesi"], "p": "Pantai utara Pulau Jawa berbatasan dengan Laut Jawa."},
+{"t": "Letak Indonesia", "q": "Samudra yang terletak di sebelah selatan Pulau Jawa adalah ....", "o": ["Samudra Hindia", "Samudra Pasifik", "Samudra Atlantik", "Samudra Arktik"], "p": "Pantai selatan Pulau Jawa menghadap Samudra Hindia."},
+{"t": "Letak Indonesia", "q": "Samudra yang terletak di sebelah utara Pulau Papua adalah ....", "o": ["Samudra Pasifik", "Samudra Hindia", "Samudra Atlantik", "Samudra Arktik"], "p": "Bagian utara Pulau Papua berbatasan dengan Samudra Pasifik."},
+{"t": "Letak Indonesia", "q": "Laut yang terletak di sebelah selatan Pulau Papua adalah ....", "o": ["Laut Arafura", "Laut Jawa", "Laut Natuna", "Laut Sulawesi"], "p": "Laut Arafura berada di selatan Pulau Papua, dekat Merauke."},
+{"t": "Letak Indonesia", "q": "Benua yang terletak di sebelah utara Indonesia adalah ....", "o": ["Asia", "Australia", "Afrika", "Eropa"], "p": "Indonesia diapit Benua Asia di utara dan Benua Australia di selatan."},
+{"t": "Letak Indonesia", "q": "Benua yang terletak di sebelah selatan Indonesia adalah ....", "o": ["Australia", "Asia", "Amerika", "Eropa"], "p": "Benua Australia berada di sebelah selatan Indonesia."},
+{"t": "Letak Indonesia", "q": "Gunung tertinggi di Indonesia adalah Puncak Jaya yang terletak di Pulau ....", "o": ["Papua", "Jawa", "Sumatra", "Sulawesi"], "p": "Puncak Jaya (Carstensz) di Pegunungan Jayawijaya, Papua, adalah puncak tertinggi di Indonesia."},
+{"t": "Letak Indonesia", "q": "Sungai terpanjang di Indonesia adalah ....", "o": ["Sungai Kapuas", "Sungai Musi", "Sungai Bengawan Solo", "Sungai Ciliwung"], "p": "Sungai Kapuas di Kalimantan Barat adalah sungai terpanjang di Indonesia."},
+{"t": "Letak Indonesia", "q": "Danau terbesar di Indonesia adalah Danau Toba yang terletak di Provinsi ....", "o": ["Sumatra Utara", "Jawa Barat", "Sulawesi Selatan", "Papua"], "p": "Danau Toba berada di Provinsi Sumatra Utara."},
+{"t": "Letak Indonesia", "q": "Negara yang berbatasan darat dengan Indonesia di Pulau Kalimantan adalah ....", "o": ["Malaysia", "Papua Nugini", "Timor Leste", "Filipina"], "p": "Di Pulau Kalimantan, Indonesia berbatasan darat dengan Malaysia."},
+{"t": "Letak Indonesia", "q": "Negara yang berbatasan darat dengan Indonesia di Pulau Papua adalah ....", "o": ["Papua Nugini", "Malaysia", "Australia", "Timor Leste"], "p": "Pulau Papua bagian timur adalah wilayah negara Papua Nugini."},
+{"t": "Letak Indonesia", "q": "Timor Leste berbatasan darat dengan Provinsi ....", "o": ["Nusa Tenggara Timur", "Nusa Tenggara Barat", "Bali", "Maluku"], "p": "Pulau Timor bagian barat termasuk Provinsi Nusa Tenggara Timur."},
+{"t": "Letak Indonesia", "q": "Kota di ujung paling barat Indonesia adalah ....", "o": ["Sabang", "Merauke", "Jayapura", "Medan"], "p": "Sabang di Pulau Weh, Aceh, dikenal sebagai titik paling barat Indonesia."},
+{"t": "Letak Indonesia", "q": "Kota di ujung paling timur Indonesia yang dikenal dengan semboyan \"dari Sabang sampai Merauke\" adalah ....", "o": ["Merauke", "Sorong", "Ambon", "Manokwari"], "p": "Merauke berada di ujung timur Indonesia, berbatasan dengan Papua Nugini."},
+{"t": "Letak Indonesia", "q": "Karena wilayahnya membentang dari 95° BT sampai 141° BT, Indonesia dibagi menjadi ... zona waktu.", "o": ["tiga", "dua", "empat", "satu"], "p": "Indonesia memiliki tiga zona waktu: WIB, WITA, dan WIT."},
+{"t": "Letak Indonesia", "q": "Kabupaten Merauke menggunakan zona waktu ....", "o": ["WIT", "WIB", "WITA", "GMT"], "p": "Wilayah Papua dan Maluku memakai Waktu Indonesia Timur (WIT)."},
+{"t": "Letak Indonesia", "q": "Pulau Bali menggunakan zona waktu ....", "o": ["WITA", "WIB", "WIT", "GMT"], "p": "Bali, Nusa Tenggara, Kalimantan Selatan dan Timur, serta Sulawesi memakai WITA."},
+{"t": "Letak Indonesia", "q": "Selisih waktu antara WIB dan WIT adalah ....", "o": ["2 jam", "1 jam", "3 jam", "30 menit"], "p": "WIT lebih cepat 2 jam dari WIB."},
+{"t": "Letak Indonesia", "q": "Jika di Jakarta pukul 07.00 WIB, maka di Merauke pukul ....", "o": ["09.00 WIT", "08.00 WIT", "06.00 WIT", "10.00 WIT"], "p": "WIT lebih cepat 2 jam dari WIB. 07.00 + 2 jam = 09.00 WIT."},
+{"t": "Letak Indonesia", "q": "Jika di Makassar pukul 10.00 WITA, maka di Jakarta pukul ....", "o": ["09.00 WIB", "11.00 WIB", "10.00 WIB", "08.00 WIB"], "p": "WIB lebih lambat 1 jam dari WITA. 10.00 − 1 jam = 09.00 WIB."},
+{"t": "Letak Indonesia", "q": "Ciri-ciri iklim tropis adalah ....", "o": ["suhu panas sepanjang tahun dan curah hujan tinggi", "bersalju setiap tahun", "memiliki empat musim", "sangat kering sepanjang tahun"], "p": "Iklim tropis bersuhu panas dan banyak hujan."},
+{"t": "Letak Indonesia", "q": "Musim hujan di Indonesia umumnya terjadi pada bulan ....", "o": ["Oktober sampai Maret", "April sampai September", "Januari sampai Juni", "Juli sampai Desember"], "p": "Musim hujan umumnya Oktober–Maret, dipengaruhi angin muson barat."},
+{"t": "Letak Indonesia", "q": "Musim kemarau di Indonesia umumnya terjadi pada bulan ....", "o": ["April sampai September", "Oktober sampai Maret", "November sampai Februari", "Desember sampai Mei"], "p": "Musim kemarau umumnya April–September, dipengaruhi angin muson timur."},
+{"t": "Letak Indonesia", "q": "Angin yang membawa banyak uap air sehingga menyebabkan musim hujan di Indonesia adalah angin ....", "o": ["muson barat", "muson timur", "darat", "gunung"], "p": "Angin muson barat melewati samudra luas sehingga membawa banyak uap air."},
+{"t": "Letak Indonesia", "q": "Angin muson timur yang bertiup dari Benua Australia menyebabkan Indonesia mengalami musim ....", "o": ["kemarau", "hujan", "dingin", "semi"], "p": "Angin muson timur bersifat kering karena melewati gurun Australia."},
+{"t": "Letak Indonesia", "q": "Hutan hujan tropis Indonesia disebut \"paru-paru dunia\" karena ....", "o": ["menghasilkan banyak oksigen", "banyak dihuni manusia", "tidak pernah hujan", "berada di dekat kutub"], "p": "Pepohonan di hutan menghasilkan oksigen dan menyerap karbon dioksida."},
+{"t": "Letak Indonesia", "q": "Hewan langka yang hanya hidup di Pulau Komodo dan sekitarnya di Nusa Tenggara Timur adalah ....", "o": ["komodo", "harimau sumatra", "orang utan", "anoa"], "p": "Komodo adalah kadal terbesar di dunia dan hidup di Pulau Komodo, Rinca, dan sekitarnya."},
+{"t": "Letak Indonesia", "q": "Burung indah yang menjadi hewan khas Papua adalah ....", "o": ["cenderawasih", "jalak bali", "maleo", "merak"], "p": "Burung cenderawasih dikenal sebagai \"burung surga\" dari Papua."},
+{"t": "Letak Indonesia", "q": "Orang utan hidup secara alami di Pulau ....", "o": ["Sumatra dan Kalimantan", "Jawa dan Bali", "Sulawesi dan Maluku", "Papua dan Timor"], "p": "Orang utan hanya hidup alami di hutan Sumatra dan Kalimantan."},
+{"t": "Letak Indonesia", "q": "Rempah-rempah yang berasal dari Kepulauan Maluku dan dahulu dicari bangsa Eropa adalah ....", "o": ["cengkih dan pala", "kopi dan teh", "padi dan jagung", "karet dan sawit"], "p": "Maluku dijuluki \"Kepulauan Rempah\" karena cengkih dan palanya."},
+{"t": "Letak Indonesia", "q": "Hewan dan tumbuhan termasuk sumber daya alam ....", "o": ["hayati", "nonhayati", "buatan", "tambang"], "p": "Sumber daya alam hayati berasal dari makhluk hidup."},
+{"t": "Letak Indonesia", "q": "Contoh sumber daya alam nonhayati adalah ....", "o": ["tanah dan air", "kayu dan rotan", "ikan dan udang", "sapi dan kambing"], "p": "Sumber daya alam nonhayati berasal dari benda tak hidup, seperti tanah, air, dan bahan tambang."},
+{"t": "Letak Indonesia", "q": "Provinsi Riau terkenal sebagai daerah penghasil ....", "o": ["minyak bumi", "timah", "emas", "batu bara"], "p": "Riau memiliki ladang minyak bumi yang besar, misalnya di Duri dan Minas."},
+{"t": "Letak Indonesia", "q": "Tambang tembaga dan emas besar bernama Grasberg terletak di Pulau ....", "o": ["Papua", "Kalimantan", "Sumatra", "Jawa"], "p": "Grasberg berada di pegunungan Papua."},
+{"t": "Letak Indonesia", "q": "Pulau yang banyak menghasilkan batu bara di Indonesia adalah ....", "o": ["Kalimantan", "Bali", "Lombok", "Flores"], "p": "Kalimantan memiliki banyak tambang batu bara."},
+{"t": "Letak Indonesia", "q": "Akibat penebangan hutan secara liar adalah ....", "o": ["banjir dan tanah longsor", "udara makin segar", "hewan makin banyak", "tanah makin subur"], "p": "Tanpa pohon, tanah tidak kuat menahan air sehingga mudah banjir dan longsor."},
+{"t": "Letak Indonesia", "q": "Contoh perilaku menghemat sumber daya alam adalah ....", "o": ["mematikan lampu dan keran air setelah dipakai", "membiarkan televisi menyala saat tidur", "membuang sisa makanan", "membakar sampah plastik"], "p": "Menghemat listrik dan air berarti menjaga sumber daya alam."},
+{"t": "Letak Indonesia", "q": "Membuang sampah ke laut dapat merusak ....", "o": ["terumbu karang dan hewan laut", "gunung berapi", "awan di langit", "padang pasir"], "p": "Sampah di laut mencemari air dan merusak terumbu karang serta hewan laut."},
+{"t": "Letak Indonesia", "q": "Kerajaan maritim di Sumatra yang dahulu menguasai perdagangan di Selat Malaka adalah ....", "o": ["Sriwijaya", "Majapahit", "Mataram", "Kutai"], "p": "Kerajaan Sriwijaya berpusat di Palembang dan kuat di laut."},
+{"t": "Letak Indonesia", "q": "Kerajaan Majapahit berpusat di daerah ....", "o": ["Jawa Timur", "Sumatra Selatan", "Kalimantan Timur", "Sulawesi Selatan"], "p": "Majapahit berpusat di Trowulan, Jawa Timur."},
+{"t": "Letak Indonesia", "q": "Patih Majapahit yang terkenal dengan Sumpah Palapa untuk mempersatukan Nusantara adalah ....", "o": ["Gajah Mada", "Hayam Wuruk", "Raden Wijaya", "Ken Arok"], "p": "Gajah Mada bersumpah tidak akan beristirahat sebelum Nusantara bersatu."},
+{"t": "Letak Indonesia", "q": "Bangsa Eropa yang pertama kali datang ke Indonesia untuk mencari rempah-rempah adalah bangsa ....", "o": ["Portugis", "Belanda", "Inggris", "Prancis"], "p": "Portugis tiba di Malaka tahun 1511, lalu ke Maluku."},
+{"t": "Letak Indonesia", "q": "Rombongan kapal Belanda pertama yang tiba di Banten pada tahun 1596 dipimpin oleh ....", "o": ["Cornelis de Houtman", "Daendels", "Van den Bosch", "Raffles"], "p": "Cornelis de Houtman memimpin pelayaran Belanda pertama ke Indonesia."},
+{"t": "Letak Indonesia", "q": "Kongsi dagang VOC dibubarkan pada tahun ....", "o": ["1799", "1602", "1945", "1511"], "p": "VOC berdiri tahun 1602 dan dibubarkan pada akhir tahun 1799."},
+{"t": "Letak Indonesia", "q": "Sistem tanam paksa yang menyengsarakan rakyat diterapkan oleh ....", "o": ["Van den Bosch", "Cornelis de Houtman", "Gajah Mada", "Pattimura"], "p": "Gubernur Jenderal Van den Bosch menerapkan tanam paksa mulai tahun 1830."},
+{"t": "Letak Indonesia", "q": "Perang Padri yang dipimpin Tuanku Imam Bonjol terjadi di daerah ....", "o": ["Sumatra Barat", "Aceh", "Jawa Tengah", "Maluku"], "p": "Perang Padri berlangsung di Sumatra Barat."},
+{"t": "Letak Indonesia", "q": "Sultan Hasanuddin dari Kerajaan Gowa dijuluki ....", "o": ["Ayam Jantan dari Timur", "Singa dari Utara", "Harimau Sumatra", "Macan Asia"], "p": "Belanda menjuluki Sultan Hasanuddin \"Ayam Jantan dari Timur\" karena keberaniannya."},
+{"t": "Letak Indonesia", "q": "Pangeran Antasari memimpin perlawanan terhadap Belanda di daerah ....", "o": ["Kalimantan Selatan", "Jawa Barat", "Bali", "Sumatra Utara"], "p": "Pangeran Antasari memimpin Perang Banjar di Kalimantan Selatan."},
+{"t": "Letak Indonesia", "q": "Martha Christina Tiahahu adalah pahlawan wanita yang berasal dari ....", "o": ["Maluku", "Aceh", "Jawa Barat", "Bali"], "p": "Martha Christina Tiahahu ikut berjuang bersama Kapitan Pattimura di Maluku."},
+{"t": "Letak Indonesia", "q": "Kemerdekaan Indonesia diproklamasikan pada tanggal ....", "o": ["17 Agustus 1945", "28 Oktober 1928", "10 November 1945", "20 Mei 1908"], "p": "Proklamasi kemerdekaan dibacakan pada 17 Agustus 1945."},
+{"t": "Letak Indonesia", "q": "Teks proklamasi kemerdekaan Indonesia dibacakan oleh ....", "o": ["Ir. Soekarno", "Ki Hajar Dewantara", "Jenderal Sudirman", "R.A. Kartini"], "p": "Ir. Soekarno membacakan teks proklamasi didampingi Drs. Mohammad Hatta."},
+{"t": "Letak Indonesia", "q": "Pertempuran 10 November 1945 yang diperingati sebagai Hari Pahlawan terjadi di kota ....", "o": ["Surabaya", "Bandung", "Semarang", "Medan"], "p": "Pertempuran besar 10 November 1945 terjadi di Surabaya."},
+{"t": "Letak Indonesia", "q": "Sumpah Pemuda diikrarkan oleh para pemuda Indonesia pada tanggal ....", "o": ["28 Oktober 1928", "17 Agustus 1945", "2 Mei 1889", "1 Juni 1945"], "p": "Sumpah Pemuda diikrarkan pada 28 Oktober 1928."},
+{"t": "Letak Indonesia", "q": "Daratan yang menjorok ke laut disebut ....", "o": ["tanjung", "teluk", "selat", "danau"], "p": "Tanjung adalah daratan yang menjorok ke laut."},
+{"t": "Letak Indonesia", "q": "Daratan yang dikelilingi oleh air disebut ....", "o": ["pulau", "benua", "selat", "lembah"], "p": "Pulau adalah daratan yang dikelilingi air."},
+{"t": "Letak Indonesia", "q": "Perairan sempit yang terletak di antara dua pulau disebut ....", "o": ["selat", "teluk", "tanjung", "samudra"], "p": "Selat adalah laut sempit di antara dua pulau."},
+{"t": "Letak Indonesia", "q": "Indonesia memiliki banyak gunung berapi karena dilalui oleh ....", "o": ["Cincin Api Pasifik", "garis kutub utara", "Gurun Sahara", "Pegunungan Alpen"], "p": "Indonesia berada di jalur gunung berapi Cincin Api Pasifik."},
+{"t": "Letak Indonesia", "q": "Gempa bumi sering terjadi di Indonesia karena wilayahnya berada di ....", "o": ["pertemuan lempeng-lempeng bumi", "tengah gurun", "dekat kutub selatan", "atas awan"], "p": "Indonesia terletak di pertemuan lempeng Indo-Australia, Eurasia, dan Pasifik."},
+{"t": "Potensi Daerah", "q": "Rumah sebagai tempat tinggal termasuk kebutuhan ....", "o": ["primer", "sekunder", "tersier", "rohani"], "p": "Tempat tinggal (papan) adalah kebutuhan pokok atau primer."},
+{"t": "Potensi Daerah", "q": "Pakaian disebut juga kebutuhan ....", "o": ["sandang", "pangan", "papan", "hiburan"], "p": "Sandang = pakaian, pangan = makanan, papan = tempat tinggal."},
+{"t": "Potensi Daerah", "q": "Makanan dan minuman disebut juga kebutuhan ....", "o": ["pangan", "sandang", "papan", "tersier"], "p": "Pangan berarti makanan dan minuman."},
+{"t": "Potensi Daerah", "q": "Obat untuk orang yang sedang sakit termasuk kebutuhan ....", "o": ["sekarang", "masa depan", "tersier", "mewah"], "p": "Obat harus dipenuhi saat itu juga, jadi termasuk kebutuhan sekarang."},
+{"t": "Potensi Daerah", "q": "Menabung untuk biaya sekolah tahun depan termasuk memenuhi kebutuhan ....", "o": ["masa depan", "sekarang", "tersier", "hiburan"], "p": "Biaya sekolah tahun depan adalah kebutuhan masa depan."},
+{"t": "Potensi Daerah", "q": "Beribadah termasuk kebutuhan ....", "o": ["rohani", "jasmani", "sekunder", "tersier"], "p": "Kebutuhan rohani berhubungan dengan jiwa, seperti beribadah."},
+{"t": "Potensi Daerah", "q": "Makan dan berolahraga termasuk kebutuhan ....", "o": ["jasmani", "rohani", "tersier", "masa depan"], "p": "Kebutuhan jasmani berhubungan dengan tubuh."},
+{"t": "Potensi Daerah", "q": "Jalan raya dan jembatan termasuk kebutuhan ....", "o": ["bersama (kelompok)", "pribadi", "rohani", "tersier"], "p": "Jalan dan jembatan dipakai bersama oleh banyak orang."},
+{"t": "Potensi Daerah", "q": "Orang yang tinggal di daerah dingin membutuhkan jaket tebal. Kebutuhan ini dipengaruhi oleh faktor ....", "o": ["keadaan alam", "usia", "agama", "hobi"], "p": "Keadaan alam atau iklim memengaruhi kebutuhan seseorang."},
+{"t": "Potensi Daerah", "q": "Perbedaan kebutuhan dan keinginan adalah ....", "o": ["kebutuhan harus dipenuhi, keinginan boleh ditunda", "keinginan harus dipenuhi lebih dulu", "kebutuhan selalu mahal", "keduanya sama saja"], "p": "Kebutuhan penting untuk hidup, keinginan tidak harus dipenuhi."},
+{"t": "Potensi Daerah", "q": "Kelangkaan terjadi karena ....", "o": ["kebutuhan manusia tidak terbatas, sedangkan barang pemuasnya terbatas", "semua barang tersedia berlimpah", "manusia tidak punya kebutuhan", "uang terlalu banyak"], "p": "Kelangkaan muncul karena barang dan jasa jumlahnya terbatas."},
+{"t": "Potensi Daerah", "q": "Tujuan utama kegiatan ekonomi adalah ....", "o": ["memenuhi kebutuhan hidup", "menghabiskan uang", "bermain sepanjang hari", "merusak alam"], "p": "Manusia melakukan kegiatan ekonomi untuk memenuhi kebutuhan hidup."},
+{"t": "Potensi Daerah", "q": "Penjahit yang membuat baju melakukan kegiatan ....", "o": ["produksi", "distribusi", "konsumsi", "promosi"], "p": "Membuat baju berarti menghasilkan barang (produksi)."},
+{"t": "Potensi Daerah", "q": "Keluarga Budi makan malam bersama. Kegiatan ini termasuk ....", "o": ["konsumsi", "produksi", "distribusi", "investasi"], "p": "Makan berarti menghabiskan nilai guna barang (konsumsi)."},
+{"t": "Potensi Daerah", "q": "Petugas pos yang mengantarkan paket ke rumah-rumah melakukan kegiatan ....", "o": ["distribusi", "produksi", "konsumsi", "menabung"], "p": "Menyalurkan barang kepada penerima termasuk distribusi."},
+{"t": "Potensi Daerah", "q": "Truk yang mengangkut hasil panen dari desa ke pasar kota melakukan kegiatan ....", "o": ["distribusi", "produksi", "konsumsi", "ekspor"], "p": "Mengangkut barang dari produsen ke pasar termasuk distribusi."},
+{"t": "Potensi Daerah", "q": "Nelayan yang menangkap ikan di laut melakukan kegiatan ....", "o": ["produksi", "konsumsi", "distribusi", "promosi"], "p": "Menangkap ikan menghasilkan barang, jadi termasuk produksi."},
+{"t": "Potensi Daerah", "q": "Dokter yang memeriksa pasien menghasilkan ....", "o": ["jasa", "barang", "modal", "bahan baku"], "p": "Dokter memberikan layanan atau jasa kesehatan."},
+{"t": "Potensi Daerah", "q": "Sawah yang digarap petani termasuk faktor produksi ....", "o": ["alam", "modal", "tenaga kerja", "kewirausahaan"], "p": "Tanah dan sawah termasuk faktor produksi alam."},
+{"t": "Potensi Daerah", "q": "Uang dan mesin yang dipakai untuk membuat barang termasuk faktor produksi ....", "o": ["modal", "alam", "tenaga kerja", "bahan bakar"], "p": "Uang dan peralatan termasuk faktor produksi modal."},
+{"t": "Potensi Daerah", "q": "Para pekerja di pabrik termasuk faktor produksi ....", "o": ["tenaga kerja", "modal", "alam", "bahan baku"], "p": "Pekerja adalah faktor produksi tenaga kerja."},
+{"t": "Potensi Daerah", "q": "Kegiatan ekonomi yang banyak dilakukan penduduk di daerah pedesaan yang subur adalah ....", "o": ["bertani dan berkebun", "membuat kapal besar", "menambang di laut dalam", "bekerja di bandara"], "p": "Tanah yang subur cocok untuk pertanian dan perkebunan."},
+{"t": "Potensi Daerah", "q": "Kegiatan ekonomi yang banyak dilakukan penduduk di daerah perkotaan adalah ....", "o": ["perdagangan, jasa, dan industri", "menangkap ikan di laut", "berladang berpindah", "berburu di hutan"], "p": "Di kota banyak toko, kantor, dan pabrik."},
+{"t": "Potensi Daerah", "q": "Potensi daerah adalah ....", "o": ["kekayaan atau kemampuan daerah yang dapat dikembangkan", "masalah yang ada di suatu daerah", "jumlah penduduk yang miskin", "sampah yang menumpuk"], "p": "Potensi daerah adalah kekayaan alam, budaya, atau manusia yang bisa dikembangkan."},
+{"t": "Potensi Daerah", "q": "Contoh potensi wisata suatu daerah adalah ....", "o": ["pantai yang indah dan tarian adat", "sampah plastik", "jalan yang rusak", "sungai yang tercemar"], "p": "Keindahan alam dan budaya bisa menarik wisatawan."},
+{"t": "Potensi Daerah", "q": "Contoh pemanfaatan potensi daerah pantai adalah ....", "o": ["membuat tambak garam", "menanam teh", "membuka tambang batu bara", "menanam apel"], "p": "Air laut di pantai dapat diolah menjadi garam."},
+{"t": "Potensi Daerah", "q": "Pulau Madura terkenal sebagai daerah penghasil ....", "o": ["garam", "apel", "kopi", "teh"], "p": "Madura dijuluki \"Pulau Garam\"."},
+{"t": "Potensi Daerah", "q": "Kota Pekalongan terkenal dengan kerajinan ....", "o": ["batik", "tenun songket", "ukiran kayu", "gerabah"], "p": "Pekalongan dikenal sebagai Kota Batik."},
+{"t": "Potensi Daerah", "q": "Kain songket terkenal berasal dari daerah ....", "o": ["Palembang", "Pekalongan", "Jepara", "Kasongan"], "p": "Songket Palembang adalah kain tenun dengan benang emas."},
+{"t": "Potensi Daerah", "q": "Kabupaten Jepara di Jawa Tengah terkenal dengan kerajinan ....", "o": ["ukiran kayu", "batik", "perak", "garam"], "p": "Jepara dikenal sebagai kota ukir."},
+{"t": "Potensi Daerah", "q": "Kabupaten Merauke dikenal sebagai daerah penghasil ... terbesar di Papua.", "o": ["beras", "apel", "teh", "timah"], "p": "Merauke memiliki sawah yang luas dan menjadi lumbung beras di Papua."},
+{"t": "Potensi Daerah", "q": "Kopi Gayo yang terkenal di dunia berasal dari daerah ....", "o": ["Aceh", "Papua", "Bali", "Jawa Barat"], "p": "Kopi Gayo ditanam di dataran tinggi Gayo, Aceh."},
+{"t": "Potensi Daerah", "q": "Daerah Malang dan Batu di Jawa Timur terkenal sebagai penghasil buah ....", "o": ["apel", "durian", "salak", "nanas"], "p": "Malang dan Batu berhawa sejuk dan terkenal dengan kebun apelnya."},
+{"t": "Potensi Daerah", "q": "Contoh peran pemerintah dalam memajukan potensi daerah adalah ....", "o": ["membangun jalan dan memberi pelatihan usaha", "menutup semua pasar", "melarang warga berdagang", "menebang hutan lindung"], "p": "Pemerintah membantu dengan sarana dan pelatihan."},
+{"t": "Potensi Daerah", "q": "Cara siswa ikut memajukan potensi daerahnya adalah ....", "o": ["bangga dan membeli produk buatan daerah sendiri", "merusak tempat wisata", "membuang sampah sembarangan", "hanya membeli barang luar negeri"], "p": "Mencintai produk lokal membantu ekonomi daerah."},
+{"t": "Potensi Daerah", "q": "Koperasi di Indonesia berasaskan ....", "o": ["kekeluargaan", "persaingan", "keuntungan pribadi", "paksaan"], "p": "Koperasi berasaskan kekeluargaan."},
+{"t": "Potensi Daerah", "q": "Tujuan utama koperasi adalah ....", "o": ["menyejahterakan anggotanya", "mencari keuntungan untuk satu orang", "menjual barang mahal", "menyaingi pemerintah"], "p": "Koperasi didirikan untuk kesejahteraan anggota."},
+{"t": "Potensi Daerah", "q": "Anggota koperasi sekolah adalah ....", "o": ["siswa dan guru", "pedagang pasar", "petani", "nelayan"], "p": "Koperasi sekolah beranggotakan warga sekolah."},
+{"t": "Potensi Daerah", "q": "Ciri-ciri pasar tradisional adalah ....", "o": ["terjadi tawar-menawar harga", "harga sudah tertera pasti", "pembeli mengambil barang sendiri di troli", "selalu menggunakan pendingin ruangan"], "p": "Di pasar tradisional pembeli dan penjual biasa tawar-menawar."},
+{"t": "Potensi Daerah", "q": "Ciri-ciri pasar modern seperti supermarket adalah ....", "o": ["harga sudah pasti dan tidak ada tawar-menawar", "pembeli menawar harga", "barang dijual di tanah lapang", "hanya buka pagi hari"], "p": "Di pasar modern harga sudah tertera pada label."},
+{"t": "Potensi Daerah", "q": "Fungsi utama uang adalah sebagai ....", "o": ["alat tukar", "hiasan", "mainan", "alat tulis"], "p": "Uang dipakai sebagai alat tukar untuk membeli barang dan jasa."},
+{"t": "Potensi Daerah", "q": "Sebelum ada uang, orang menukar barang dengan barang. Cara ini disebut ....", "o": ["barter", "ekspor", "impor", "kredit"], "p": "Barter adalah tukar-menukar barang dengan barang."},
+{"t": "Potensi Daerah", "q": "Bank adalah tempat untuk ....", "o": ["menyimpan dan meminjam uang", "membeli sayur", "berobat", "bersekolah"], "p": "Bank menerima simpanan dan memberi pinjaman uang."},
+{"t": "Potensi Daerah", "q": "Contoh sikap hidup hemat adalah ....", "o": ["membawa bekal dari rumah", "jajan setiap jam istirahat", "membeli mainan setiap hari", "membuang makanan yang tersisa"], "p": "Membawa bekal menghemat uang saku."},
+{"t": "Potensi Daerah", "q": "Membeli barang karena tergiur iklan padahal tidak dibutuhkan termasuk sikap ....", "o": ["boros (konsumtif)", "hemat", "bijak", "sederhana"], "p": "Membeli tanpa kebutuhan adalah perilaku boros."},
+{"t": "Potensi Daerah", "q": "Sebelum membeli makanan dalam kemasan, konsumen yang bijak memeriksa ....", "o": ["tanggal kedaluwarsa", "warna toko", "nama penjualnya", "jumlah pembelinya"], "p": "Makanan yang sudah kedaluwarsa berbahaya bagi kesehatan."},
+{"t": "Potensi Daerah", "q": "Sikap produsen yang baik adalah ....", "o": ["menjaga mutu barang dan tidak merusak lingkungan", "mencampur bahan berbahaya", "membuang limbah ke sungai", "menipu pembeli"], "p": "Produsen yang baik jujur dan peduli lingkungan."},
+{"t": "Potensi Daerah", "q": "Contoh kegiatan berwirausaha yang dapat dilakukan siswa adalah ....", "o": ["menjual kerajinan hasil karya sendiri", "mencontek tugas teman", "bolos sekolah", "membeli barang mahal"], "p": "Menjual hasil karya sendiri melatih jiwa wirausaha."},
+{"t": "Potensi Daerah", "q": "Sikap yang harus dimiliki seorang wirausahawan adalah ....", "o": ["kreatif dan pantang menyerah", "malas dan mudah putus asa", "boros dan sombong", "takut mencoba"], "p": "Wirausahawan perlu kreatif dan tekun."},
+{"t": "Potensi Daerah", "q": "Mengolah sampah plastik menjadi kerajinan bermanfaat karena ....", "o": ["mengurangi sampah dan menambah penghasilan", "menambah sampah", "merusak lingkungan", "membuang waktu saja"], "p": "Daur ulang menjaga lingkungan sekaligus menghasilkan uang."},
+{"t": "Potensi Daerah", "q": "Kegiatan ekonomi yang merusak lingkungan adalah ....", "o": ["menangkap ikan dengan bom", "menanam pohon di lahan kosong", "membuat pupuk kompos", "menjual sayur organik"], "p": "Bom ikan merusak terumbu karang dan membunuh banyak hewan laut."},
+{"t": "Potensi Daerah", "q": "Kerajinan noken yang dibuat dari serat kayu atau anggrek berasal dari daerah ....", "o": ["Papua", "Bali", "Jawa Tengah", "Sumatra Barat"], "p": "Noken adalah tas rajut khas Papua yang diakui UNESCO."}
 ]
 };
 
@@ -472,7 +712,7 @@ function layarMenu(){
     const topik = [...new Set(d[m].map(x=>x.t))];
     h += `<button class="mapel" onclick="layarKode('${m}')"><span class="sampul" style="background:${MAPEL[m].warna}">${MAPEL[m].ikon}</span><span class="isi">
       <h3>${MAPEL[m].nama}</h3><p>${topik.map(esc).join(", ")}</p>
-      <span class="chip">${d[m].length} soal</span><span class="chip">🔑 Pakai kode dari guru</span></span></button>`;
+      <span class="chip">${jumlahSoal(m)} soal</span><span class="chip">🔑 Pakai kode dari guru</span></span></button>`;
   }
   app.innerHTML = h + `<button class="btn btn-papan" onclick="layarRanking()">🏆 Lihat ranking kelas</button><button class="btn btn-teks" onclick="layarNama()">Bukan ${esc(namaDepan(profil.nama))}? Ganti nama</button>`;
   atas();
@@ -510,7 +750,7 @@ async function cekKode(m){
 function layarAturan(m){
   const u = ulanganDipilih; if(!u) return layarKode(m);
   bawah(); papan(MAPEL[m].nama, profil.nama);
-  const n = DATA[profil.kelas][m].length;
+  const n = jumlahSoal(m);
   app.innerHTML = `<div class="buku aturan"><span class="topik">${esc(u.nama)}</span><h2>Aturan ulangan</h2>
   <p class="ket">Baca dulu sebelum mulai, ya.</p>
   <ol class="daftar-aturan">
@@ -527,7 +767,7 @@ function layarAturan(m){
 }
 function mulai(m){
   const bank = DATA[profil.kelas][m], u = ulanganDipilih;
-  S = {id:Date.now().toString(36)+Math.random().toString(36).slice(2,7), kode:u.kode, namaUlangan:u.nama, kelas:profil.kelas, nama:profil.nama, mapel:m, soal:acak(bank.map((_,i)=>i)).map(i=>({i, o:acak([0,1,2,3])})), jwb:Array(bank.length).fill(null), cur:0, mulai:Date.now(), selesai:null, keluar:0, detak:Date.now()};
+  S = {id:Date.now().toString(36)+Math.random().toString(36).slice(2,7), kode:u.kode, namaUlangan:u.nama, kelas:profil.kelas, nama:profil.nama, mapel:m, soal:pilihSoal(m, bank).map(i=>({i, o:acak([0,1,2,3])})), jwb:Array(jumlahSoal(m)).fill(null), cur:0, mulai:Date.now(), selesai:null, keluar:0, detak:Date.now()};
   const akhir = store.get("ulangan_terakhir",{}); akhir[m]={kode:u.kode, nama:u.nama}; store.set("ulangan_terakhir",akhir);
   simpan(); lapor("mulai"); layarSoal();
   try{ const el=document.documentElement; (el.requestFullscreen||el.webkitRequestFullscreen||(()=>{})).call(el); }catch(e){}
@@ -590,7 +830,7 @@ function tutupPeringatan(){ $("#peringatan").classList.remove("buka"); }
 function bankS(){ return DATA[S.kelas][S.mapel]; }
 function layarSoal(){
   startTimer();
-  const bank = bankS(), it = S.soal[S.cur], q = bank[it.i], n = bank.length;
+  const bank = bankS(), it = S.soal[S.cur], q = bank[it.i], n = S.soal.length;
   const terjawab = S.jwb.filter(j=>j!==null).length;
   papan(MAPEL[S.mapel].nama, S.nama);
   document.body.classList.add("lebar");
@@ -640,7 +880,7 @@ function stopTimer(){ clearInterval(tick); tick=null; $("#timer").style.display=
 function hitung(){
   const bank = bankS(); let benar=0;
   S.soal.forEach((it,n)=>{ const j=S.jwb[n]; if(j!==null && it.o[j]===0) benar++; });
-  return {benar, total:bank.length, nilai:Math.round(benar/bank.length*100)};
+  return {benar, total:S.soal.length, nilai:Math.round(benar/S.soal.length*100)};
 }
 function selesai(){
   tutupModal(); if(!S||S.selesai) return;

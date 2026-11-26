@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ulangan Online SD Negeri 7 Kumbe</title>
+<style>
+:root{--bg:#eef2f6;--card:#fff;--ink:#16202c;--muted:#5d6b7a;--line:#d9e0e8;--pri:#1f6f5c;--pri2:#e5f2ee;--warn:#b54708;--bad:#c0362c;--good:#1f7a3d;--gold:#c99a06}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+header{background:var(--card);border-bottom:2px solid var(--ink);padding:10px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:5}
+header .flag{width:22px;height:14px;background:linear-gradient(#d62828 50%,#fff 50%);border:1px solid #ccc}
+header b{flex:1}
+header .timer{font-variant-numeric:tabular-nums;font-weight:700;padding:3px 10px;border-radius:6px;background:var(--pri2);color:var(--pri);display:none}
+header .timer.low{background:#fdecea;color:var(--bad)}
+main{max-width:760px;margin:0 auto;padding:18px 14px 60px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:14px}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 4px}
+h1{font-size:22px;margin:0 0 6px}
+h2{font-size:18px;margin:0 0 6px}
+p.sub{color:var(--muted);margin:0 0 14px;font-size:14px}
+label{font-size:14px;font-weight:600;display:block;margin:10px 0 4px}
+input{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:8px;font-size:16px;background:#f7f9fb}
+button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--line);background:#fff;padding:10px 14px}
+.btn{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:600;width:100%;padding:12px;margin-top:14px}
+.btn.pri{background:var(--pri);border-color:var(--pri)}
+.btn.ghost{background:#fff;color:var(--ink)}
+.grid{display:grid;gap:10px}
+.g3{grid-template-columns:repeat(3,1fr)}
+.kelas{padding:18px 8px;text-align:center;font-weight:700;font-size:18px}
+.kelas small{display:block;font-weight:500;font-size:12px;color:var(--muted)}
+.kelas.on{border:2px solid var(--pri);background:var(--pri2);color:var(--pri)}
+.kelas:disabled{opacity:.5;cursor:not-allowed}
+.menu{text-align:left;display:flex;gap:14px;align-items:center;padding:16px;width:100%}
+.menu .tag{min-width:62px;height:62px;border-radius:10px;background:var(--pri);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800}
+.menu .tag.b{background:#2f4f8f}.menu .tag.r{background:var(--gold)}
+.menu div p{margin:2px 0 0;color:var(--muted);font-size:13px}
+.qhead{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:8px}
+.qtext{font-size:17px;margin:0 0 14px}
+.opt{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;margin-bottom:8px;padding:12px;font-size:16px}
+.opt .l{min-width:28px;height:28px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:700}
+.opt.sel{border-color:var(--pri);background:var(--pri2)}.opt.sel .l{background:var(--pri);color:#fff;border-color:var(--pri)}
+.opt.ok{border-color:var(--good);background:#e8f5ec}.opt.no{border-color:var(--bad);background:#fdecea}
+.nav{display:flex;gap:8px}.nav button{flex:1}
+.nums{display:grid;grid-template-columns:repeat(10,1fr);gap:5px}
+.nums button{padding:6px 0;font-size:13px}
+.nums .ans{background:var(--pri);color:#fff;border-color:var(--pri)}
+.nums .cur{outline:2px solid var(--ink);outline-offset:1px}
+.frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;font-size:.85em;line-height:1.1;margin:0 2px}
+.frac span:first-child{border-bottom:1.5px solid currentColor;padding:0 2px}
+.score{font-size:56px;font-weight:800;text-align:center;margin:6px 0;color:var(--pri)}
+.stats{display:flex;justify-content:center;gap:18px;color:var(--muted);font-size:14px;flex-wrap:wrap}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left}
+th{font-size:12px;color:var(--muted);text-transform:uppercase}
+td.n{text-align:right;font-variant-numeric:tabular-nums}
+tr.me{background:#fff7df}
+.medal{display:inline-flex;width:26px;height:26px;border-radius:50%;align-items:center;justify-content:center;font-weight:800;font-size:13px;background:#eef2f6}
+.m1{background:#f6d24a}.m2{background:#d6dbe1}.m3{background:#e3a76f}
+.note{font-size:13px;color:var(--muted)}
+.rv{border-top:1px solid var(--line);padding-top:12px;margin-top:12px}
+.rv .exp{font-size:14px;background:#f4f7fa;border-radius:8px;padding:8px 10px;color:#334}
+.modal{position:fixed;inset:0;background:rgba(10,20,30,.45);display:none;align-items:center;justify-content:center;padding:16px;z-index:9}
+.modal .card{max-width:420px;width:100%}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<header><span class="flag"></span><b id="judul">Ulangan Online</b><span class="timer" id="timer">60:00</span></header>
+<main id="app"></main>
+
+<div class="modal" id="modal"><div class="card">
+  <h2>Selesai mengerjakan?</h2>
+  <p class="sub" id="modalTxt"></p>
+  <div class="nav"><button class="btn ghost" onclick="tutupModal()">Lanjut mengerjakan</button><button class="btn pri" onclick="selesai()">Ya, selesai</button></div>
+</div></div>
+
+<script>
+/* ================== PENGATURAN ================== */
+const CONFIG = {
+  SEKOLAH: "SD Negeri 7 Kumbe",
+  // Tempel URL Web App Google Apps Script di sini agar ranking tersimpan bersama (lihat Code.gs).
+  // Jika dikosongkan, ranking hanya tersimpan di HP/komputer ini saja.
+  SCRIPT_URL: "",
+  DURASI_MENIT: 60,          // waktu mengerjakan per mapel
+  TAMPILKAN_PEMBAHASAN: true // setelah selesai, siswa bisa melihat kunci & pembahasan
+};
+const KELAS_AKTIF = ["5"];   // tambahkan "4", "6", dst. jika soalnya sudah ada
+const MAPEL = {mtk:{nama:"Matematika",kode:"MTK",cls:"b"}, ipas:{nama:"IPAS",kode:"IPAS",cls:""}};
+/* ================================================= */
+
+// Opsi pertama (indeks 0) selalu jawaban benar; urutan opsi diacak saat ujian.
+const BANK = {
+mtk: [
+// ===== Bab 1 Bilangan Cacah sampai 100.000 (20 soal) =====
+{t:"Bilangan Cacah",q:"Bilangan 45.308 dibaca ....",o:["empat puluh lima ribu tiga ratus delapan","empat puluh lima ribu tiga puluh delapan","empat puluh lima ribu tiga ratus delapan puluh","empat ribu lima ratus tiga ratus delapan"],p:"45.308 = 45 ribu + 308 → empat puluh lima ribu tiga ratus delapan."},
+{t:"Bilangan Cacah",q:"Lambang bilangan dari \"tujuh puluh dua ribu enam puluh lima\" adalah ....",o:["72.065","72.650","72.605","70.265"],p:"72 ribu = 72.000, enam puluh lima = 65 → 72.065."},
+{t:"Bilangan Cacah",q:"Angka 8 pada bilangan 38.214 menempati nilai tempat ....",o:["ribuan","puluh ribuan","ratusan","satuan"],p:"3 = puluh ribuan, 8 = ribuan, 2 = ratusan, 1 = puluhan, 4 = satuan."},
+{t:"Bilangan Cacah",q:"Nilai angka 6 pada bilangan 56.420 adalah ....",o:["6.000","600","60.000","60"],p:"Angka 6 berada di tempat ribuan, nilainya 6 × 1.000 = 6.000."},
+{t:"Bilangan Cacah",q:"Angka yang menempati nilai tempat puluh ribuan pada bilangan 94.731 adalah ....",o:["9","4","7","3"],p:"Angka paling kiri pada bilangan lima angka adalah puluh ribuan, yaitu 9."},
+{t:"Bilangan Cacah",q:"Bentuk panjang dari 63.507 adalah ....",o:["60.000 + 3.000 + 500 + 7","60.000 + 3.000 + 50 + 7","60.000 + 300 + 500 + 7","6.000 + 300 + 50 + 7"],p:"6 puluh ribuan, 3 ribuan, 5 ratusan, 0 puluhan, 7 satuan."},
+{t:"Bilangan Cacah",q:"80.000 + 4.000 + 900 + 20 + 5 = ....",o:["84.925","84.952","84.295","80.495"],p:"Gabungkan tiap nilai tempat: 8 | 4 | 9 | 2 | 5 → 84.925."},
+{t:"Bilangan Cacah",q:"Bilangan yang terdiri atas 7 puluh ribuan, 5 ribuan, 0 ratusan, 3 puluhan, dan 9 satuan adalah ....",o:["75.039","75.309","70.539","75.390"],p:"Susun angkanya: 7, 5, 0, 3, 9 → 75.039."},
+{t:"Bilangan Cacah",q:"Tanda yang tepat untuk 47.389 ... 47.398 adalah ....",o:["<",">","=","≥"],p:"Puluh ribuan, ribuan, dan ratusan sama. Puluhan: 8 < 9, jadi 47.389 < 47.398."},
+{t:"Bilangan Cacah",q:"Bilangan terbesar di antara bilangan berikut adalah ....",o:["65.432","65.423","65.342","64.532"],p:"Bandingkan dari angka paling kiri: 65.432 paling besar."},
+{t:"Bilangan Cacah",q:"Urutan bilangan 23.415; 23.154; 23.541; 23.145 dari yang terkecil adalah ....",o:["23.145; 23.154; 23.415; 23.541","23.154; 23.145; 23.415; 23.541","23.145; 23.154; 23.541; 23.415","23.541; 23.415; 23.154; 23.145"],p:"Bandingkan angka ratusan lalu puluhan: 23.145 < 23.154 < 23.415 < 23.541."},
+{t:"Bilangan Cacah",q:"Urutan bilangan 91.002; 90.120; 91.020; 90.210 dari yang terbesar adalah ....",o:["91.020; 91.002; 90.210; 90.120","91.002; 91.020; 90.210; 90.120","91.020; 91.002; 90.120; 90.210","90.120; 90.210; 91.002; 91.020"],p:"Yang diawali 91 lebih besar dari 90. 91.020 > 91.002 dan 90.210 > 90.120."},
+{t:"Bilangan Cacah",q:"Selisih nilai angka 4 dan nilai angka 3 pada bilangan 24.315 adalah ....",o:["3.700","1","3.000","37.000"],p:"Nilai angka 4 = 4.000, nilai angka 3 = 300. 4.000 − 300 = 3.700."},
+{t:"Bilangan Cacah",q:"25.436 + 18.275 = ....",o:["43.711","43.611","42.711","43.701"],p:"25.436 + 18.275 = 43.711."},
+{t:"Bilangan Cacah",q:"60.000 − 27.458 = ....",o:["32.542","33.542","32.552","42.542"],p:"60.000 − 27.458 = 32.542."},
+{t:"Bilangan Cacah",q:"1.250 × 24 = ....",o:["30.000","25.000","30.500","3.000"],p:"1.250 × 24 = 1.250 × 20 + 1.250 × 4 = 25.000 + 5.000 = 30.000."},
+{t:"Bilangan Cacah",q:"75.600 : 25 = ....",o:["3.024","3.240","3.004","302"],p:"25 × 3.024 = 75.600, jadi 75.600 : 25 = 3.024."},
+{t:"Bilangan Cacah",q:"Sebuah gudang berisi 48.750 kg beras. Sebanyak 19.380 kg dijual, lalu datang kiriman 12.500 kg. Beras di gudang sekarang ... kg.",o:["41.870","16.870","29.370","41.780"],p:"48.750 − 19.380 = 29.370; lalu 29.370 + 12.500 = 41.870 kg."},
+{t:"Bilangan Cacah",q:"Sebuah pabrik membuat 2.450 botol minuman setiap hari. Dalam 30 hari, pabrik itu membuat ... botol.",o:["73.500","7.350","73.050","72.500"],p:"2.450 × 30 = 73.500 botol."},
+{t:"Bilangan Cacah",q:"Sebanyak 36.000 buku dibagikan sama banyak kepada 48 sekolah. Setiap sekolah mendapat ... buku.",o:["750","705","7.500","75"],p:"36.000 : 48 = 750 buku."},
+// ===== Bab 2 KPK dan FPB (15 soal) =====
+{t:"KPK & FPB",q:"Kelipatan 6 yang terletak antara 20 dan 40 adalah ....",o:["24, 30, 36","26, 32, 38","22, 28, 34","24, 32, 36"],p:"Kelipatan 6: 6, 12, 18, 24, 30, 36, 42, ... yang di antara 20 dan 40: 24, 30, 36."},
+{t:"KPK & FPB",q:"Kelipatan persekutuan dari 4 dan 6 yang kurang dari 30 adalah ....",o:["12 dan 24","12, 18, dan 24","6, 12, dan 24","8, 12, dan 24"],p:"Kelipatan 4: 4, 8, 12, 16, 20, 24, 28. Kelipatan 6: 6, 12, 18, 24. Yang sama: 12 dan 24."},
+{t:"KPK & FPB",q:"Semua faktor dari 18 adalah ....",o:["1, 2, 3, 6, 9, 18","1, 2, 3, 4, 6, 9, 18","1, 3, 6, 9, 18","2, 3, 6, 9"],p:"18 = 1 × 18 = 2 × 9 = 3 × 6. Faktornya 1, 2, 3, 6, 9, 18."},
+{t:"KPK & FPB",q:"Faktor persekutuan dari 12 dan 16 adalah ....",o:["1, 2, 4","1, 2, 4, 8","1, 2, 3, 4","2, 4, 6"],p:"Faktor 12: 1, 2, 3, 4, 6, 12. Faktor 16: 1, 2, 4, 8, 16. Yang sama: 1, 2, 4."},
+{t:"KPK & FPB",q:"Kelompok bilangan berikut yang semuanya bilangan prima adalah ....",o:["2, 3, 5, 7, 11","1, 3, 5, 7, 9","2, 3, 5, 7, 9","3, 5, 7, 11, 15"],p:"Bilangan prima hanya punya 2 faktor: 1 dan dirinya sendiri. 1, 9, dan 15 bukan prima."},
+{t:"KPK & FPB",q:"Faktorisasi prima dari 36 adalah ....",o:["2² × 3²","2³ × 3","2 × 3³","4 × 9"],p:"36 = 2 × 2 × 3 × 3 = 2² × 3²."},
+{t:"KPK & FPB",q:"Faktorisasi prima dari 60 adalah ....",o:["2² × 3 × 5","2 × 3 × 5","2³ × 3 × 5","2² × 15"],p:"60 = 2 × 2 × 3 × 5 = 2² × 3 × 5."},
+{t:"KPK & FPB",q:"KPK dari 8 dan 12 adalah ....",o:["24","4","48","96"],p:"8 = 2³, 12 = 2² × 3. KPK = 2³ × 3 = 24."},
+{t:"KPK & FPB",q:"FPB dari 18 dan 24 adalah ....",o:["6","3","12","72"],p:"18 = 2 × 3², 24 = 2³ × 3. FPB = 2 × 3 = 6."},
+{t:"KPK & FPB",q:"KPK dari 12 dan 18 adalah ....",o:["36","6","72","216"],p:"12 = 2² × 3, 18 = 2 × 3². KPK = 2² × 3² = 36."},
+{t:"KPK & FPB",q:"FPB dari 30 dan 45 adalah ....",o:["15","5","9","90"],p:"30 = 2 × 3 × 5, 45 = 3² × 5. FPB = 3 × 5 = 15."},
+{t:"KPK & FPB",q:"KPK dan FPB dari 20 dan 30 berturut-turut adalah ....",o:["60 dan 10","10 dan 60","60 dan 5","120 dan 10"],p:"20 = 2² × 5, 30 = 2 × 3 × 5. KPK = 2² × 3 × 5 = 60; FPB = 2 × 5 = 10."},
+{t:"KPK & FPB",q:"Andi berenang setiap 4 hari sekali, sedangkan Budi setiap 6 hari sekali. Pada tanggal 1 Maret mereka berenang bersama. Mereka akan berenang bersama lagi pada tanggal ....",o:["13 Maret","10 Maret","12 Maret","25 Maret"],p:"KPK dari 4 dan 6 = 12. Jadi 12 hari setelah 1 Maret, yaitu 13 Maret."},
+{t:"KPK & FPB",q:"Ibu mempunyai 24 apel dan 36 jeruk. Buah itu dimasukkan ke dalam kantong dengan isi yang sama banyak. Banyak kantong paling banyak yang dapat dibuat adalah ....",o:["12","6","8","72"],p:"FPB dari 24 dan 36 = 12 kantong."},
+{t:"KPK & FPB",q:"Guru mempunyai 48 pensil, 36 buku, dan 60 penghapus yang akan dibagikan sama banyak kepada siswa. Paling banyak siswa yang dapat menerima adalah ....",o:["12","6","4","24"],p:"FPB dari 48, 36, dan 60 = 12 siswa."},
+// ===== Bab 3 Pecahan (5 soal) =====
+{t:"Pecahan",q:"Sebuah kue dipotong menjadi 8 bagian sama besar. Rina memakan 3 potong. Pecahan yang menunjukkan bagian kue yang dimakan Rina adalah ....",o:["3/8","3/5","5/8","8/3"],p:"3 bagian dari 8 bagian sama besar = 3/8."},
+{t:"Pecahan",q:"Tanda yang tepat untuk 2/3 ... 3/5 adalah ....",o:[">","<","=","≤"],p:"Samakan penyebut: 2/3 = 10/15 dan 3/5 = 9/15. Jadi 2/3 > 3/5."},
+{t:"Pecahan",q:"Urutan pecahan 1/2, 3/4, 2/5 dari yang terkecil adalah ....",o:["2/5, 1/2, 3/4","1/2, 2/5, 3/4","3/4, 1/2, 2/5","2/5, 3/4, 1/2"],p:"Penyebut 20: 1/2 = 10/20, 3/4 = 15/20, 2/5 = 8/20. Urutannya 2/5, 1/2, 3/4."},
+{t:"Pecahan",q:"1/4 + 2/3 = ....",o:["11/12","3/7","3/12","2/12"],p:"1/4 = 3/12 dan 2/3 = 8/12. 3/12 + 8/12 = 11/12."},
+{t:"Pecahan",q:"Ibu mempunyai 3/4 kg gula. Sebanyak 1/3 kg dipakai untuk membuat kue. Sisa gula Ibu adalah ... kg.",o:["5/12","2/1","1/2","4/7"],p:"3/4 = 9/12 dan 1/3 = 4/12. 9/12 − 4/12 = 5/12 kg."}
+],
+ipas: [
+// ===== Bab 1 Letak Negara Indonesia (22 soal) =====
+{t:"Letak Indonesia",q:"Indonesia disebut negara kepulauan karena ....",o:["wilayahnya terdiri atas banyak pulau yang dihubungkan oleh laut","wilayahnya hanya terdiri atas satu pulau besar","seluruh wilayahnya berupa daratan","letaknya di tengah benua"],p:"Indonesia terdiri atas ribuan pulau yang dipisahkan sekaligus dihubungkan oleh laut dan selat."},
+{t:"Letak Indonesia",q:"Jika dibandingkan dengan daratannya, wilayah laut Indonesia ....",o:["lebih luas","lebih sempit","sama luas","tidak ada"],p:"Sebagian besar wilayah Indonesia berupa perairan/laut."},
+{t:"Letak Indonesia",q:"Lima pulau besar di Indonesia adalah ....",o:["Sumatra, Jawa, Kalimantan, Sulawesi, Papua","Sumatra, Jawa, Bali, Lombok, Papua","Jawa, Madura, Bali, Sulawesi, Papua","Sumatra, Kalimantan, Bali, Flores, Timor"],p:"Pulau besar Indonesia: Sumatra, Jawa, Kalimantan, Sulawesi, dan Papua."},
+{t:"Letak Indonesia",q:"Selat yang memisahkan Pulau Jawa dan Pulau Sumatra adalah ....",o:["Selat Sunda","Selat Bali","Selat Makassar","Selat Lombok"],p:"Selat Sunda terletak di antara Pulau Sumatra dan Pulau Jawa."},
+{t:"Letak Indonesia",q:"Selat yang memisahkan Pulau Kalimantan dan Pulau Sulawesi adalah ....",o:["Selat Makassar","Selat Sunda","Selat Malaka","Selat Karimata"],p:"Selat Makassar berada di antara Kalimantan dan Sulawesi."},
+{t:"Letak Indonesia",q:"Indonesia dijuluki \"Zamrud di Khatulistiwa\" karena ....",o:["dilalui garis khatulistiwa dan alamnya hijau subur","memiliki banyak tambang batu zamrud","letaknya di kutub utara","berbatasan dengan banyak negara"],p:"Zamrud berwarna hijau, menggambarkan alam Indonesia yang hijau subur di sekitar garis khatulistiwa."},
+{t:"Letak Indonesia",q:"Letak astronomis Indonesia adalah ....",o:["6° LU – 11° LS dan 95° BT – 141° BT","6° LS – 11° LU dan 95° BT – 141° BT","6° LU – 11° LS dan 95° BB – 141° BB","11° LU – 6° LS dan 141° BT – 195° BT"],p:"Indonesia terletak antara 6° LU – 11° LS dan 95° BT – 141° BT."},
+{t:"Letak Indonesia",q:"Karena dilalui garis khatulistiwa, Indonesia memiliki iklim ....",o:["tropis","kutub","gurun","subtropis"],p:"Daerah di sekitar khatulistiwa beriklim tropis: panas dan banyak hujan."},
+{t:"Letak Indonesia",q:"Musim yang terjadi di Indonesia adalah ....",o:["musim kemarau dan musim hujan","musim semi dan musim gugur","musim dingin dan musim panas","empat musim"],p:"Sebagai negara tropis, Indonesia hanya mengalami musim kemarau dan musim hujan."},
+{t:"Letak Indonesia",q:"Kota di Indonesia yang dilalui garis khatulistiwa adalah ....",o:["Pontianak","Jakarta","Surabaya","Makassar"],p:"Di Pontianak, Kalimantan Barat, terdapat Tugu Khatulistiwa."},
+{t:"Letak Indonesia",q:"Contoh sumber daya alam yang dapat diperbarui adalah ....",o:["hutan","minyak bumi","batu bara","emas"],p:"Hutan dapat tumbuh kembali jika ditanami. Minyak bumi, batu bara, dan emas tidak dapat diperbarui."},
+{t:"Letak Indonesia",q:"Contoh sumber daya alam yang tidak dapat diperbarui adalah ....",o:["batu bara","air","tumbuhan","ikan"],p:"Batu bara terbentuk jutaan tahun dan bisa habis jika terus diambil."},
+{t:"Letak Indonesia",q:"Daerah di Indonesia yang terkenal sebagai penghasil timah adalah ....",o:["Bangka Belitung","Jawa Barat","Bali","Nusa Tenggara Timur"],p:"Kepulauan Bangka Belitung dikenal sebagai penghasil timah."},
+{t:"Letak Indonesia",q:"Cara yang tepat untuk menjaga kelestarian hutan adalah ....",o:["melakukan reboisasi (menanam kembali)","menebang pohon sebanyak-banyaknya","membakar hutan untuk membuka lahan","berburu satwa langka"],p:"Reboisasi menanam kembali hutan yang gundul agar tetap lestari."},
+{t:"Letak Indonesia",q:"Secara geografis, Indonesia terletak di antara ....",o:["Benua Asia dan Australia serta Samudra Hindia dan Pasifik","Benua Afrika dan Eropa serta Samudra Atlantik dan Hindia","Benua Amerika dan Asia serta Samudra Pasifik dan Arktik","Benua Australia dan Afrika serta Samudra Hindia dan Atlantik"],p:"Indonesia diapit dua benua (Asia dan Australia) dan dua samudra (Hindia dan Pasifik)."},
+{t:"Letak Indonesia",q:"Selat di Indonesia yang menjadi salah satu jalur pelayaran perdagangan tersibuk di dunia adalah ....",o:["Selat Malaka","Selat Bali","Selat Lombok","Selat Alas"],p:"Selat Malaka, antara Sumatra dan Semenanjung Malaya, dilalui banyak kapal dagang dunia."},
+{t:"Letak Indonesia",q:"Keuntungan letak Indonesia yang strategis bagi perdagangan adalah ....",o:["banyak dilalui kapal dagang sehingga perdagangan menjadi ramai","sering terjadi musim dingin","jauh dari negara lain","tidak memiliki pelabuhan"],p:"Letak di jalur perdagangan dunia membuat Indonesia ramai disinggahi kapal dagang."},
+{t:"Letak Indonesia",q:"Bangsa-bangsa Eropa datang ke Indonesia terutama untuk mencari ....",o:["rempah-rempah","batu bara","salju","gandum"],p:"Rempah-rempah seperti cengkih dan pala sangat mahal di Eropa."},
+{t:"Letak Indonesia",q:"Kongsi dagang Belanda yang memonopoli perdagangan rempah-rempah di Indonesia bernama ....",o:["VOC","KNIL","BPUPKI","PPKI"],p:"VOC (Vereenigde Oostindische Compagnie) adalah kongsi dagang Belanda."},
+{t:"Letak Indonesia",q:"Pahlawan dari Maluku yang memimpin perlawanan terhadap Belanda pada tahun 1817 adalah ....",o:["Kapitan Pattimura","Pangeran Diponegoro","Tuanku Imam Bonjol","Sultan Hasanuddin"],p:"Kapitan Pattimura memimpin perlawanan rakyat Maluku tahun 1817."},
+{t:"Letak Indonesia",q:"Pahlawan wanita dari Aceh yang berjuang melawan penjajah Belanda adalah ....",o:["Cut Nyak Dhien","R.A. Kartini","Dewi Sartika","Martha Christina Tiahahu"],p:"Cut Nyak Dhien adalah pejuang wanita dari Aceh."},
+{t:"Letak Indonesia",q:"Bagian laut yang menjorok ke daratan disebut ....",o:["teluk","tanjung","selat","pulau"],p:"Teluk = laut yang menjorok ke darat. Tanjung = daratan yang menjorok ke laut."},
+// ===== Bab 2 Memajukan Potensi Daerah (18 soal) =====
+{t:"Potensi Daerah",q:"Kebutuhan primer adalah kebutuhan ....",o:["pokok yang harus dipenuhi, seperti makanan, pakaian, dan tempat tinggal","mewah yang hanya dimiliki orang kaya","pelengkap setelah kebutuhan pokok terpenuhi","yang tidak penting"],p:"Kebutuhan primer = kebutuhan pokok: sandang, pangan, papan."},
+{t:"Potensi Daerah",q:"Televisi dan lemari es termasuk kebutuhan ....",o:["sekunder","primer","tersier","rohani"],p:"Televisi dan lemari es adalah pelengkap setelah kebutuhan pokok terpenuhi (sekunder)."},
+{t:"Potensi Daerah",q:"Contoh kebutuhan tersier adalah ....",o:["perhiasan mahal","beras","pakaian sekolah","rumah tempat tinggal"],p:"Kebutuhan tersier adalah kebutuhan barang mewah, seperti perhiasan mahal."},
+{t:"Potensi Daerah",q:"Skala prioritas adalah ....",o:["urutan kebutuhan dari yang paling penting","daftar barang yang paling mahal","daftar keinginan yang harus dibeli","jadwal belanja setiap hari"],p:"Skala prioritas mengurutkan kebutuhan dari yang paling penting dan mendesak."},
+{t:"Potensi Daerah",q:"Uang saku Dina terbatas. Ia membutuhkan buku tulis untuk sekolah dan juga ingin membeli mainan baru. Yang sebaiknya didahulukan Dina adalah ....",o:["membeli buku tulis","membeli mainan baru","membeli keduanya dengan berutang","tidak membeli apa pun"],p:"Buku tulis adalah kebutuhan sekolah, sedangkan mainan hanya keinginan."},
+{t:"Potensi Daerah",q:"Tiga kegiatan ekonomi utama adalah ....",o:["produksi, distribusi, dan konsumsi","menabung, belanja, dan bermain","menanam, memanen, dan menjual","membeli, meminjam, dan menyewa"],p:"Kegiatan ekonomi terdiri atas produksi, distribusi, dan konsumsi."},
+{t:"Potensi Daerah",q:"Kegiatan menghasilkan barang atau jasa atau menambah nilai guna suatu barang disebut ....",o:["produksi","distribusi","konsumsi","promosi"],p:"Produksi = kegiatan menghasilkan atau menambah nilai guna barang/jasa."},
+{t:"Potensi Daerah",q:"Kegiatan menyalurkan barang dari produsen kepada konsumen disebut ....",o:["distribusi","produksi","konsumsi","investasi"],p:"Distribusi = penyaluran barang dari produsen ke konsumen."},
+{t:"Potensi Daerah",q:"Kegiatan menggunakan atau menghabiskan nilai guna barang dan jasa disebut ....",o:["konsumsi","produksi","distribusi","ekspor"],p:"Konsumsi = memakai/menghabiskan nilai guna barang dan jasa."},
+{t:"Potensi Daerah",q:"Petani yang menanam padi di sawah melakukan kegiatan ....",o:["produksi","distribusi","konsumsi","promosi"],p:"Menanam padi menghasilkan barang (beras), jadi termasuk produksi."},
+{t:"Potensi Daerah",q:"Pak Amir mengantarkan sayuran dari pasar induk ke warung-warung. Kegiatan Pak Amir termasuk ....",o:["distribusi","produksi","konsumsi","menabung"],p:"Menyalurkan barang ke penjual/konsumen termasuk distribusi."},
+{t:"Potensi Daerah",q:"Mata pencaharian yang paling sesuai dengan potensi daerah pantai adalah ....",o:["nelayan","petani teh","penambang batu bara","petani sayur dataran tinggi"],p:"Daerah pantai memiliki potensi laut, sehingga banyak penduduk menjadi nelayan."},
+{t:"Potensi Daerah",q:"Daerah pegunungan yang berhawa sejuk cocok dimanfaatkan untuk ....",o:["perkebunan teh dan sayuran","tambak garam","budi daya rumput laut","pelabuhan kapal"],p:"Teh dan sayuran tumbuh baik di daerah sejuk pegunungan."},
+{t:"Potensi Daerah",q:"Contoh memajukan potensi daerah adalah ....",o:["menjual kain tenun khas daerah sebagai oleh-oleh wisatawan","membuang sampah ke sungai","menebang hutan secara liar","membeli semua barang dari luar daerah"],p:"Mengembangkan produk khas daerah dapat meningkatkan ekonomi masyarakat."},
+{t:"Potensi Daerah",q:"Pelaku ekonomi yang menghasilkan barang atau jasa disebut ....",o:["produsen","konsumen","distributor","pembeli"],p:"Produsen adalah pihak yang menghasilkan barang atau jasa."},
+{t:"Potensi Daerah",q:"Orang yang menggunakan atau memakai barang dan jasa disebut ....",o:["konsumen","produsen","distributor","agen"],p:"Konsumen adalah pemakai barang dan jasa."},
+{t:"Potensi Daerah",q:"Sikap konsumen yang bijak adalah ....",o:["membeli barang sesuai kebutuhan, bukan sekadar keinginan","membeli barang karena ikut-ikutan teman","membeli barang yang paling mahal","menghabiskan uang saku setiap hari"],p:"Konsumen bijak mendahulukan kebutuhan dan berhemat."},
+{t:"Potensi Daerah",q:"Kebiasaan menyisihkan sebagian uang saku untuk keperluan di masa depan disebut ....",o:["menabung","berutang","boros","berbelanja"],p:"Menabung adalah menyisihkan uang untuk masa depan."}
+]
+};
+
+const DATA = {"5": BANK};
+
+const $ = s => document.querySelector(s);
+const app = $("#app");
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt = s => esc(s).replace(/(\d+)\/(\d+)/g,'<span class="frac"><span>$1</span><span>$2</span></span>');
+const store = {
+  get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},
+  del(k){try{localStorage.removeItem(k)}catch(e){}}
+};
+const acak = a => {a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const kunciNama = n => n.trim().toLowerCase().replace(/\s+/g," ");
+
+let S = store.get("ulangan_sesi", null);   // sesi ujian berjalan
+let profil = store.get("ulangan_profil", {});
+let tick = null;
+
+function simpan(){ store.set("ulangan_sesi", S); }
+
+/* ---------- Layar: pilih kelas ---------- */
+function layarKelas(){
+  stopTimer(); $("#judul").textContent = "Ulangan Online " + CONFIG.SEKOLAH;
+  let h = `<div class="card"><p class="eyebrow">${esc(CONFIG.SEKOLAH)}</p><h1>Pilih kelas</h1><p class="sub">Saat ini ulangan tersedia untuk Kelas 5.</p><div class="grid g3">`;
+  for(let k=1;k<=6;k++){
+    const on = KELAS_AKTIF.includes(String(k));
+    h += `<button class="kelas ${on?"on":""}" ${on?`onclick="pilihKelas('${k}')"`:"disabled"}>Kelas ${k}<small>${on?"Tersedia":"Segera hadir"}</small></button>`;
+  }
+  app.innerHTML = h + `</div></div>`;
+}
+function pilihKelas(k){ profil.kelas = k; store.set("ulangan_profil", profil); layarNama(); }
+
+/* ---------- Layar: nama ---------- */
+function layarNama(){
+  app.innerHTML = `<div class="card"><p class="eyebrow">Kelas ${profil.kelas}</p><h1>Masukkan nama kamu</h1>
+  <p class="sub">Tulis nama lengkap. Nama ini akan tampil di ranking nilai.</p>
+  <label for="nm">Nama lengkap</label><input id="nm" placeholder="contoh: Siti Rahmawati" value="${esc(profil.nama||"")}" maxlength="40">
+  <button class="btn" onclick="simpanNama()">Lanjut ke menu</button>
+  <button class="btn ghost" onclick="layarKelas()">← Ganti kelas</button></div>`;
+  $("#nm").focus();
+  $("#nm").addEventListener("keydown",e=>{if(e.key==="Enter")simpanNama()});
+}
+function simpanNama(){
+  const n = $("#nm").value.trim().replace(/\s+/g," ");
+  if(n.length<3){alert("Nama minimal 3 huruf.");return}
+  profil.nama = n; store.set("ulangan_profil", profil); layarMenu();
+}
+
+/* ---------- Layar: menu mapel ---------- */
+function layarMenu(){
+  stopTimer();
+  const d = DATA[profil.kelas];
+  let h = `<div class="card"><p class="eyebrow">Kelas ${profil.kelas} · ${esc(profil.nama)}</p><h1>Pilih ulangan</h1><p class="sub">Setiap ulangan berisi soal pilihan ganda. Waktu ${CONFIG.DURASI_MENIT} menit.</p><div class="grid">`;
+  for(const m in MAPEL){
+    if(!d[m]) continue;
+    const topik = [...new Set(d[m].map(x=>x.t))];
+    h += `<button class="menu" onclick="mulai('${m}')"><span class="tag ${MAPEL[m].cls}">${MAPEL[m].kode}</span><div><b>${MAPEL[m].nama}</b><p>${d[m].length} soal · ${topik.map(esc).join(", ")}</p></div></button>`;
+  }
+  h += `<button class="menu" onclick="layarRanking()"><span class="tag r">🏆</span><div><b>Lihat ranking nilai</b><p>Peringkat per mapel dan gabungan Kelas ${profil.kelas}</p></div></button>`;
+  app.innerHTML = h + `</div><button class="btn ghost" onclick="layarNama()">← Ganti nama</button></div>`;
+}
+
+/* ---------- Ujian ---------- */
+function mulai(m){
+  const bank = DATA[profil.kelas][m];
+  const urut = acak(bank.map((_,i)=>i));
+  S = {kelas:profil.kelas, nama:profil.nama, mapel:m, soal:urut.map(i=>({i, o:acak([0,1,2,3])})), jwb:Array(bank.length).fill(null), cur:0, mulai:Date.now(), selesai:null};
+  simpan(); layarSoal();
+}
+function bankS(){ return DATA[S.kelas][S.mapel]; }
+function layarSoal(){
+  startTimer();
+  const bank = bankS(), it = S.soal[S.cur], q = bank[it.i];
+  $("#judul").textContent = `${MAPEL[S.mapel].nama} · Kelas ${S.kelas}`;
+  let h = `<div class="card"><div class="qhead"><span>Soal ${S.cur+1} dari ${bank.length}</span><span>${esc(q.t)}</span></div><p class="qtext">${fmt(q.q)}</p>`;
+  it.o.forEach((oi,k)=>{
+    h += `<button class="opt ${S.jwb[S.cur]===k?"sel":""}" onclick="jawab(${k})"><span class="l">${"ABCD"[k]}</span><span>${fmt(q.o[oi])}</span></button>`;
+  });
+  h += `<div class="nav" style="margin-top:10px"><button onclick="ke(${S.cur-1})" ${S.cur===0?"disabled":""}>← Sebelumnya</button><button onclick="ke(${S.cur+1})" ${S.cur===bank.length-1?"disabled":""}>Berikutnya →</button></div></div>`;
+  h += `<div class="card"><p class="eyebrow">Nomor soal</p><div class="nums">`;
+  S.jwb.forEach((j,n)=>{ h += `<button class="${j!==null?"ans":""} ${n===S.cur?"cur":""}" onclick="ke(${n})">${n+1}</button>`; });
+  const sisa = S.jwb.filter(j=>j===null).length;
+  h += `</div><p class="note">Terjawab ${bank.length-sisa} dari ${bank.length}. Jawaban masih bisa diganti sebelum selesai.</p><button class="btn pri" onclick="bukaModal()">Selesai &amp; lihat nilai</button></div>`;
+  app.innerHTML = h;
+}
+function jawab(k){ S.jwb[S.cur]=k; simpan(); if(S.cur<S.jwb.length-1){ layarSoal(); setTimeout(()=>ke(S.cur+1),180);} else layarSoal(); }
+function ke(n){ if(n<0||n>=S.jwb.length) return; S.cur=n; simpan(); layarSoal(); window.scrollTo(0,0); }
+function bukaModal(){
+  const sisa = S.jwb.filter(j=>j===null).length;
+  $("#modalTxt").textContent = sisa ? `Masih ada ${sisa} soal yang belum dijawab. Soal yang tidak dijawab dihitung salah.` : "Semua soal sudah dijawab. Nilai akan langsung masuk ranking.";
+  $("#modal").style.display="flex";
+}
+function tutupModal(){ $("#modal").style.display="none"; }
+
+function startTimer(){
+  $("#timer").style.display="inline-block";
+  if(tick) return;
+  const f = ()=>{
+    if(!S||S.selesai){stopTimer();return}
+    const sisa = Math.max(0, CONFIG.DURASI_MENIT*60 - Math.floor((Date.now()-S.mulai)/1000));
+    $("#timer").textContent = String(Math.floor(sisa/60)).padStart(2,"0")+":"+String(sisa%60).padStart(2,"0");
+    $("#timer").classList.toggle("low", sisa<=300);
+    if(sisa===0){ stopTimer(); alert("Waktu habis! Jawabanmu dikumpulkan otomatis."); selesai(); }
+  };
+  f(); tick = setInterval(f,1000);
+}
+function stopTimer(){ clearInterval(tick); tick=null; $("#timer").style.display="none"; }
+
+function hitung(){
+  const bank = bankS(); let benar=0;
+  S.soal.forEach((it,n)=>{ const j=S.jwb[n]; if(j!==null && it.o[j]===0) benar++; });
+  return {benar, total:bank.length, nilai:Math.round(benar/bank.length*100)};
+}
+function selesai(){
+  tutupModal(); if(!S||S.selesai) return;
+  S.selesai = Date.now(); stopTimer();
+  const r = hitung();
+  S.hasil = r; simpan();
+  const rec = {waktu:new Date(S.selesai).toISOString(), kelas:S.kelas, mapel:S.mapel, nama:S.nama, benar:r.benar, total:r.total, nilai:r.nilai, durasi:Math.round((S.selesai-S.mulai)/1000)};
+  S.rec = rec;
+  const lokal = store.get("ulangan_nilai_lokal", []); lokal.push(rec); store.set("ulangan_nilai_lokal", lokal);
+  S.terkirim = CONFIG.SCRIPT_URL ? "mengirim" : "lokal"; simpan();
+  kirim();
+  layarHasil();
+}
+function kirim(){
+  if(!CONFIG.SCRIPT_URL) return;
+  S.terkirim="mengirim"; simpan();
+  fetch(CONFIG.SCRIPT_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(S.rec)})
+    .then(()=>{S.terkirim="ok";simpan();if(document.querySelector(".score"))layarHasil()})
+    .catch(()=>{S.terkirim="gagal";simpan();if(document.querySelector(".score"))layarHasil()});
+}
+const fmtDur = d => `${Math.floor(d/60)} menit ${d%60} detik`;
+function layarHasil(){
+  const r = S.hasil, dur = Math.round((S.selesai-S.mulai)/1000);
+  $("#judul").textContent = `Hasil ${MAPEL[S.mapel].nama}`;
+  const status = {lokal:"Nilai tersimpan di perangkat ini.", mengirim:"Mengirim nilai ke ranking…", ok:"✔ Nilai sudah masuk ranking.", gagal:"⚠ Gagal mengirim nilai. Periksa internet, lalu tekan Kirim ulang."}[S.terkirim];
+  let h = `<div class="card" style="text-align:center"><p class="eyebrow">${esc(S.nama)} · Kelas ${S.kelas} · ${MAPEL[S.mapel].nama}</p>
+  <div class="score">${r.nilai}</div><div class="stats"><span>Benar <b>${r.benar}</b></span><span>Salah <b>${r.total-r.benar}</b></span><span>Waktu <b>${fmtDur(dur)}</b></span></div>
+  <p class="note" style="margin-top:10px">${status}</p>
+  ${S.terkirim==="gagal"?`<button class="btn" onclick="kirim();layarHasil()">Kirim ulang</button>`:""}
+  <button class="btn pri" onclick="layarRanking('${S.mapel}')">🏆 Lihat ranking</button>
+  ${CONFIG.TAMPILKAN_PEMBAHASAN?`<button class="btn ghost" onclick="layarTinjau()">Tinjau jawaban</button>`:""}
+  <button class="btn ghost" onclick="keluarSesi()">Kembali ke menu</button></div>`;
+  app.innerHTML = h;
+}
+function keluarSesi(){ S=null; store.del("ulangan_sesi"); layarMenu(); }
+function layarTinjau(){
+  const bank = bankS();
+  let h = `<div class="card"><p class="eyebrow">Tinjau jawaban</p><h2>${MAPEL[S.mapel].nama} · Nilai ${S.hasil.nilai}</h2>`;
+  S.soal.forEach((it,n)=>{
+    const q = bank[it.i], j = S.jwb[n];
+    h += `<div class="rv"><div class="qhead"><span>Soal ${n+1}</span><span>${j===null?"Tidak dijawab":(it.o[j]===0?"✔ Benar":"✘ Salah")}</span></div><p class="qtext">${fmt(q.q)}</p>`;
+    it.o.forEach((oi,k)=>{ const c = oi===0?"ok":(j===k?"no":""); h += `<div class="opt ${c}"><span class="l">${"ABCD"[k]}</span><span>${fmt(q.o[oi])}</span></div>`; });
+    h += `<p class="exp">💡 ${fmt(q.p)}</p></div>`;
+  });
+  app.innerHTML = h + `<button class="btn" onclick="layarHasil()">← Kembali ke nilai</button></div>`;
+  window.scrollTo(0,0);
+}
+
+/* ---------- Ranking ---------- */
+let tabRank = "mtk";
+async function ambilNilai(){
+  if(!CONFIG.SCRIPT_URL) return {data:store.get("ulangan_nilai_lokal",[]), sumber:"lokal"};
+  const r = await fetch(CONFIG.SCRIPT_URL+"?kelas="+encodeURIComponent(profil.kelas)+"&t="+Date.now());
+  return {data:await r.json(), sumber:"online"};
+}
+// Satu siswa dihitung satu kali per mapel: nilai PERCOBAAN PERTAMA.
+function pertama(data, kelas, mapel){
+  const peta = {};
+  data.filter(d=>String(d.kelas)===String(kelas) && d.mapel===mapel)
+      .sort((a,b)=>new Date(a.waktu)-new Date(b.waktu))
+      .forEach(d=>{ const k=kunciNama(d.nama); if(!peta[k]) peta[k]={...d, nilai:+d.nilai, durasi:+d.durasi}; });
+  return Object.values(peta);
+}
+function urutkan(arr){ return arr.sort((a,b)=> b.nilai-a.nilai || a.durasi-b.durasi || a.nama.localeCompare(b.nama)); }
+async function layarRanking(tab){
+  stopTimer(); if(tab) tabRank = tab;
+  $("#judul").textContent = `Ranking Kelas ${profil.kelas}`;
+  app.innerHTML = `<div class="card"><p class="eyebrow">Kelas ${profil.kelas}</p><h1>🏆 Ranking nilai</h1><p class="sub">Memuat data…</p></div>`;
+  let res;
+  try{ res = await ambilNilai(); }catch(e){ app.innerHTML = `<div class="card"><h2>Ranking belum bisa dimuat</h2><p class="sub">Periksa koneksi internet lalu coba lagi.</p><button class="btn" onclick="layarRanking()">Coba lagi</button><button class="btn ghost" onclick="${S&&S.selesai?"layarHasil()":"layarMenu()"}">← Kembali</button></div>`; return; }
+  const kls = profil.kelas, me = kunciNama(profil.nama||"");
+  let rows, kol;
+  if(tabRank==="gab"){
+    const a = pertama(res.data,kls,"mtk"), b = pertama(res.data,kls,"ipas"), peta={};
+    a.forEach(x=>peta[kunciNama(x.nama)]={nama:x.nama, mtk:x.nilai, ipas:null, durasi:x.durasi});
+    b.forEach(x=>{const k=kunciNama(x.nama); if(peta[k]){peta[k].ipas=x.nilai;peta[k].durasi+=x.durasi}else peta[k]={nama:x.nama,mtk:null,ipas:x.nilai,durasi:x.durasi}});
+    rows = Object.values(peta).filter(x=>x.mtk!==null&&x.ipas!==null).map(x=>({...x, nilai:Math.round((x.mtk+x.ipas)/2*10)/10}));
+    kol = "gab";
+  } else { rows = pertama(res.data,kls,tabRank); kol = "mapel"; }
+  urutkan(rows);
+  let h = `<div class="card"><p class="eyebrow">Kelas ${kls} · ${res.sumber==="lokal"?"tersimpan di perangkat ini":"data online"}</p><h1>🏆 Ranking nilai</h1>
+  <div class="tabs">${["mtk","ipas","gab"].map(t=>`<button class="${tabRank===t?"on":""}" onclick="layarRanking('${t}')">${t==="gab"?"Gabungan":MAPEL[t].nama}</button>`).join("")}</div>`;
+  if(!rows.length){ h += `<p class="sub">${kol==="gab"?"Belum ada siswa yang menyelesaikan kedua ulangan.":"Belum ada nilai untuk ulangan ini."}</p>`; }
+  else{
+    h += `<table><thead><tr><th>#</th><th>Nama</th>${kol==="gab"?"<th class='n'>MTK</th><th class='n'>IPAS</th><th class='n'>Rata²</th>":"<th class='n'>Benar</th><th class='n'>Nilai</th><th class='n'>Waktu</th>"}</tr></thead><tbody>`;
+    rows.forEach((r,i)=>{
+      const m = i<3?`m${i+1}`:"";
+      h += `<tr class="${kunciNama(r.nama)===me?"me":""}"><td><span class="medal ${m}">${i+1}</span></td><td>${esc(r.nama)}</td>${kol==="gab"?`<td class="n">${r.mtk}</td><td class="n">${r.ipas}</td><td class="n"><b>${r.nilai}</b></td>`:`<td class="n">${r.benar}/${r.total}</td><td class="n"><b>${r.nilai}</b></td><td class="n">${Math.floor(r.durasi/60)}:${String(r.durasi%60).padStart(2,"0")}</td>`}</tr>`;
+    });
+    h += `</tbody></table>`;
+  }
+  h += `<p class="note" style="margin-top:10px">Peringkat diurutkan dari nilai tertinggi. Jika nilai sama, yang lebih cepat selesai berada di atas. Setiap siswa dihitung dari percobaan pertamanya.</p>
+  <button class="btn ghost" onclick="layarRanking()">↻ Muat ulang</button>
+  <button class="btn" onclick="${S&&S.selesai?"layarHasil()":"layarMenu()"}">← Kembali</button></div>`;
+  app.innerHTML = h;
+}
+
+/* ---------- Mulai ---------- */
+if(S && !S.selesai){ profil.kelas=S.kelas; profil.nama=S.nama; layarSoal(); }
+else if(S && S.selesai){ profil.kelas=S.kelas; profil.nama=S.nama; layarHasil(); }
+else layarKelas();
+</script>
+</body>
+</html>

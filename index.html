@@ -276,6 +276,25 @@ body.lebar main{max-width:1040px}
 @media (min-width:560px){.modal{align-items:center}}
 @media (min-width:560px) and (max-width:899px){.nums{grid-template-columns:repeat(10,1fr)}}
 @media (max-width:500px){.tabel th,.tabel td{padding:8px}}
+/* ---------- HP (layar sempit) ---------- */
+@media (max-width:480px){
+  main{padding:14px 10px 112px}
+  .buku{padding-left:42px;padding-right:14px;
+    background-image:linear-gradient(to right,transparent 31px,var(--margin) 31px,var(--margin) 33px,transparent 33px),
+                     repeating-linear-gradient(to bottom,transparent 0,transparent calc(var(--ln) - 1px),var(--garis) calc(var(--ln) - 1px),var(--garis) var(--ln))}
+  .buku .no{width:31px;font-size:16px}
+  .buku h2{font-size:21px}
+  .mapel{gap:12px}
+  .mapel .sampul{width:62px;font-size:26px}
+  .mapel h3{font-size:20px}
+  .opsi{font-size:16px;gap:10px;padding:9px 10px}
+  .saring select{width:100%;max-width:100%;font-size:14px}
+  .tabel{font-size:13px}
+  .tabel th{font-size:12px}
+  .tabel th,.tabel td{padding:7px 6px}
+  .admin-tabs button{font-size:14px}
+  .link-guru{margin-top:22px}
+}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.stempel svg path{stroke-dashoffset:0}}
 </style>
 </head>
@@ -496,7 +515,7 @@ function layarKelas(){
     const on = KELAS_AKTIF.includes(String(k));
     h += `<button class="kelas ${on?"on":""}" ${on?`onclick="pilihKelas('${k}')"`:"disabled"} aria-label="Kelas ${k}${on?"":", belum tersedia"}"><span class="kata-kelas">Kelas</span><span class="angka">${k}</span><small>${on?"Mulai":"Belum ada"}</small></button>`;
   }
-  app.innerHTML = h + `</div><button class="link-guru" onclick="layarLoginGuru()">Masuk sebagai guru</button>`; atas();
+  app.innerHTML = h + `</div>`; atas();
 }
 function pilihKelas(k){ profil.kelas = k; store.set("ulangan_profil", profil); layarNama(); }
 
@@ -508,7 +527,8 @@ function layarNama(){
   <label class="lbl" for="nm">Nama lengkap</label>
   <input class="input" id="nm" placeholder="contoh: Siti Rahmawati" value="${esc(profil.nama||"")}" maxlength="40" autocomplete="name" autocapitalize="words">
   <button class="btn btn-utama" onclick="simpanNama()">Lanjut</button>
-  <button class="btn btn-teks" onclick="layarKelas()">Ganti kelas</button></div>`;
+  <button class="btn btn-teks" onclick="layarKelas()">Ganti kelas</button></div>
+  <button class="link-guru" onclick="masukKelasGuru()">👩‍🏫 Masuk sebagai guru Kelas ${esc(profil.kelas)}</button>`;
   const i=$("#nm"); i.focus(); i.addEventListener("keydown",e=>{if(e.key==="Enter")simpanNama()}); atas();
 }
 function simpanNama(){
@@ -529,7 +549,7 @@ function layarMenu(){
       <h3>${MAPEL[m].nama}</h3><p>${topik.map(esc).join(", ")}</p>
       <span class="chip">${jumlahSoal(m)} soal</span><span class="chip">🔑 Pakai kode dari guru</span></span></button>`;
   }
-  app.innerHTML = h + `<button class="btn btn-papan" onclick="layarRanking()">🏆 Lihat ranking kelas</button><button class="btn btn-teks" onclick="layarNama()">Bukan ${esc(namaDepan(profil.nama))}? Ganti nama</button><button class="btn btn-teks" onclick="layarKelas()">Kembali ke pilihan kelas</button>`;
+  app.innerHTML = h + `<button class="btn btn-papan" onclick="layarRanking()">🏆 Lihat ranking kelas</button><button class="btn btn-teks" onclick="layarNama()">Bukan ${esc(namaDepan(profil.nama))}? Ganti nama</button><button class="btn btn-teks" onclick="layarKelas()">Kembali ke pilihan kelas</button><button class="link-guru" onclick="masukKelasGuru()">👩‍🏫 Masuk sebagai guru Kelas ${esc(profil.kelas)}</button>`;
   atas();
 }
 
@@ -828,27 +848,31 @@ async function layarRanking(tab){
 }
 
 /* ---------- Guru (admin) ---------- */
-let G = {data:null, tab:"ulangan", kode:"", timer:null};
-const sandiGuru = { get(){ try{return sessionStorage.getItem("ulangan_guru")||""}catch(e){return ""} }, set(v){ try{sessionStorage.setItem("ulangan_guru",v)}catch(e){} }, del(){ try{sessionStorage.removeItem("ulangan_guru")}catch(e){} } };
+// Setiap kelas punya guru & kata sandi sendiri; guru hanya melihat ulangan kelasnya.
+let G = {data:null, tab:"ulangan", kode:"", timer:null, kelas:(()=>{ try{return sessionStorage.getItem("ulangan_guru_kelas")||""}catch(e){return ""} })()};
+const sandiGuru = { get(){ try{return sessionStorage.getItem("ulangan_guru")||""}catch(e){return ""} }, set(v){ try{sessionStorage.setItem("ulangan_guru",v); sessionStorage.setItem("ulangan_guru_kelas",G.kelas)}catch(e){} }, del(){ try{sessionStorage.removeItem("ulangan_guru"); sessionStorage.removeItem("ulangan_guru_kelas")}catch(e){} } };
+function masukKelasGuru(){ G.kelas = profil.kelas; layarLoginGuru(); }
+function kembaliKeKelas(){ if(G.kelas){ profil.kelas=G.kelas; } (profil.nama ? layarMenu : layarNama)(); }
 async function adminKirim(data){
-  const r = await fetch(CONFIG.SCRIPT_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({aksi:"admin",...data})});
+  const r = await fetch(CONFIG.SCRIPT_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({aksi:"admin",kelas:G.kelas,...data})});
   return r.json();
 }
 const adminAmbil = pw => adminKirim({sub:"data", password:pw});
 async function layarLoginGuru(pesan){
-  stopTimer(); bawah(); hentiGuru(); papan("Ruang guru");
+  if(!G.kelas) return layarKelas();
+  stopTimer(); bawah(); hentiGuru(); papan("Guru Kelas " + G.kelas);
   if(!pesan){
     app.innerHTML = `<div class="kosong"><b>Membuka ruang guru…</b></div>`;
     try{ const c = await adminKirim({sub:"cek"}); if(c.ok && !c.ada) return layarBuatSandi(); }
     catch(e){ pesan = "Tidak bisa terhubung. Periksa koneksi internet."; }
   }
-  app.innerHTML = `<div class="buku"><h2>Masuk sebagai guru</h2>
-  <p class="ket">Halaman ini untuk guru: memantau siswa yang sedang ulangan, melihat siapa yang keluar dari web, ranking, dan rekap nilai.</p>
+  app.innerHTML = `<div class="buku"><h2>Masuk sebagai guru Kelas ${esc(G.kelas)}</h2>
+  <p class="ket">Halaman ini untuk guru Kelas ${esc(G.kelas)}: membuat kode ulangan, memantau siswa, melihat siapa yang keluar dari web, ranking, dan rekap nilai kelas ini.</p>
   <label class="lbl" for="pw">Kata sandi guru</label>
   <input class="input" id="pw" type="password" autocomplete="current-password">
   ${pesan?`<p class="status gagal" role="alert">${esc(pesan)}</p>`:""}
   <button class="btn btn-papan" id="btnMasuk" onclick="masukGuru()">Masuk</button>
-  <button class="btn btn-teks" onclick="layarKelas()">Kembali ke halaman siswa</button></div>`;
+  <button class="btn btn-teks" onclick="kembaliKeKelas()">Kembali ke halaman siswa</button></div>`;
   const i=$("#pw"); i.focus(); i.addEventListener("keydown",e=>{if(e.key==="Enter")masukGuru()}); atas();
 }
 async function masukGuru(){
@@ -858,14 +882,14 @@ async function masukGuru(){
   catch(e){ layarLoginGuru("Tidak bisa terhubung. Periksa koneksi internet."); }
 }
 function layarBuatSandi(pesan){
-  bawah(); hentiGuru(); papan("Ruang guru");
-  app.innerHTML = `<div class="buku"><h2>Buat kata sandi guru</h2>
-  <p class="ket">Ruang guru belum punya kata sandi. Buat sekarang, minimal 6 karakter, lalu simpan baik-baik. Jangan beri tahu siswa.</p>
+  bawah(); hentiGuru(); papan("Guru Kelas " + G.kelas);
+  app.innerHTML = `<div class="buku"><h2>Buat kata sandi guru Kelas ${esc(G.kelas)}</h2>
+  <p class="ket">Ruang guru Kelas ${esc(G.kelas)} belum punya kata sandi. Wali kelas membuatnya sekarang, minimal 6 karakter, lalu simpan baik-baik. Jangan beri tahu siswa.</p>
   <label class="lbl" for="pb1">Kata sandi baru</label><input class="input" id="pb1" type="password" autocomplete="new-password">
   <label class="lbl" for="pb2">Ulangi kata sandi</label><input class="input" id="pb2" type="password" autocomplete="new-password">
   ${pesan?`<p class="status gagal" role="alert">${esc(pesan)}</p>`:""}
   <button class="btn btn-papan" id="btnBuat" onclick="buatSandi()">Simpan kata sandi</button>
-  <button class="btn btn-teks" onclick="layarKelas()">Kembali ke halaman siswa</button></div>`;
+  <button class="btn btn-teks" onclick="kembaliKeKelas()">Kembali ke halaman siswa</button></div>`;
   $("#pb1").focus(); atas();
 }
 async function buatSandi(){
@@ -885,7 +909,7 @@ function guruAtur(){
   <label class="lbl" for="gs2">Ulangi kata sandi baru</label><input class="input" id="gs2" type="password" autocomplete="new-password">
   <p class="status" id="gsStatus" role="status"></p>
   <button class="btn btn-papan" id="btnGanti" onclick="gantiSandi()">Simpan kata sandi baru</button></div>
-  <p class="catatan">Lupa kata sandi? Pemilik akun Google yang memasang web ini bisa menghapus <b>ADMIN_HASH</b> di Apps Script (Project Settings → Script properties), lalu guru membuat kata sandi baru dari halaman ini.</p>`;
+  <p class="catatan">Lupa kata sandi? Pemilik akun Google yang memasang web ini bisa menghapus <b>ADMIN_HASH_K${esc(G.kelas)}</b> di Apps Script (Project Settings → Script properties), lalu guru membuat kata sandi baru dari halaman ini.</p>`;
 }
 async function gantiSandi(){
   const lama=$("#gs0").value, a=$("#gs1").value, b=$("#gs2").value, st=$("#gsStatus");
@@ -899,7 +923,7 @@ async function gantiSandi(){
     sandiGuru.set(a); ["#gs0","#gs1","#gs2"].forEach(s=>$(s).value=""); st.className="status ok"; st.textContent="✓ Kata sandi berhasil diganti.";
   }catch(e){ btn.disabled=false; btn.textContent="Simpan kata sandi baru"; gagal("Tidak bisa terhubung. Periksa koneksi internet."); }
 }
-function keluarGuru(){ sandiGuru.del(); G.data=null; hentiGuru(); layarKelas(); }
+function keluarGuru(){ sandiGuru.del(); G.data=null; hentiGuru(); kembaliKeKelas(); }
 function hentiGuru(){ clearInterval(G.timer); G.timer=null; }
 async function muatGuru(diam){
   const pw=sandiGuru.get(); if(!pw) return layarLoginGuru();
@@ -914,7 +938,7 @@ function daftarUlangan(){ return (G.data.ulangan||[]).slice().sort((a,b)=>new Da
 function ulanganPilihan(){ const l=daftarUlangan(); if(!l.find(u=>u.kode===G.kode)) G.kode = l.length ? l[0].kode : ""; return l.find(u=>u.kode===G.kode)||null; }
 function saringGuru(arr){ return (arr||[]).filter(r=>String(r.kode||"")===G.kode); }
 function layarGuru(tab){
-  stopTimer(); if(tab) G.tab=tab; papan("Ruang guru", CONFIG.SEKOLAH);
+  stopTimer(); if(tab) G.tab=tab; papan("Guru Kelas " + G.kelas, CONFIG.SEKOLAH);
   bawah(`<button class="btn btn-garis" onclick="keluarGuru()">Keluar</button><button class="btn btn-papan" onclick="muatGuru()">Muat ulang</button>`);
   hentiGuru(); G.timer = setInterval(()=>{ if(!document.hidden && G.tab!=="atur" && G.tab!=="ulangan") muatGuru(true); }, 20000);
   renderGuru();
@@ -923,7 +947,7 @@ function renderGuru(){
   if(!G.data) return;
   const tabs = [["ulangan","Ulangan & kode"],["pantau","Pantauan"],["rank","Ranking"],["aktivitas","Keluar-masuk"],["rekap","Rekap nilai"],["atur","Pengaturan"]];
   const u = ulanganPilihan(), list = daftarUlangan();
-  let h = `<div class="halo"><div class="inisial" style="background:var(--papan);color:var(--kapur)">👩‍🏫</div><div><h1>Ruang guru</h1><p id="guruStatus">Diperbarui ${jam(G.data.sekarang)}.</p></div></div>
+  let h = `<div class="halo"><div class="inisial" style="background:var(--papan);color:var(--kapur)">👩‍🏫</div><div><h1>Ruang guru Kelas ${esc(G.kelas)}</h1><p id="guruStatus">Diperbarui ${jam(G.data.sekarang)}.</p></div></div>
   <div class="admin-tabs" role="tablist">${tabs.map(([k,l])=>`<button role="tab" aria-selected="${G.tab===k}" class="${G.tab===k?"on":""}" onclick="layarGuru('${k}')">${l}</button>`).join("")}</div>`;
   if(G.tab==="atur") h += guruAtur();
   else if(G.tab==="ulangan") h += guruUlangan();
@@ -937,12 +961,10 @@ function renderGuru(){
 }
 function guruUlangan(){
   const list = daftarUlangan();
-  const opsiKelas = KELAS_AKTIF.map(k=>`<option value="${k}">Kelas ${k}</option>`).join("");
   const opsiMapel = Object.keys(MAPEL).map(m=>`<option value="${m}">${MAPEL[m].nama}</option>`).join("");
   let h = `<div class="buku"><h2>Buat ulangan baru</h2>
-  <p class="ket">Setiap ulangan mendapat kode sendiri. Bagikan kodenya ke siswa yang ikut ulangan itu.</p>
-  <div class="baris-form"><div><label class="lbl" for="uKelas">Kelas</label><select class="pilih" id="uKelas">${opsiKelas}</select></div>
-  <div><label class="lbl" for="uMapel">Mata pelajaran</label><select class="pilih" id="uMapel">${opsiMapel}</select></div></div>
+  <p class="ket">Untuk siswa Kelas ${esc(G.kelas)}. Setiap ulangan mendapat kode sendiri. Bagikan kodenya ke siswa kelas ini.</p>
+  <label class="lbl" for="uMapel">Mata pelajaran</label><select class="pilih" id="uMapel">${opsiMapel}</select>
   <p class="status" id="uStatus" role="status"></p>
   <button class="btn btn-papan" id="btnBuatU" onclick="buatUlangan()">Buat ulangan &amp; kode</button></div>`;
   if(!list.length) return h + `<div class="kosong"><b>Belum ada ulangan</b>Ulangan yang dibuat akan muncul di sini beserta kodenya.</div>`;
@@ -961,7 +983,7 @@ function guruUlangan(){
   return h + `<p class="catatan">Ulangan yang ditutup tidak bisa dimulai lagi oleh siswa. Siswa yang sedang mengerjakan tetap bisa menyelesaikan.</p>`;
 }
 async function buatUlangan(){
-  const kelas=$("#uKelas").value, mapel=$("#uMapel").value, st=$("#uStatus");
+  const kelas=G.kelas, mapel=$("#uMapel").value, st=$("#uStatus");
   // nama dibuat otomatis: "Matematika Kelas 5 · 26 Nov 2026"
   const nama=`${(MAPEL[mapel]||{}).nama||mapel} Kelas ${kelas} · ${new Date().toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric"})}`;
   const b=$("#btnBuatU"); b.disabled=true; b.textContent="Membuat…";
@@ -1037,7 +1059,7 @@ document.addEventListener("keydown",e=>{ if(e.key==="Escape") tutupModal(); });
 if(S && !S.id){ S.id=Date.now().toString(36)+Math.random().toString(36).slice(2,7); S.keluar=S.keluar||0; simpan(); }
 if(S && !S.selesai){ profil.kelas=S.kelas; profil.nama=S.nama; layarSoal(); if(S.keluarSejak) siswaKembali(); }
 else if(S && S.selesai){ profil.kelas=S.kelas; profil.nama=S.nama; layarHasil(false); }
-else if(sandiGuru.get() && CONFIG.SCRIPT_URL){ papan("Ruang guru"); app.innerHTML=`<div class="kosong"><b>Memuat ruang guru…</b></div>`; adminAmbil(sandiGuru.get()).then(d=>{ if(!d.ok){ sandiGuru.del(); return layarLoginGuru(d.error); } G.data=d; layarGuru("ulangan"); }).catch(()=>layarLoginGuru("Tidak bisa terhubung. Periksa koneksi internet.")); }
+else if(sandiGuru.get() && G.kelas && CONFIG.SCRIPT_URL){ papan("Guru Kelas " + G.kelas); app.innerHTML=`<div class="kosong"><b>Memuat ruang guru…</b></div>`; adminAmbil(sandiGuru.get()).then(d=>{ if(!d.ok){ sandiGuru.del(); return layarLoginGuru(d.error); } G.data=d; layarGuru("ulangan"); }).catch(()=>layarLoginGuru("Tidak bisa terhubung. Periksa koneksi internet.")); }
 else if(profil.kelas && profil.nama && KELAS_AKTIF.includes(profil.kelas)) layarMenu();
 else layarKelas();
 </script>

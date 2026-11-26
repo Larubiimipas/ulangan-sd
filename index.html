@@ -222,6 +222,15 @@ body.lebar main{max-width:1040px}
 @keyframes jatuh{to{transform:translateY(110vh) rotate(720deg)}}
 .link-guru{display:block;margin:28px auto 0;text-align:center;color:var(--abu);font-weight:700;background:none;border:none;text-decoration:underline;text-underline-offset:3px}
 
+/* ---------- aturan & teguran ---------- */
+.daftar-aturan{margin:0 0 14px;padding-left:22px;line-height:var(--ln)}
+.daftar-aturan li{margin-bottom:6px}
+.setuju{display:flex;gap:10px;align-items:flex-start;font-weight:800;background:#fff8e1;border-radius:10px;padding:10px 12px;cursor:pointer}
+.setuju input{width:22px;height:22px;flex:none;margin:2px 0 0;accent-color:var(--merah)}
+.teguran{position:fixed;left:12px;right:12px;margin:0 auto;width:fit-content;top:76px;transform:translateY(-160%);z-index:50;display:flex;gap:10px;align-items:center;max-width:min(92vw,520px);background:var(--merah);color:#fff;font-weight:800;border-radius:14px;padding:12px 16px;box-shadow:0 10px 30px -10px rgba(0,0,0,.4);transition:transform .25s}
+.teguran span:first-child{font-size:26px}
+.teguran.muncul{transform:translateY(0)}
+
 /* ---------- peringatan keluar ---------- */
 .peringatan .buku{border:3px solid var(--merah)}
 .peringatan .besar{font-size:52px;text-align:center;line-height:1;margin-bottom:6px}
@@ -459,7 +468,7 @@ function layarMenu(){
   for(const m in MAPEL){
     if(!d[m]) continue;
     const topik = [...new Set(d[m].map(x=>x.t))], sudah = nilaiLokal(m);
-    h += `<button class="mapel" onclick="mulai('${m}')"><span class="sampul" style="background:${MAPEL[m].warna}">${MAPEL[m].ikon}</span><span class="isi">
+    h += `<button class="mapel" onclick="layarAturan('${m}')"><span class="sampul" style="background:${MAPEL[m].warna}">${MAPEL[m].ikon}</span><span class="isi">
       <h3>${MAPEL[m].nama}</h3><p>${topik.map(esc).join(", ")}</p>
       <span class="chip">${d[m].length} soal</span><span class="chip">${CONFIG.DURASI_MENIT} menit</span>${sudah?`<span class="chip ok">Sudah dikerjakan, nilai ${sudah.nilai}</span>`:""}</span></button>`;
   }
@@ -468,6 +477,23 @@ function layarMenu(){
 }
 
 /* ---------- Ujian ---------- */
+function layarAturan(m){
+  bawah(); papan(MAPEL[m].nama, profil.nama);
+  const n = DATA[profil.kelas][m].length;
+  app.innerHTML = `<div class="buku aturan"><h2>Aturan ulangan</h2>
+  <p class="ket">Baca dulu sebelum mulai, ya.</p>
+  <ol class="daftar-aturan">
+    <li><b>${n} soal pilihan ganda, waktu ${CONFIG.DURASI_MENIT} menit.</b> Kalau waktu habis, jawabanmu dikumpulkan otomatis.</li>
+    <li><b>Jangan keluar dari halaman ulangan.</b> Jangan pindah ke aplikasi lain, membuka tab lain, menekan tombol Home, atau mengunci HP.</li>
+    <li><b>Gurumu bisa melihat setiap kali kamu keluar.</b> Setiap keluar, satu hati ❤️ hilang.</li>
+    <li><b>Kalau keluar ${CONFIG.MAKS_KELUAR} kali, jawabanmu langsung dikumpulkan</b>, walaupun belum selesai.</li>
+    <li>Kalau ragu dengan jawaban, tekan <b>Ragu-ragu</b>, lalu periksa lagi sebelum mengumpulkan.</li>
+  </ol>
+  <label class="setuju"><input type="checkbox" id="setuju" onchange="$('#btnMulai').disabled=!this.checked"> Saya mengerti dan tidak akan keluar dari halaman ulangan</label>
+  <button class="btn btn-utama" id="btnMulai" disabled onclick="mulai('${m}')">Mulai ulangan</button>
+  <button class="btn btn-teks" onclick="layarMenu()">Kembali</button></div>`;
+  atas();
+}
 function mulai(m){
   const bank = DATA[profil.kelas][m];
   S = {id:Date.now().toString(36)+Math.random().toString(36).slice(2,7), kelas:profil.kelas, nama:profil.nama, mapel:m, soal:acak(bank.map((_,i)=>i)).map(i=>({i, o:acak([0,1,2,3])})), jwb:Array(bank.length).fill(null), cur:0, mulai:Date.now(), selesai:null, keluar:0, detak:Date.now()};
@@ -502,6 +528,21 @@ function siswaKembali(){
   if(S.selesai) return;
   lapor("kembali",{keterangan:`Kembali setelah ${lama} detik`});
   tampilPeringatan();
+}
+const ujianAktif = () => !!(S && !S.selesai && app.querySelector(".ujian"));
+window.addEventListener("beforeunload",e=>{ if(ujianAktif()){ e.preventDefault(); e.returnValue=""; } });
+function pasangPenahanKembali(){ try{ if(!history.state || !history.state.ujian) history.pushState({ujian:1},""); }catch(e){} }
+window.addEventListener("popstate",()=>{
+  if(!ujianAktif()) return;
+  pasangPenahanKembali();
+  teguran("Tombol kembali tidak bisa dipakai selama ulangan. Kalau sudah selesai, tekan Kumpulkan jawaban.");
+});
+document.addEventListener("mouseleave",e=>{ if(ujianAktif() && e.clientY<=0) teguran("Jangan pindah tab atau menutup halaman, ya! Kalau keluar, gurumu akan tahu dan satu hati hilang."); });
+let tegurTimer=null;
+function teguran(pesan){
+  let el=$("#teguran"); if(!el){ el=document.createElement("div"); el.id="teguran"; el.className="teguran"; el.setAttribute("role","alert"); document.body.appendChild(el); }
+  el.innerHTML=`<span aria-hidden="true">✋</span><span>${esc(pesan)}</span>`; el.classList.add("muncul");
+  clearTimeout(tegurTimer); tegurTimer=setTimeout(()=>el.classList.remove("muncul"),4500);
 }
 document.addEventListener("visibilitychange",()=>{ document.hidden ? siswaKeluar() : siswaKembali(); });
 window.addEventListener("pagehide",()=>{ siswaKeluar(); });
@@ -542,6 +583,7 @@ function layarSoal(){
   h += `</div><div class="legenda"><span class="l-isi">Sudah dijawab</span><span class="l-ragu">Ragu-ragu</span><span>Belum</span></div>
   <button class="btn btn-utama" style="margin:4px 0 0" onclick="bukaModal()">Kumpulkan jawaban</button></div></aside></div>`;
   app.innerHTML = h;
+  pasangPenahanKembali();
   const akhir = S.cur===n-1;
   bawah(`<button class="btn btn-garis" onclick="ke(${S.cur-1})" ${S.cur===0?"disabled":""}>Sebelumnya</button>` +
         (akhir ? `<button class="btn btn-utama" onclick="bukaModal()">Kumpulkan</button>` : `<button class="btn btn-papan" onclick="ke(${S.cur+1})">Berikutnya</button>`));

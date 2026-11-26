@@ -4,8 +4,10 @@
  *   Nilai      : nilai akhir setiap siswa
  *   Aktivitas  : catatan mulai / keluar / kembali / selesai
  *   Pantauan   : status terkini setiap siswa yang sedang ulangan
- * Kata sandi guru disimpan di Project Settings → Script properties → ADMIN_PASSWORD
- * (tidak ditulis di kode ini).
+ * Kata sandi guru dibuat & diganti dari web (menu "Masuk sebagai guru").
+ * Disimpan sebagai hash di Script properties (ADMIN_HASH, ADMIN_SALT).
+ * Lupa kata sandi? Pemilik script menghapus ADMIN_HASH di Project Settings →
+ * Script properties, lalu guru membuat kata sandi baru dari web.
  */
 const KOLOM = {
   Nilai: ['waktu', 'kelas', 'mapel', 'nama', 'benar', 'total', 'nilai', 'durasi', 'keluar', 'alasan', 'sesi'],
@@ -95,12 +97,54 @@ function upsertPantauan_(d, nama, status, now) {
   }
 }
 
+// ---------- Kata sandi guru (disimpan sebagai hash, bukan teks asli) ----------
+function hash_(pw, salt) {
+  const b = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, salt + '|' + pw, Utilities.Charset.UTF_8);
+  return b.map(x => ('0' + (x & 255).toString(16)).slice(-2)).join('');
+}
+function sandiAda_() {
+  const p = PropertiesService.getScriptProperties();
+  return !!(p.getProperty('ADMIN_HASH') || p.getProperty('ADMIN_PASSWORD'));
+}
+function sandiCocok_(pw) {
+  const p = PropertiesService.getScriptProperties();
+  const h = p.getProperty('ADMIN_HASH'), salt = p.getProperty('ADMIN_SALT');
+  if (h && salt) return hash_(String(pw || ''), salt) === h;
+  const lama = p.getProperty('ADMIN_PASSWORD'); // kompatibel dengan cara lama
+  return !!lama && String(pw || '') === lama;
+}
+function simpanSandi_(pw) {
+  const salt = Utilities.getUuid();
+  const p = PropertiesService.getScriptProperties();
+  p.setProperties({ ADMIN_SALT: salt, ADMIN_HASH: hash_(pw, salt) });
+  p.deleteProperty('ADMIN_PASSWORD');
+}
+
 function admin_(d) {
-  const pw = PropertiesService.getScriptProperties().getProperty('ADMIN_PASSWORD');
-  if (!pw) return json_({ ok: false, error: 'Kata sandi guru belum diatur di Script properties (ADMIN_PASSWORD).' });
-  if (String(d.password || '') !== pw) {
-    Utilities.sleep(800);
-    return json_({ ok: false, error: 'Kata sandi salah.' });
+  const sub = d.sub || 'data';
+  if (sub === 'cek') return json_({ ok: true, ada: sandiAda_() });
+
+  const lock = LockService.getScriptLock();
+  lock.waitLock(15000);
+  try {
+    if (sub === 'buat') {
+      if (sandiAda_()) return json_({ ok: false, error: 'Kata sandi guru sudah pernah dibuat. Silakan masuk.' });
+      if (String(d.baru || '').length < 6) return json_({ ok: false, error: 'Kata sandi minimal 6 karakter.' });
+      simpanSandi_(String(d.baru));
+      return json_({ ok: true });
+    }
+    if (!sandiAda_()) return json_({ ok: false, error: 'Kata sandi guru belum dibuat.', belum: true });
+    if (!sandiCocok_(d.password)) {
+      Utilities.sleep(800);
+      return json_({ ok: false, error: sub === 'ganti' ? 'Kata sandi lama salah.' : 'Kata sandi salah.' });
+    }
+    if (sub === 'ganti') {
+      if (String(d.baru || '').length < 6) return json_({ ok: false, error: 'Kata sandi baru minimal 6 karakter.' });
+      simpanSandi_(String(d.baru));
+      return json_({ ok: true });
+    }
+  } finally {
+    lock.releaseLock();
   }
   const akt = rows_('Aktivitas');
   return json_({

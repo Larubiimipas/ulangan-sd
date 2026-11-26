@@ -670,12 +670,18 @@ async function layarRanking(tab){
 /* ---------- Guru (admin) ---------- */
 let G = {data:null, tab:"pantau", kelas:"5", mapel:"semua", hari:"ini", timer:null};
 const sandiGuru = { get(){ try{return sessionStorage.getItem("ulangan_guru")||""}catch(e){return ""} }, set(v){ try{sessionStorage.setItem("ulangan_guru",v)}catch(e){} }, del(){ try{sessionStorage.removeItem("ulangan_guru")}catch(e){} } };
-async function adminAmbil(pw){
-  const r = await fetch(CONFIG.SCRIPT_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({aksi:"admin",password:pw})});
+async function adminKirim(data){
+  const r = await fetch(CONFIG.SCRIPT_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({aksi:"admin",...data})});
   return r.json();
 }
-function layarLoginGuru(pesan){
+const adminAmbil = pw => adminKirim({sub:"data", password:pw});
+async function layarLoginGuru(pesan){
   stopTimer(); bawah(); hentiGuru(); papan("Ruang guru");
+  if(!pesan){
+    app.innerHTML = `<div class="kosong"><b>Membuka ruang guru…</b></div>`;
+    try{ const c = await adminKirim({sub:"cek"}); if(c.ok && !c.ada) return layarBuatSandi(); }
+    catch(e){ pesan = "Tidak bisa terhubung. Periksa koneksi internet."; }
+  }
   app.innerHTML = `<div class="buku"><h2>Masuk sebagai guru</h2>
   <p class="ket">Halaman ini untuk guru: memantau siswa yang sedang ulangan, melihat siapa yang keluar dari web, ranking, dan rekap nilai.</p>
   <label class="lbl" for="pw">Kata sandi guru</label>
@@ -690,6 +696,48 @@ async function masukGuru(){
   const b=$("#btnMasuk"); b.disabled=true; b.textContent="Memeriksa…";
   try{ const d = await adminAmbil(pw); if(!d.ok) return layarLoginGuru(d.error||"Gagal masuk."); sandiGuru.set(pw); G.data=d; layarGuru(); }
   catch(e){ layarLoginGuru("Tidak bisa terhubung. Periksa koneksi internet."); }
+}
+function layarBuatSandi(pesan){
+  bawah(); hentiGuru(); papan("Ruang guru");
+  app.innerHTML = `<div class="buku"><h2>Buat kata sandi guru</h2>
+  <p class="ket">Ruang guru belum punya kata sandi. Buat sekarang, minimal 6 karakter, lalu simpan baik-baik. Jangan beri tahu siswa.</p>
+  <label class="lbl" for="pb1">Kata sandi baru</label><input class="input" id="pb1" type="password" autocomplete="new-password">
+  <label class="lbl" for="pb2">Ulangi kata sandi</label><input class="input" id="pb2" type="password" autocomplete="new-password">
+  ${pesan?`<p class="status gagal" role="alert">${esc(pesan)}</p>`:""}
+  <button class="btn btn-papan" id="btnBuat" onclick="buatSandi()">Simpan kata sandi</button>
+  <button class="btn btn-teks" onclick="layarKelas()">Kembali ke halaman siswa</button></div>`;
+  $("#pb1").focus(); atas();
+}
+async function buatSandi(){
+  const a=$("#pb1").value, b=$("#pb2").value;
+  if(a.length<6) return layarBuatSandi("Kata sandi minimal 6 karakter.");
+  if(a!==b) return layarBuatSandi("Kedua kata sandi tidak sama.");
+  const btn=$("#btnBuat"); btn.disabled=true; btn.textContent="Menyimpan…";
+  try{ const r=await adminKirim({sub:"buat", baru:a}); if(!r.ok) return layarLoginGuru(r.error);
+       const d=await adminAmbil(a); if(!d.ok) return layarLoginGuru(d.error); sandiGuru.set(a); G.data=d; layarGuru("atur"); }
+  catch(e){ layarBuatSandi("Tidak bisa terhubung. Periksa koneksi internet."); }
+}
+function guruAtur(){
+  return `<div class="buku" style="margin-top:4px"><h2>Ganti kata sandi guru</h2>
+  <p class="ket">Kata sandi baru langsung berlaku. Guru lain yang sedang masuk perlu masuk ulang dengan kata sandi baru.</p>
+  <label class="lbl" for="gs0">Kata sandi lama</label><input class="input" id="gs0" type="password" autocomplete="current-password">
+  <label class="lbl" for="gs1">Kata sandi baru</label><input class="input" id="gs1" type="password" autocomplete="new-password">
+  <label class="lbl" for="gs2">Ulangi kata sandi baru</label><input class="input" id="gs2" type="password" autocomplete="new-password">
+  <p class="status" id="gsStatus" role="status"></p>
+  <button class="btn btn-papan" id="btnGanti" onclick="gantiSandi()">Simpan kata sandi baru</button></div>
+  <p class="catatan">Lupa kata sandi? Pemilik akun Google yang memasang web ini bisa menghapus <b>ADMIN_HASH</b> di Apps Script (Project Settings → Script properties), lalu guru membuat kata sandi baru dari halaman ini.</p>`;
+}
+async function gantiSandi(){
+  const lama=$("#gs0").value, a=$("#gs1").value, b=$("#gs2").value, st=$("#gsStatus");
+  const gagal = m => { st.className="status gagal"; st.textContent=m; };
+  if(a.length<6) return gagal("Kata sandi baru minimal 6 karakter.");
+  if(a!==b) return gagal("Kata sandi baru dan ulangannya tidak sama.");
+  const btn=$("#btnGanti"); btn.disabled=true; btn.textContent="Menyimpan…";
+  try{ const r=await adminKirim({sub:"ganti", password:lama, baru:a});
+    btn.disabled=false; btn.textContent="Simpan kata sandi baru";
+    if(!r.ok) return gagal(r.error||"Gagal mengganti kata sandi.");
+    sandiGuru.set(a); ["#gs0","#gs1","#gs2"].forEach(s=>$(s).value=""); st.className="status ok"; st.textContent="✓ Kata sandi berhasil diganti.";
+  }catch(e){ btn.disabled=false; btn.textContent="Simpan kata sandi baru"; gagal("Tidak bisa terhubung. Periksa koneksi internet."); }
 }
 function keluarGuru(){ sandiGuru.del(); G.data=null; hentiGuru(); layarKelas(); }
 function hentiGuru(){ clearInterval(G.timer); G.timer=null; }
@@ -707,12 +755,12 @@ function saringGuru(arr, kunciWaktu){
 function layarGuru(tab){
   stopTimer(); if(tab) G.tab=tab; papan("Ruang guru", "Kelas " + G.kelas);
   bawah(`<button class="btn btn-garis" onclick="keluarGuru()">Keluar</button><button class="btn btn-papan" onclick="muatGuru()">Muat ulang</button>`);
-  hentiGuru(); G.timer = setInterval(()=>{ if(!document.hidden) muatGuru(true); }, 20000);
+  hentiGuru(); G.timer = setInterval(()=>{ if(!document.hidden && G.tab!=="atur") muatGuru(true); }, 20000);
   renderGuru();
 }
 function renderGuru(){
   if(!G.data) return;
-  const tabs = [["pantau","Pantauan"],["rank","Ranking"],["aktivitas","Keluar-masuk"],["rekap","Rekap nilai"]];
+  const tabs = [["pantau","Pantauan"],["rank","Ranking"],["aktivitas","Keluar-masuk"],["rekap","Rekap nilai"],["atur","Pengaturan"]];
   const opsiKelas = KELAS_AKTIF.map(k=>`<option value="${k}" ${G.kelas===k?"selected":""}>Kelas ${k}</option>`).join("");
   const opsiMapel = `<option value="semua">Semua mapel</option>`+Object.keys(MAPEL).map(m=>`<option value="${m}" ${G.mapel===m?"selected":""}>${MAPEL[m].nama}</option>`).join("");
   let h = `<div class="halo"><div class="inisial" style="background:var(--papan);color:var(--kapur)">👩‍🏫</div><div><h1>Ruang guru</h1><p id="guruStatus">Diperbarui ${jam(G.data.sekarang)}, otomatis setiap 20 detik.</p></div></div>
@@ -720,7 +768,8 @@ function renderGuru(){
   <div class="saring"><select aria-label="Kelas" onchange="G.kelas=this.value;renderGuru()">${opsiKelas}</select>
   <select aria-label="Mapel" onchange="G.mapel=this.value;renderGuru()">${opsiMapel}</select>
   <select aria-label="Waktu" onchange="G.hari=this.value;renderGuru()"><option value="ini" ${G.hari==="ini"?"selected":""}>Hari ini</option><option value="semua" ${G.hari==="semua"?"selected":""}>Semua waktu</option></select></div>`;
-  h += ({pantau:guruPantau, rank:guruRank, aktivitas:guruAktivitas, rekap:guruRekap})[G.tab]();
+  if(G.tab==="atur"){ h = h.replace(/<div class="saring">[\s\S]*?<\/div>/,""); h += guruAtur(); }
+  else h += ({pantau:guruPantau, rank:guruRank, aktivitas:guruAktivitas, rekap:guruRekap})[G.tab]();
   app.innerHTML = h;
 }
 function statusSesi(p){

@@ -124,14 +124,33 @@ details.daftar summary{cursor:pointer;font-weight:800;padding:10px 0;list-style:
 details.daftar summary::-webkit-details-marker{display:none}
 details.daftar summary::after{content:"Buka";color:var(--abu);font-weight:700}
 details.daftar[open] summary::after{content:"Tutup"}
-.nums{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;padding:4px 0 14px}
-.nums button{aspect-ratio:1;border-radius:50%;border:2px solid var(--pensil);background:#fff;font-weight:800;font-size:14px;padding:0}
-.nums button.isi{background:var(--pensil);color:#fff}
+.nums{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;padding:4px 0 12px}
+.nums button{aspect-ratio:1;border-radius:9px;border:2px solid #c4cfdb;background:#fff;font-weight:800;font-size:14px;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.05;color:var(--tinta)}
+.nums button small{font-size:11px;font-weight:800;opacity:.9}
+.nums button.isi{background:var(--papan);border-color:var(--papan);color:#fff}
+.nums button.ragu{background:var(--kuning);border-color:#d8a91e;color:var(--tinta)}
 .nums button.kini{outline:3px solid var(--merah);outline-offset:2px}
-.legenda{display:flex;gap:14px;font-size:13px;color:var(--abu);padding-bottom:12px}
-.legenda span::before{content:"";display:inline-block;width:12px;height:12px;border-radius:50%;border:2px solid var(--pensil);vertical-align:-2px;margin-right:6px}
-.legenda span.l-isi::before{background:var(--pensil)}
-
+.legenda{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--abu);padding-bottom:10px}
+.legenda span::before{content:"";display:inline-block;width:13px;height:13px;border-radius:4px;border:2px solid #c4cfdb;background:#fff;vertical-align:-2px;margin-right:6px}
+.legenda span.l-isi::before{background:var(--papan);border-color:var(--papan)}
+.legenda span.l-ragu::before{background:var(--kuning);border-color:#d8a91e}
+.lembar{background:var(--kertas);border-radius:var(--r);padding:14px;margin-bottom:12px;box-shadow:0 1px 0 #d3dce6}
+.lembar-judul{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.lembar-judul b{font:800 18px var(--fd)}.lembar-judul span{font-weight:800;color:var(--abu)}
+.hitung{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.hitung span{font-size:12px;font-weight:800;padding:3px 9px;border-radius:99px}
+.h-isi{background:#e1ece6;color:var(--papan)}.h-ragu{background:#fdf1cc;color:#8a6500}.h-belum{background:#eef2f6;color:var(--abu)}
+.tombol-ragu{display:inline-flex;align-items:center;gap:10px;margin-top:4px;border:2px solid #d8a91e;background:#fffaf0;color:#7a5a00;border-radius:12px;padding:10px 14px;font-weight:800;font-size:16px}
+.tombol-ragu .kotak{width:22px;height:22px;border-radius:6px;border:2px solid #d8a91e;background:#fff;display:grid;place-items:center;font-size:14px}
+.tombol-ragu.on{background:var(--kuning);color:var(--tinta)}
+.tombol-ragu.on .kotak{background:var(--tinta);border-color:var(--tinta);color:var(--kuning)}
+.buku-ragu{box-shadow:0 0 0 3px var(--kuning),0 10px 24px -14px rgba(29,42,58,.35)}
+body.lebar main{max-width:1040px}
+@media (min-width:900px){
+  .ujian{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:18px;align-items:start}
+  .kanan{position:sticky;top:78px;max-height:calc(100vh - 170px);overflow:auto;border-radius:var(--r)}
+  .nums{grid-template-columns:repeat(5,1fr)}
+}
 .bawah{position:fixed;left:0;right:0;bottom:0;background:rgba(231,238,244,.94);backdrop-filter:blur(6px);border-top:1px solid #cfd9e3;z-index:15;padding:10px 14px calc(10px + env(safe-area-inset-bottom))}
 .bawah-in{max-width:720px;margin:0 auto;display:flex;gap:10px}
 .bawah .btn{margin:0;padding:13px 10px}
@@ -233,7 +252,8 @@ details.daftar[open] summary::after{content:"Tutup"}
 .modal{position:fixed;inset:0;background:rgba(18,30,25,.55);display:none;align-items:flex-end;justify-content:center;z-index:30;padding:14px}
 .modal.buka{display:flex}
 .modal .buku{max-width:460px;width:100%;margin:0 0 env(safe-area-inset-bottom)}
-@media (min-width:560px){.modal{align-items:center}.nums{grid-template-columns:repeat(10,1fr)}}
+@media (min-width:560px){.modal{align-items:center}}
+@media (min-width:560px) and (max-width:899px){.nums{grid-template-columns:repeat(10,1fr)}}
 @media (max-width:500px){.tabel th,.tabel td{padding:8px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.stempel svg path{stroke-dashoffset:0}}
 </style>
@@ -392,7 +412,7 @@ let S = store.get("ulangan_sesi", null);
 let profil = store.get("ulangan_profil", {});
 let tick = null;
 function simpan(){ store.set("ulangan_sesi", S); }
-function papan(judul, sub){ $("#judul").textContent = judul; $("#subjudul").textContent = sub || CONFIG.SEKOLAH; }
+function papan(judul, sub){ document.body.classList.remove("lebar"); $("#judul").textContent = judul; $("#subjudul").textContent = sub || CONFIG.SEKOLAH; }
 function bawah(html){ let b=$("#bawah"); if(!html){ if(b) b.remove(); return; } if(!b){ b=document.createElement("div"); b.id="bawah"; b.className="bawah"; document.body.appendChild(b);} b.innerHTML=`<div class="bawah-in">${html}</div>`; }
 function atas(){ window.scrollTo({top:0}); }
 
@@ -495,30 +515,44 @@ function tutupPeringatan(){ $("#peringatan").classList.remove("buka"); }
 function bankS(){ return DATA[S.kelas][S.mapel]; }
 function layarSoal(){
   startTimer();
+  if(!S.ragu) S.ragu = Array(S.jwb.length).fill(false);
   const bank = bankS(), it = S.soal[S.cur], q = bank[it.i], n = bank.length;
-  const terjawab = S.jwb.filter(j=>j!==null).length;
+  const terjawab = S.jwb.filter(j=>j!==null).length, nRagu = S.ragu.filter(Boolean).length;
   papan(MAPEL[S.mapel].nama, S.nama);
+  document.body.classList.add("lebar");
   const hati = Array.from({length:CONFIG.MAKS_KELUAR},(_,i)=>i<(S.keluar||0)?"🤍":"❤️").join("");
   let h = `<div class="penjaga"><span class="hati" aria-hidden="true">${hati}</span><span>Tetap di halaman ini sampai selesai, ya.${S.keluar?` Kamu sudah keluar ${S.keluar} kali.`:""}</span></div>
+  <div class="ujian"><div class="kiri">
   <div class="kemajuan"><span>Soal ${S.cur+1}/${n}</span><span class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="${n}" aria-valuenow="${terjawab}" aria-label="Soal terjawab"><i style="width:${terjawab/n*100}%"></i></span><span>${terjawab} terjawab</span></div>
-  <div class="buku"><span class="no" aria-hidden="true">${S.cur+1}.</span><span class="topik">${esc(q.t)}</span><p class="qtext">${fmt(q.q)}</p><div role="radiogroup" aria-label="Pilihan jawaban">`;
+  <div class="buku ${S.ragu[S.cur]?"buku-ragu":""}"><span class="no" aria-hidden="true">${S.cur+1}.</span><span class="topik">${esc(q.t)}</span><p class="qtext">${fmt(q.q)}</p><div role="radiogroup" aria-label="Pilihan jawaban">`;
   it.o.forEach((oi,k)=>{
     const sel = S.jwb[S.cur]===k;
     h += `<button class="opsi ${sel?"pilih":""}" role="radio" aria-checked="${sel}" onclick="jawab(${k})"><span class="bulat">${"ABCD"[k]}</span><span>${fmt(q.o[oi])}</span></button>`;
   });
-  h += `</div></div><details class="daftar" ${store.get("ulangan_daftar_buka",false)?"open":""} ontoggle="store.set('ulangan_daftar_buka',this.open)"><summary>Lembar jawaban (${terjawab}/${n})</summary><div class="nums">`;
-  S.jwb.forEach((j,i)=>{ h += `<button class="${j!==null?"isi":""} ${i===S.cur?"kini":""}" onclick="ke(${i})" aria-label="Soal ${i+1}${j!==null?", sudah dijawab":""}">${i+1}</button>`; });
-  h += `</div><div class="legenda"><span class="l-isi">Sudah dijawab</span><span>Belum</span></div></details>`;
+  h += `</div><button class="tombol-ragu ${S.ragu[S.cur]?"on":""}" aria-pressed="${S.ragu[S.cur]}" onclick="toggleRagu()"><span class="kotak" aria-hidden="true">${S.ragu[S.cur]?"✓":""}</span>Ragu-ragu</button></div></div>
+  <aside class="kanan"><div class="lembar"><div class="lembar-judul"><b>Lembar jawaban</b><span>${terjawab}/${n}</span></div>
+  <div class="hitung"><span class="h-isi">${terjawab-S.jwb.filter((j,i)=>j!==null&&S.ragu[i]).length} yakin</span><span class="h-ragu">${nRagu} ragu</span><span class="h-belum">${n-terjawab} belum</span></div><div class="nums">`;
+  S.jwb.forEach((j,i)=>{
+    const st = S.ragu[i] ? "ragu" : (j!==null ? "isi" : "");
+    const ket = S.ragu[i] ? "ragu-ragu" : (j!==null ? "sudah dijawab" : "belum dijawab");
+    h += `<button class="${st} ${i===S.cur?"kini":""}" onclick="ke(${i})" aria-label="Soal ${i+1}, ${ket}"><span>${i+1}</span>${j!==null?`<small>${"ABCD"[j]}</small>`:""}</button>`;
+  });
+  h += `</div><div class="legenda"><span class="l-isi">Sudah dijawab</span><span class="l-ragu">Ragu-ragu</span><span>Belum</span></div>
+  <button class="btn btn-utama" style="margin:4px 0 0" onclick="bukaModal()">Kumpulkan jawaban</button></div></aside></div>`;
   app.innerHTML = h;
   const akhir = S.cur===n-1;
   bawah(`<button class="btn btn-garis" onclick="ke(${S.cur-1})" ${S.cur===0?"disabled":""}>Sebelumnya</button>` +
         (akhir ? `<button class="btn btn-utama" onclick="bukaModal()">Kumpulkan</button>` : `<button class="btn btn-papan" onclick="ke(${S.cur+1})">Berikutnya</button>`));
 }
-function jawab(k){ S.jwb[S.cur]=k; simpan(); layarSoal(); if(S.cur<S.jwb.length-1) setTimeout(()=>ke(S.cur+1),260); }
+function toggleRagu(){ S.ragu[S.cur]=!S.ragu[S.cur]; simpan(); layarSoal(); }
+function jawab(k){ S.jwb[S.cur]=k; simpan(); layarSoal(); if(S.cur<S.jwb.length-1 && !S.ragu[S.cur]) setTimeout(()=>ke(S.cur+1),260); }
 function ke(n){ if(n<0||n>=S.jwb.length) return; S.cur=n; simpan(); layarSoal(); atas(); }
 function bukaModal(){
-  const sisa = S.jwb.filter(j=>j===null).length;
-  $("#modalTxt").textContent = sisa ? `Masih ada ${sisa} soal yang belum dijawab. Soal yang kosong dihitung salah.` : "Semua soal sudah dijawab. Setelah dikumpulkan, jawaban tidak bisa diubah lagi.";
+  const sisa = S.jwb.filter(j=>j===null).length, ragu = (S.ragu||[]).filter(Boolean).length;
+  const bagian = [];
+  if(sisa) bagian.push(`${sisa} soal belum dijawab (dihitung salah)`);
+  if(ragu) bagian.push(`${ragu} soal masih ditandai ragu-ragu`);
+  $("#modalTxt").textContent = bagian.length ? `Masih ada ${bagian.join(" dan ")}. Periksa lagi lewat lembar jawaban, atau kumpulkan sekarang.` : "Semua soal sudah dijawab. Setelah dikumpulkan, jawaban tidak bisa diubah lagi.";
   $("#modal").classList.add("buka");
 }
 function tutupModal(){ $("#modal").classList.remove("buka"); }

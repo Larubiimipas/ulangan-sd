@@ -10,9 +10,10 @@
  * Script properties, lalu guru membuat kata sandi baru dari web.
  */
 const KOLOM = {
-  Nilai: ['waktu', 'kelas', 'mapel', 'nama', 'benar', 'total', 'nilai', 'durasi', 'keluar', 'alasan', 'sesi'],
-  Aktivitas: ['waktu', 'kelas', 'mapel', 'nama', 'jenis', 'keluar', 'terjawab', 'keterangan', 'sesi'],
-  Pantauan: ['sesi', 'kelas', 'mapel', 'nama', 'status', 'terjawab', 'total', 'keluar', 'mulai', 'terakhir']
+  Nilai: ['waktu', 'kelas', 'mapel', 'nama', 'benar', 'total', 'nilai', 'durasi', 'keluar', 'alasan', 'sesi', 'kode'],
+  Aktivitas: ['waktu', 'kelas', 'mapel', 'nama', 'jenis', 'keluar', 'terjawab', 'keterangan', 'sesi', 'kode'],
+  Pantauan: ['sesi', 'kelas', 'mapel', 'nama', 'status', 'terjawab', 'total', 'keluar', 'mulai', 'terakhir', 'kode'],
+  Ulangan: ['kode', 'nama', 'kelas', 'mapel', 'durasi', 'aktif', 'dibuat']
 };
 
 function sheet_(nama) {
@@ -41,12 +42,35 @@ function rows_(nama) {
 
 const teks_ = (s, n) => String(s == null ? '' : s).trim().replace(/\s+/g, ' ').slice(0, n || 60);
 const angka_ = x => Number(x) || 0;
+const kode_ = x => String(x == null ? '' : x).toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
+
+// ---------- Ulangan & kode ----------
+function cariUlangan_(kode) {
+  kode = kode_(kode);
+  return rows_('Ulangan').find(u => String(u.kode) === kode) || null;
+}
+function cekKode_(d) {
+  const u = cariUlangan_(d.kode);
+  if (!u) return json_({ ok: false, error: 'Kode tidak ditemukan. Periksa lagi kode dari gurumu.' });
+  if (!(u.aktif === true || String(u.aktif).toUpperCase() === 'TRUE')) return json_({ ok: false, error: 'Ulangan ini sudah ditutup oleh guru.' });
+  if (d.kelas && String(u.kelas) !== String(d.kelas)) return json_({ ok: false, error: 'Kode ini untuk Kelas ' + u.kelas + ', bukan kelasmu.' });
+  if (d.mapel && String(u.mapel) !== String(d.mapel)) return json_({ ok: false, error: 'Kode ini bukan untuk mata pelajaran yang kamu pilih.' });
+  return json_({ ok: true, ulangan: { kode: String(u.kode), nama: String(u.nama), kelas: String(u.kelas), mapel: String(u.mapel), durasi: Number(u.durasi) || 0 } });
+}
+function kodeBaru_() {
+  const huruf = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // tanpa O/0/I/1 agar tidak tertukar
+  const ada = rows_('Ulangan').map(u => String(u.kode));
+  let k;
+  do { k = ''; for (let i = 0; i < 6; i++) k += huruf[Math.floor(Math.random() * huruf.length)]; } while (ada.indexOf(k) >= 0);
+  return k;
+}
 
 function doPost(e) {
   let d;
   try { d = JSON.parse(e.postData.contents); } catch (err) { return json_({ ok: false, error: 'data tidak valid' }); }
   const aksi = d.aksi || 'nilai';
   if (aksi === 'admin') return admin_(d);
+  if (aksi === 'cekKode') return cekKode_(d);
 
   const lock = LockService.getScriptLock();
   lock.waitLock(15000);
@@ -58,7 +82,7 @@ function doPost(e) {
       sheet_('Nilai').appendRow([
         new Date(d.waktu || now), teks_(d.kelas, 3), teks_(d.mapel, 10), nama,
         angka_(d.benar), angka_(d.total), angka_(d.nilai), angka_(d.durasi),
-        angka_(d.keluar), teks_(d.alasan, 40), teks_(d.sesi, 40)
+        angka_(d.keluar), teks_(d.alasan, 40), teks_(d.sesi, 40), kode_(d.kode)
       ]);
       upsertPantauan_(d, nama, 'selesai', now);
       log_(d, nama, 'selesai', now);
@@ -78,7 +102,7 @@ function log_(d, nama, jenis, now) {
   if (jenis === 'progres') return; // progres hanya memperbarui Pantauan
   sheet_('Aktivitas').appendRow([
     now, teks_(d.kelas, 3), teks_(d.mapel, 10), nama, jenis,
-    angka_(d.keluar), angka_(d.terjawab), teks_(d.keterangan, 80), teks_(d.sesi, 40)
+    angka_(d.keluar), angka_(d.terjawab), teks_(d.keterangan, 80), teks_(d.sesi, 40), kode_(d.kode)
   ]);
 }
 
@@ -89,7 +113,7 @@ function upsertPantauan_(d, nama, status, now) {
   const ids = sh.getLastRow() > 1 ? sh.getRange(2, 1, sh.getLastRow() - 1, 1).getValues().map(r => String(r[0])) : [];
   const i = ids.indexOf(sesi);
   const row = [sesi, teks_(d.kelas, 3), teks_(d.mapel, 10), nama, status,
-    angka_(d.terjawab), angka_(d.total), angka_(d.keluar), d.mulai ? new Date(d.mulai) : now, now];
+    angka_(d.terjawab), angka_(d.total), angka_(d.keluar), d.mulai ? new Date(d.mulai) : now, now, kode_(d.kode)];
   if (i < 0) sh.appendRow(row);
   else {
     if (!d.mulai) row[8] = sh.getRange(i + 2, 9).getValue();
@@ -138,6 +162,22 @@ function admin_(d) {
       Utilities.sleep(800);
       return json_({ ok: false, error: sub === 'ganti' ? 'Kata sandi lama salah.' : 'Kata sandi salah.' });
     }
+    if (sub === 'buatUlangan') {
+      const nama = teks_(d.nama, 60), kelas = teks_(d.kelas, 3), mapel = teks_(d.mapel, 10);
+      if (!nama || !kelas || !mapel) return json_({ ok: false, error: 'Nama ulangan, kelas, dan mapel wajib diisi.' });
+      const durasi = d.tanpaWaktu ? 0 : Math.min(240, Math.max(5, angka_(d.durasi) || 60));
+      const kode = kodeBaru_();
+      sheet_('Ulangan').appendRow([kode, nama, kelas, mapel, durasi, true, new Date()]);
+      return json_({ ok: true, kode: kode });
+    }
+    if (sub === 'aturUlangan') {
+      const sh = sheet_('Ulangan'), kode = kode_(d.kode);
+      const ids = sh.getLastRow() > 1 ? sh.getRange(2, 1, sh.getLastRow() - 1, 1).getValues().map(r => String(r[0])) : [];
+      const i = ids.indexOf(kode);
+      if (i < 0) return json_({ ok: false, error: 'Ulangan tidak ditemukan.' });
+      sh.getRange(i + 2, 6).setValue(!!d.aktif);
+      return json_({ ok: true });
+    }
     if (sub === 'ganti') {
       if (String(d.baru || '').length < 6) return json_({ ok: false, error: 'Kata sandi baru minimal 6 karakter.' });
       simpanSandi_(String(d.baru));
@@ -149,6 +189,7 @@ function admin_(d) {
   const akt = rows_('Aktivitas');
   return json_({
     ok: true,
+    ulangan: rows_('Ulangan'),
     nilai: rows_('Nilai'),
     pantauan: rows_('Pantauan'),
     aktivitas: akt.slice(-1000),
@@ -158,11 +199,12 @@ function admin_(d) {
 
 // Data ranking untuk siswa (?kelas=5) — hanya kolom yang perlu ditampilkan
 function doGet(e) {
-  const kelas = e && e.parameter && e.parameter.kelas;
+  const p = (e && e.parameter) || {};
+  const kodes = String(p.kode || '').split(',').map(kode_).filter(String);
   const data = rows_('Nilai')
-    .filter(r => r.nama && (!kelas || String(r.kelas) === String(kelas)))
+    .filter(r => r.nama && (!p.kelas || String(r.kelas) === String(p.kelas)) && (!kodes.length || kodes.indexOf(String(r.kode)) >= 0))
     .map(r => ({ waktu: r.waktu, kelas: String(r.kelas), mapel: String(r.mapel), nama: String(r.nama),
-      benar: Number(r.benar), total: Number(r.total), nilai: Number(r.nilai), durasi: Number(r.durasi) }));
+      benar: Number(r.benar), total: Number(r.total), nilai: Number(r.nilai), durasi: Number(r.durasi), kode: String(r.kode || '') }));
   return json_(data);
 }
 

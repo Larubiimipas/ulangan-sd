@@ -130,23 +130,16 @@ details.daftar[open] summary::after{content:"Tutup"}
 .nums button{aspect-ratio:1;border-radius:9px;border:2px solid #c4cfdb;background:#fff;font-weight:800;font-size:14px;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.05;color:var(--tinta)}
 .nums button small{font-size:11px;font-weight:800;opacity:.9}
 .nums button.isi{background:var(--papan);border-color:var(--papan);color:#fff}
-.nums button.ragu{background:var(--kuning);border-color:#d8a91e;color:var(--tinta)}
 .nums button.kini{outline:3px solid var(--merah);outline-offset:2px}
 .legenda{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--abu);padding-bottom:10px}
 .legenda span::before{content:"";display:inline-block;width:13px;height:13px;border-radius:4px;border:2px solid #c4cfdb;background:#fff;vertical-align:-2px;margin-right:6px}
 .legenda span.l-isi::before{background:var(--papan);border-color:var(--papan)}
-.legenda span.l-ragu::before{background:var(--kuning);border-color:#d8a91e}
 .lembar{background:var(--kertas);border-radius:var(--r);padding:14px;margin-bottom:12px;box-shadow:0 1px 0 #d3dce6}
 .lembar-judul{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
 .lembar-judul b{font:800 18px var(--fd)}.lembar-judul span{font-weight:800;color:var(--abu)}
 .hitung{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
 .hitung span{font-size:12px;font-weight:800;padding:3px 9px;border-radius:99px}
-.h-isi{background:#e1ece6;color:var(--papan)}.h-ragu{background:#fdf1cc;color:#8a6500}.h-belum{background:#eef2f6;color:var(--abu)}
-.tombol-ragu{display:inline-flex;align-items:center;gap:10px;margin-top:4px;border:2px solid #d8a91e;background:#fffaf0;color:#7a5a00;border-radius:12px;padding:10px 14px;font-weight:800;font-size:16px}
-.tombol-ragu .kotak{width:22px;height:22px;border-radius:6px;border:2px solid #d8a91e;background:#fff;display:grid;place-items:center;font-size:14px}
-.tombol-ragu.on{background:var(--kuning);color:var(--tinta)}
-.tombol-ragu.on .kotak{background:var(--tinta);border-color:var(--tinta);color:var(--kuning)}
-.buku-ragu{box-shadow:0 0 0 3px var(--kuning),0 10px 24px -14px rgba(29,42,58,.35)}
+.h-isi{background:#e1ece6;color:var(--papan)}.h-belum{background:#eef2f6;color:var(--abu)}
 body.lebar main{max-width:1040px}
 @media (min-width:900px){
   .ujian{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:18px;align-items:start}
@@ -222,6 +215,20 @@ body.lebar main{max-width:1040px}
 @keyframes jatuh{to{transform:translateY(110vh) rotate(720deg)}}
 .link-guru{display:block;margin:28px auto 0;text-align:center;color:var(--abu);font-weight:700;background:none;border:none;text-decoration:underline;text-underline-offset:3px}
 
+/* ---------- kode ulangan ---------- */
+.input-kode{font:800 30px var(--fd);letter-spacing:.3em;text-transform:uppercase;text-align:center}
+.baris-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0 14px}
+.pilih{width:100%;font:700 17px var(--fb);color:var(--tinta);padding:10px 8px;border:2px solid #c4cfdb;border-radius:10px;background:#fff}
+.input:disabled{opacity:.35}
+.kartu-ulangan{background:#fff;border-radius:var(--r);padding:14px;margin-bottom:12px;border-left:6px solid var(--papan)}
+.kartu-ulangan.tutup{border-left-color:#c4cfdb;opacity:.85}
+.ku-atas{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.ku-atas b{display:block;font:800 19px var(--fd)}
+.ku-atas span:not(.lencana){font-size:13px;color:var(--abu)}
+.kode-besar{font:800 40px/1 var(--fd);letter-spacing:.18em;color:var(--merah);background:#fff8e1;border:2px dashed #e0b84a;border-radius:12px;text-align:center;padding:12px 6px;margin:12px 0;user-select:all}
+.ku-aksi{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ku-aksi .btn{margin:0;padding:10px 8px;font-size:15px;text-decoration:none;display:flex;align-items:center;justify-content:center}
+
 /* ---------- aturan & teguran ---------- */
 .daftar-aturan{margin:0 0 14px;padding-left:22px;line-height:var(--ln)}
 .daftar-aturan li{margin-bottom:6px}
@@ -273,7 +280,7 @@ body.lebar main{max-width:1040px}
 <header class="papan"><div class="papan-in">
   <div class="logo" aria-hidden="true">7</div>
   <div class="papan-judul"><b id="judul">Ulangan Online</b><span id="subjudul">SD Negeri 7 Kumbe</span></div>
-  <span class="timer" id="timer" aria-live="off">60:00</span>
+  <span class="timer" id="timer" hidden></span>
 </div></header>
 <main id="app"></main>
 
@@ -298,7 +305,6 @@ const CONFIG = {
   SEKOLAH: "SD Negeri 7 Kumbe",
   // URL Web App Google Apps Script (lihat Code.gs). Kosongkan untuk menyimpan nilai di perangkat ini saja.
   SCRIPT_URL: "https://script.google.com/macros/s/AKfycbx4xGOCbL81H2TW0qQyOt4V-tCNgj7PbFjciquZ7MAstdjQfrDWGk5HAnJtzFJZSJvs/exec",
-  DURASI_MENIT: 60,          // waktu mengerjakan per mapel
   TAMPILKAN_PEMBAHASAN: true, // setelah selesai, siswa bisa melihat kunci & pembahasan
   MAKS_KELUAR: 3,             // keluar sebanyak ini → jawaban dikumpulkan otomatis
   SHEET_URL: "https://docs.google.com/spreadsheets/d/16aKAgU24CTsNJUC4khLV9oitSvTRJqUffOGcbB7sDfc/edit" // hanya bisa dibuka pemilik
@@ -457,37 +463,62 @@ function simpanNama(){
 }
 
 /* ---------- Menu ---------- */
-function nilaiLokal(m){
-  const r = store.get("ulangan_nilai_lokal",[]).filter(x=>x.mapel===m && String(x.kelas)===String(profil.kelas) && kunciNama(x.nama)===kunciNama(profil.nama||""));
-  return r.length ? r[0] : null;
-}
 function layarMenu(){
   stopTimer(); bawah(); papan("Kelas " + profil.kelas);
   const d = DATA[profil.kelas];
-  let h = `<div class="halo"><div class="inisial">${esc(inisial(profil.nama))}</div><div><h1>Halo, ${esc(namaDepan(profil.nama))}!</h1><p>Pilih ulangan yang ingin dikerjakan.</p></div></div>`;
+  let h = `<div class="halo"><div class="inisial">${esc(inisial(profil.nama))}</div><div><h1>Halo, ${esc(namaDepan(profil.nama))}!</h1><p>Pilih mata pelajaran, lalu masukkan kode ulangan dari gurumu.</p></div></div>`;
   for(const m in MAPEL){
     if(!d[m]) continue;
-    const topik = [...new Set(d[m].map(x=>x.t))], sudah = nilaiLokal(m);
-    h += `<button class="mapel" onclick="layarAturan('${m}')"><span class="sampul" style="background:${MAPEL[m].warna}">${MAPEL[m].ikon}</span><span class="isi">
+    const topik = [...new Set(d[m].map(x=>x.t))];
+    h += `<button class="mapel" onclick="layarKode('${m}')"><span class="sampul" style="background:${MAPEL[m].warna}">${MAPEL[m].ikon}</span><span class="isi">
       <h3>${MAPEL[m].nama}</h3><p>${topik.map(esc).join(", ")}</p>
-      <span class="chip">${d[m].length} soal</span><span class="chip">${CONFIG.DURASI_MENIT} menit</span>${sudah?`<span class="chip ok">Sudah dikerjakan, nilai ${sudah.nilai}</span>`:""}</span></button>`;
+      <span class="chip">${d[m].length} soal</span><span class="chip">🔑 Pakai kode dari guru</span></span></button>`;
   }
   app.innerHTML = h + `<button class="btn btn-papan" onclick="layarRanking()">🏆 Lihat ranking kelas</button><button class="btn btn-teks" onclick="layarNama()">Bukan ${esc(namaDepan(profil.nama))}? Ganti nama</button>`;
   atas();
 }
 
+/* ---------- Kode ulangan ---------- */
+let ulanganDipilih = null;
+function layarKode(m, pesan, nilaiAwal){
+  bawah(); papan(MAPEL[m].nama, profil.nama);
+  app.innerHTML = `<div class="buku"><h2>Masukkan kode ulangan</h2>
+  <p class="ket">Kode ulangan ${esc(MAPEL[m].nama)} kamu dapat dari guru. Kodenya 6 huruf/angka, misalnya <b>K7M3QX</b>.</p>
+  <label class="lbl" for="kode">Kode ulangan</label>
+  <input class="input input-kode" id="kode" maxlength="8" autocomplete="off" autocapitalize="characters" spellcheck="false" value="${esc(nilaiAwal||"")}" placeholder="______">
+  ${pesan?`<p class="status gagal" role="alert">${esc(pesan)}</p>`:""}
+  <button class="btn btn-utama" id="btnKode" onclick="cekKode('${m}')">Lanjut</button>
+  <button class="btn btn-teks" onclick="layarMenu()">Kembali</button></div>`;
+  const i=$("#kode"); i.focus();
+  i.addEventListener("input",()=>{ i.value=i.value.toUpperCase().replace(/[^A-Z0-9]/g,""); });
+  i.addEventListener("keydown",e=>{ if(e.key==="Enter") cekKode(m); });
+  atas();
+}
+async function cekKode(m){
+  const kode = $("#kode").value.trim().toUpperCase();
+  if(kode.length<4) return layarKode(m, "Kode belum lengkap.", kode);
+  if(!CONFIG.SCRIPT_URL){ ulanganDipilih={kode, nama:"Ulangan "+MAPEL[m].nama, kelas:profil.kelas, mapel:m}; return layarAturan(m); }
+  const b=$("#btnKode"); b.disabled=true; b.textContent="Memeriksa kode…";
+  try{
+    const r = await (await fetch(CONFIG.SCRIPT_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({aksi:"cekKode",kode,kelas:profil.kelas,mapel:m})})).json();
+    if(!r.ok) return layarKode(m, r.error||"Kode tidak bisa dipakai.", kode);
+    ulanganDipilih = r.ulangan; layarAturan(m);
+  }catch(e){ layarKode(m, "Tidak bisa memeriksa kode. Periksa koneksi internet.", kode); }
+}
+
 /* ---------- Ujian ---------- */
 function layarAturan(m){
+  const u = ulanganDipilih; if(!u) return layarKode(m);
   bawah(); papan(MAPEL[m].nama, profil.nama);
   const n = DATA[profil.kelas][m].length;
-  app.innerHTML = `<div class="buku aturan"><h2>Aturan ulangan</h2>
+  app.innerHTML = `<div class="buku aturan"><span class="topik">${esc(u.nama)}</span><h2>Aturan ulangan</h2>
   <p class="ket">Baca dulu sebelum mulai, ya.</p>
   <ol class="daftar-aturan">
-    <li><b>${n} soal pilihan ganda, waktu ${CONFIG.DURASI_MENIT} menit.</b> Kalau waktu habis, jawabanmu dikumpulkan otomatis.</li>
+    <li><b>${n} soal pilihan ganda.</b> Kerjakan dengan teliti, lalu kumpulkan kalau sudah selesai.</li>
     <li><b>Jangan keluar dari halaman ulangan.</b> Jangan pindah ke aplikasi lain, membuka tab lain, menekan tombol Home, atau mengunci HP.</li>
     <li><b>Gurumu bisa melihat setiap kali kamu keluar.</b> Setiap keluar, satu hati ❤️ hilang.</li>
     <li><b>Kalau keluar ${CONFIG.MAKS_KELUAR} kali, jawabanmu langsung dikumpulkan</b>, walaupun belum selesai.</li>
-    <li>Kalau ragu dengan jawaban, tekan <b>Ragu-ragu</b>, lalu periksa lagi sebelum mengumpulkan.</li>
+    <li>Periksa lagi semua jawaban lewat <b>lembar jawaban</b> sebelum mengumpulkan.</li>
   </ol>
   <label class="setuju"><input type="checkbox" id="setuju" onchange="$('#btnMulai').disabled=!this.checked"> Saya mengerti dan tidak akan keluar dari halaman ulangan</label>
   <button class="btn btn-utama" id="btnMulai" disabled onclick="mulai('${m}')">Mulai ulangan</button>
@@ -495,8 +526,9 @@ function layarAturan(m){
   atas();
 }
 function mulai(m){
-  const bank = DATA[profil.kelas][m];
-  S = {id:Date.now().toString(36)+Math.random().toString(36).slice(2,7), kelas:profil.kelas, nama:profil.nama, mapel:m, soal:acak(bank.map((_,i)=>i)).map(i=>({i, o:acak([0,1,2,3])})), jwb:Array(bank.length).fill(null), cur:0, mulai:Date.now(), selesai:null, keluar:0, detak:Date.now()};
+  const bank = DATA[profil.kelas][m], u = ulanganDipilih;
+  S = {id:Date.now().toString(36)+Math.random().toString(36).slice(2,7), kode:u.kode, namaUlangan:u.nama, kelas:profil.kelas, nama:profil.nama, mapel:m, soal:acak(bank.map((_,i)=>i)).map(i=>({i, o:acak([0,1,2,3])})), jwb:Array(bank.length).fill(null), cur:0, mulai:Date.now(), selesai:null, keluar:0, detak:Date.now()};
+  const akhir = store.get("ulangan_terakhir",{}); akhir[m]={kode:u.kode, nama:u.nama}; store.set("ulangan_terakhir",akhir);
   simpan(); lapor("mulai"); layarSoal();
   try{ const el=document.documentElement; (el.requestFullscreen||el.webkitRequestFullscreen||(()=>{})).call(el); }catch(e){}
 }
@@ -509,7 +541,7 @@ function kirimData(body){
 }
 function lapor(jenis, extra){
   if(!S) return;
-  const d = {aksi:"log", jenis, sesi:S.id, kelas:S.kelas, mapel:S.mapel, nama:S.nama, keluar:S.keluar||0, terjawab:S.jwb.filter(j=>j!==null).length, total:S.jwb.length, ...(extra||{})};
+  const d = {aksi:"log", jenis, sesi:S.id, kode:S.kode||"", kelas:S.kelas, mapel:S.mapel, nama:S.nama, keluar:S.keluar||0, terjawab:S.jwb.filter(j=>j!==null).length, total:S.jwb.length, ...(extra||{})};
   if(jenis==="mulai") d.mulai = new Date(S.mulai).toISOString();
   kirimData(JSON.stringify(d)).catch(()=>{});
 }
@@ -558,29 +590,27 @@ function tutupPeringatan(){ $("#peringatan").classList.remove("buka"); }
 function bankS(){ return DATA[S.kelas][S.mapel]; }
 function layarSoal(){
   startTimer();
-  if(!S.ragu) S.ragu = Array(S.jwb.length).fill(false);
   const bank = bankS(), it = S.soal[S.cur], q = bank[it.i], n = bank.length;
-  const terjawab = S.jwb.filter(j=>j!==null).length, nRagu = S.ragu.filter(Boolean).length;
+  const terjawab = S.jwb.filter(j=>j!==null).length;
   papan(MAPEL[S.mapel].nama, S.nama);
   document.body.classList.add("lebar");
   const hati = Array.from({length:CONFIG.MAKS_KELUAR},(_,i)=>i<(S.keluar||0)?"🤍":"❤️").join("");
   let h = `<div class="penjaga"><span class="hati" aria-hidden="true">${hati}</span><span>Tetap di halaman ini sampai selesai, ya.${S.keluar?` Kamu sudah keluar ${S.keluar} kali.`:""}</span></div>
   <div class="ujian"><div class="kiri">
   <div class="kemajuan"><span>Soal ${S.cur+1}/${n}</span><span class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="${n}" aria-valuenow="${terjawab}" aria-label="Soal terjawab"><i style="width:${terjawab/n*100}%"></i></span><span>${terjawab} terjawab</span></div>
-  <div class="buku ${S.ragu[S.cur]?"buku-ragu":""}"><span class="no" aria-hidden="true">${S.cur+1}.</span><span class="topik">${esc(q.t)}</span><p class="qtext">${fmt(q.q)}</p><div role="radiogroup" aria-label="Pilihan jawaban">`;
+  <div class="buku"><span class="no" aria-hidden="true">${S.cur+1}.</span><span class="topik">${esc(q.t)}</span><p class="qtext">${fmt(q.q)}</p><div role="radiogroup" aria-label="Pilihan jawaban">`;
   it.o.forEach((oi,k)=>{
     const sel = S.jwb[S.cur]===k;
     h += `<button class="opsi ${sel?"pilih":""}" role="radio" aria-checked="${sel}" onclick="jawab(${k})"><span class="bulat">${"ABCD"[k]}</span><span>${fmt(q.o[oi])}</span></button>`;
   });
-  h += `</div><button class="tombol-ragu ${S.ragu[S.cur]?"on":""}" aria-pressed="${S.ragu[S.cur]}" onclick="toggleRagu()"><span class="kotak" aria-hidden="true">${S.ragu[S.cur]?"✓":""}</span>Ragu-ragu</button></div></div>
+  h += `</div></div></div>
   <aside class="kanan"><div class="lembar"><div class="lembar-judul"><b>Lembar jawaban</b><span>${terjawab}/${n}</span></div>
-  <div class="hitung"><span class="h-isi">${terjawab-S.jwb.filter((j,i)=>j!==null&&S.ragu[i]).length} yakin</span><span class="h-ragu">${nRagu} ragu</span><span class="h-belum">${n-terjawab} belum</span></div><div class="nums">`;
+  <div class="hitung"><span class="h-isi">${terjawab} sudah dijawab</span><span class="h-belum">${n-terjawab} belum</span></div><div class="nums">`;
   S.jwb.forEach((j,i)=>{
-    const st = S.ragu[i] ? "ragu" : (j!==null ? "isi" : "");
-    const ket = S.ragu[i] ? "ragu-ragu" : (j!==null ? "sudah dijawab" : "belum dijawab");
+    const st = j!==null ? "isi" : "", ket = j!==null ? "sudah dijawab" : "belum dijawab";
     h += `<button class="${st} ${i===S.cur?"kini":""}" onclick="ke(${i})" aria-label="Soal ${i+1}, ${ket}"><span>${i+1}</span>${j!==null?`<small>${"ABCD"[j]}</small>`:""}</button>`;
   });
-  h += `</div><div class="legenda"><span class="l-isi">Sudah dijawab</span><span class="l-ragu">Ragu-ragu</span><span>Belum</span></div>
+  h += `</div><div class="legenda"><span class="l-isi">Sudah dijawab</span><span>Belum dijawab</span></div>
   <button class="btn btn-utama" style="margin:4px 0 0" onclick="bukaModal()">Kumpulkan jawaban</button></div></aside></div>`;
   app.innerHTML = h;
   pasangPenahanKembali();
@@ -588,31 +618,22 @@ function layarSoal(){
   bawah(`<button class="btn btn-garis" onclick="ke(${S.cur-1})" ${S.cur===0?"disabled":""}>Sebelumnya</button>` +
         (akhir ? `<button class="btn btn-utama" onclick="bukaModal()">Kumpulkan</button>` : `<button class="btn btn-papan" onclick="ke(${S.cur+1})">Berikutnya</button>`));
 }
-function toggleRagu(){ S.ragu[S.cur]=!S.ragu[S.cur]; simpan(); layarSoal(); }
 function jawab(k){ S.jwb[S.cur]=k; simpan(); layarSoal(); }
 function ke(n){ if(n<0||n>=S.jwb.length) return; S.cur=n; simpan(); layarSoal(); atas(); }
 function bukaModal(){
-  const sisa = S.jwb.filter(j=>j===null).length, ragu = (S.ragu||[]).filter(Boolean).length;
-  const bagian = [];
-  if(sisa) bagian.push(`${sisa} soal belum dijawab (dihitung salah)`);
-  if(ragu) bagian.push(`${ragu} soal masih ditandai ragu-ragu`);
-  $("#modalTxt").textContent = bagian.length ? `Masih ada ${bagian.join(" dan ")}. Periksa lagi lewat lembar jawaban, atau kumpulkan sekarang.` : "Semua soal sudah dijawab. Setelah dikumpulkan, jawaban tidak bisa diubah lagi.";
+  const sisa = S.jwb.filter(j=>j===null).length;
+  $("#modalTxt").textContent = sisa ? `Masih ada ${sisa} soal yang belum dijawab (dihitung salah). Periksa lagi lewat lembar jawaban, atau kumpulkan sekarang.` : "Semua soal sudah dijawab. Setelah dikumpulkan, jawaban tidak bisa diubah lagi.";
   $("#modal").classList.add("buka");
 }
 function tutupModal(){ $("#modal").classList.remove("buka"); }
 
 function startTimer(){
-  $("#timer").style.display="inline-block";
   if(tick) return;
   const f = ()=>{
     if(!S||S.selesai){stopTimer();return}
-    const sisa = Math.max(0, CONFIG.DURASI_MENIT*60 - Math.floor((Date.now()-S.mulai)/1000));
-    $("#timer").textContent = String(Math.floor(sisa/60)).padStart(2,"0")+":"+String(sisa%60).padStart(2,"0");
-    $("#timer").classList.toggle("low", sisa<=300);
     if(Date.now()-(S.detak||0)>60000 && !document.hidden){ S.detak=Date.now(); simpan(); lapor("progres"); }
-    if(sisa===0){ stopTimer(); S.habis=true; S.alasan="Waktu habis"; selesai(); }
   };
-  f(); tick = setInterval(f,1000);
+  f(); tick = setInterval(f,5000);
 }
 function stopTimer(){ clearInterval(tick); tick=null; $("#timer").style.display="none"; }
 
@@ -625,7 +646,7 @@ function selesai(){
   tutupModal(); if(!S||S.selesai) return;
   S.selesai = Date.now(); stopTimer();
   const r = hitung(); S.hasil = r;
-  S.rec = {waktu:new Date(S.selesai).toISOString(), kelas:S.kelas, mapel:S.mapel, nama:S.nama, benar:r.benar, total:r.total, nilai:r.nilai, durasi:Math.round((S.selesai-S.mulai)/1000), keluar:S.keluar||0, alasan:S.alasan||"Dikumpulkan siswa", sesi:S.id};
+  S.rec = {waktu:new Date(S.selesai).toISOString(), kelas:S.kelas, mapel:S.mapel, nama:S.nama, benar:r.benar, total:r.total, nilai:r.nilai, durasi:Math.round((S.selesai-S.mulai)/1000), keluar:S.keluar||0, alasan:S.alasan||"Dikumpulkan siswa", sesi:S.id, kode:S.kode||""};
   const lokal = store.get("ulangan_nilai_lokal", []); lokal.push(S.rec); store.set("ulangan_nilai_lokal", lokal);
   S.terkirim = CONFIG.SCRIPT_URL ? "mengirim" : "lokal"; simpan();
   layarHasil(true); kirim();
@@ -652,14 +673,13 @@ function layarHasil(baru){
   papan("Hasil " + MAPEL[S.mapel].nama, S.nama);
   bawah();
   app.innerHTML = `<div class="buku hasil">
-    ${S.habis?`<p class="ket">Waktu habis, jawabanmu dikumpulkan otomatis.</p>`:""}
     ${(S.alasan||"").startsWith("Keluar")?`<p class="ket" style="color:var(--merah);font-weight:800">Kamu keluar dari halaman ${S.keluar} kali, jadi jawabanmu dikumpulkan otomatis.</p>`:""}
     <div class="stempel" aria-label="Nilai ${r.nilai}">
       <svg viewBox="0 0 170 150" aria-hidden="true"><path d="M150 40 C 135 8, 40 4, 18 52 C 2 92, 40 142, 95 138 C 150 134, 172 92, 152 52 C 145 38, 128 26, 112 22" ${baru?"":'style="animation:none;stroke-dashoffset:0"'}/></svg>
       <span class="skor" id="skor">${r.nilai}</span>
     </div>
     <p class="pesan">${pesanNilai(r.nilai)}</p>
-    <div class="ringkas"><div><b>${r.benar}</b><span>benar</span></div><div><b>${r.total-r.benar}</b><span>salah/kosong</span></div><div><b>${fmtDur(dur)}</b><span>waktu</span></div></div>
+    <div class="ringkas"><div><b>${r.benar}</b><span>benar</span></div><div><b>${r.total-r.benar}</b><span>salah/kosong</span></div></div>
     <p class="status" id="status" role="status"></p>
     <button class="btn btn-garis" id="kirimUlang" hidden onclick="kirim()">Kirim ulang</button>
     <button class="btn btn-papan" onclick="layarRanking('${S.mapel}')">🏆 Lihat ranking kelas</button>
@@ -699,9 +719,12 @@ function layarTinjau(){
 /* ---------- Ranking ---------- */
 let tabRank = "mtk";
 async function ambilNilai(){
-  if(!CONFIG.SCRIPT_URL) return {data:store.get("ulangan_nilai_lokal",[]), sumber:"lokal"};
-  const r = await fetch(CONFIG.SCRIPT_URL+"?kelas="+encodeURIComponent(profil.kelas)+"&t="+Date.now());
-  return {data:await r.json(), sumber:"online"};
+  const akhir = store.get("ulangan_terakhir",{});
+  const kodes = ["mtk","ipas"].map(m=>akhir[m]&&akhir[m].kode).filter(Boolean);
+  if(!CONFIG.SCRIPT_URL) return {data:store.get("ulangan_nilai_lokal",[]).filter(r=>kodes.includes(r.kode)), sumber:"lokal", akhir};
+  if(!kodes.length) return {data:[], sumber:"online", akhir};
+  const r = await fetch(CONFIG.SCRIPT_URL+"?kelas="+encodeURIComponent(profil.kelas)+"&kode="+encodeURIComponent(kodes.join(","))+"&t="+Date.now());
+  return {data:await r.json(), sumber:"online", akhir};
 }
 function pertama(data, kelas, mapel){
   const peta = {};
@@ -722,7 +745,9 @@ async function layarRanking(tab){
   let res;
   try{ res = await ambilNilai(); }
   catch(e){ app.innerHTML = kepala("Kelas " + profil.kelas) + tabs + `<div class="kosong"><b>Ranking belum bisa dimuat</b>Periksa koneksi internet, lalu tekan Muat ulang.</div>`; return; }
-  const kls = profil.kelas, me = kunciNama(profil.nama||"");
+  const kls = profil.kelas, me = kunciNama(profil.nama||""), akhir = res.akhir||{};
+  const kodeTab = m => akhir[m] ? akhir[m].kode : "__tidak_ada__";
+  res.data = res.data.filter(r => r.kode===kodeTab(r.mapel));
   let rows, gab = tabRank==="gab";
   if(gab){
     const a = pertama(res.data,kls,"mtk"), b = pertama(res.data,kls,"ipas"), peta={};
@@ -731,12 +756,14 @@ async function layarRanking(tab){
     rows = Object.values(peta).filter(x=>x.mtk!==null&&x.ipas!==null).map(x=>({...x, nilai:Math.round((x.mtk+x.ipas)/2*10)/10}));
   } else rows = pertama(res.data,kls,tabRank);
   urutkan(rows);
-  const sub = `${rows.length} siswa${gab?" sudah mengerjakan kedua ulangan":" sudah mengerjakan"}`;
+  if(!gab && !akhir[tabRank]){ app.innerHTML = kepala("Kelas " + kls) + tabs + `<div class="kosong"><b>Belum ada ulangan ${esc(MAPEL[tabRank].nama)}</b>Ranking muncul setelah kamu mengerjakan ulangan ${esc(MAPEL[tabRank].nama)} dengan kode dari guru.</div>`; return; }
+  const namaU = !gab && akhir[tabRank] ? esc(akhir[tabRank].nama) + ": " : "";
+  const sub = namaU + `${rows.length} siswa${gab?" sudah mengerjakan kedua ulangan":" sudah mengerjakan"}`;
   let h = kepala(sub) + tabs;
   if(!rows.length){
     h += `<div class="kosong"><b>Belum ada nilai</b>${gab?"Ranking gabungan muncul setelah siswa menyelesaikan ulangan Matematika dan IPAS.":"Jadilah yang pertama menyelesaikan ulangan ini!"}</div>`;
   } else {
-    const det = r => gab ? `MTK ${r.mtk}, IPAS ${r.ipas}` : `${r.benar}/${r.total} benar, ${fmtDur(r.durasi)}`;
+    const det = r => gab ? `MTK ${r.mtk}, IPAS ${r.ipas}` : `${r.benar}/${r.total} benar`;
     const juara = (r,i) => r ? `<div class="juara j${i+1}">${i===0?'<span class="mahkota" aria-hidden="true">👑</span>':""}<div class="ava">${esc(inisial(r.nama))}</div><div class="nm">${esc(r.nama)}</div><div class="nil">${r.nilai}</div><div class="tiang">${i+1}</div></div>` : `<div class="juara"></div>`;
     h += `<div class="podium">${juara(rows[1],1)}${juara(rows[0],0)}${juara(rows[2],2)}</div><ol class="daftar-rank">`;
     rows.forEach((r,i)=>{ h += `<li class="${kunciNama(r.nama)===me?"saya":""}"><span class="pk">${i+1}</span><span class="nm">${esc(r.nama)}${kunciNama(r.nama)===me?" (kamu)":""}<span class="kecil">${det(r)}</span></span><span class="nl">${r.nilai}</span></li>`; });
@@ -746,7 +773,7 @@ async function layarRanking(tab){
 }
 
 /* ---------- Guru (admin) ---------- */
-let G = {data:null, tab:"pantau", kelas:"5", mapel:"semua", hari:"ini", timer:null};
+let G = {data:null, tab:"ulangan", kode:"", timer:null};
 const sandiGuru = { get(){ try{return sessionStorage.getItem("ulangan_guru")||""}catch(e){return ""} }, set(v){ try{sessionStorage.setItem("ulangan_guru",v)}catch(e){} }, del(){ try{sessionStorage.removeItem("ulangan_guru")}catch(e){} } };
 async function adminKirim(data){
   const r = await fetch(CONFIG.SCRIPT_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({aksi:"admin",...data})});
@@ -772,7 +799,7 @@ async function layarLoginGuru(pesan){
 async function masukGuru(){
   const pw = $("#pw").value; if(!pw) return $("#pw").focus();
   const b=$("#btnMasuk"); b.disabled=true; b.textContent="Memeriksa…";
-  try{ const d = await adminAmbil(pw); if(!d.ok) return layarLoginGuru(d.error||"Gagal masuk."); sandiGuru.set(pw); G.data=d; layarGuru(); }
+  try{ const d = await adminAmbil(pw); if(!d.ok) return layarLoginGuru(d.error||"Gagal masuk."); sandiGuru.set(pw); G.data=d; layarGuru("ulangan"); }
   catch(e){ layarLoginGuru("Tidak bisa terhubung. Periksa koneksi internet."); }
 }
 function layarBuatSandi(pesan){
@@ -827,28 +854,73 @@ async function muatGuru(diam){
 }
 const jam = x => { const d=new Date(x); if(isNaN(d)) return ""; const hariIni=new Date().toDateString()===d.toDateString(); return d.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"})+(hariIni?"":", "+d.toLocaleDateString("id-ID",{day:"numeric",month:"short"})); };
 const namaMapel = m => (MAPEL[m]||{}).nama || m;
-function saringGuru(arr, kunciWaktu){
-  return arr.filter(r=>String(r.kelas)===G.kelas && (G.mapel==="semua"||r.mapel===G.mapel) && (G.hari==="semua"|| new Date(r[kunciWaktu]).toDateString()===new Date().toDateString()));
-}
+const aktifU = u => u.aktif===true || String(u.aktif).toUpperCase()==="TRUE";
+function daftarUlangan(){ return (G.data.ulangan||[]).slice().sort((a,b)=>new Date(b.dibuat)-new Date(a.dibuat)); }
+function ulanganPilihan(){ const l=daftarUlangan(); if(!l.find(u=>u.kode===G.kode)) G.kode = l.length ? l[0].kode : ""; return l.find(u=>u.kode===G.kode)||null; }
+function saringGuru(arr){ return (arr||[]).filter(r=>String(r.kode||"")===G.kode); }
 function layarGuru(tab){
-  stopTimer(); if(tab) G.tab=tab; papan("Ruang guru", "Kelas " + G.kelas);
+  stopTimer(); if(tab) G.tab=tab; papan("Ruang guru", CONFIG.SEKOLAH);
   bawah(`<button class="btn btn-garis" onclick="keluarGuru()">Keluar</button><button class="btn btn-papan" onclick="muatGuru()">Muat ulang</button>`);
-  hentiGuru(); G.timer = setInterval(()=>{ if(!document.hidden && G.tab!=="atur") muatGuru(true); }, 20000);
+  hentiGuru(); G.timer = setInterval(()=>{ if(!document.hidden && G.tab!=="atur" && G.tab!=="ulangan") muatGuru(true); }, 20000);
   renderGuru();
 }
 function renderGuru(){
   if(!G.data) return;
-  const tabs = [["pantau","Pantauan"],["rank","Ranking"],["aktivitas","Keluar-masuk"],["rekap","Rekap nilai"],["atur","Pengaturan"]];
-  const opsiKelas = KELAS_AKTIF.map(k=>`<option value="${k}" ${G.kelas===k?"selected":""}>Kelas ${k}</option>`).join("");
-  const opsiMapel = `<option value="semua">Semua mapel</option>`+Object.keys(MAPEL).map(m=>`<option value="${m}" ${G.mapel===m?"selected":""}>${MAPEL[m].nama}</option>`).join("");
-  let h = `<div class="halo"><div class="inisial" style="background:var(--papan);color:var(--kapur)">👩‍🏫</div><div><h1>Ruang guru</h1><p id="guruStatus">Diperbarui ${jam(G.data.sekarang)}, otomatis setiap 20 detik.</p></div></div>
-  <div class="admin-tabs" role="tablist">${tabs.map(([k,l])=>`<button role="tab" aria-selected="${G.tab===k}" class="${G.tab===k?"on":""}" onclick="layarGuru('${k}')">${l}</button>`).join("")}</div>
-  <div class="saring"><select aria-label="Kelas" onchange="G.kelas=this.value;renderGuru()">${opsiKelas}</select>
-  <select aria-label="Mapel" onchange="G.mapel=this.value;renderGuru()">${opsiMapel}</select>
-  <select aria-label="Waktu" onchange="G.hari=this.value;renderGuru()"><option value="ini" ${G.hari==="ini"?"selected":""}>Hari ini</option><option value="semua" ${G.hari==="semua"?"selected":""}>Semua waktu</option></select></div>`;
-  if(G.tab==="atur"){ h = h.replace(/<div class="saring">[\s\S]*?<\/div>/,""); h += guruAtur(); }
-  else h += ({pantau:guruPantau, rank:guruRank, aktivitas:guruAktivitas, rekap:guruRekap})[G.tab]();
+  const tabs = [["ulangan","Ulangan & kode"],["pantau","Pantauan"],["rank","Ranking"],["aktivitas","Keluar-masuk"],["rekap","Rekap nilai"],["atur","Pengaturan"]];
+  const u = ulanganPilihan(), list = daftarUlangan();
+  let h = `<div class="halo"><div class="inisial" style="background:var(--papan);color:var(--kapur)">👩‍🏫</div><div><h1>Ruang guru</h1><p id="guruStatus">Diperbarui ${jam(G.data.sekarang)}.</p></div></div>
+  <div class="admin-tabs" role="tablist">${tabs.map(([k,l])=>`<button role="tab" aria-selected="${G.tab===k}" class="${G.tab===k?"on":""}" onclick="layarGuru('${k}')">${l}</button>`).join("")}</div>`;
+  if(G.tab==="atur") h += guruAtur();
+  else if(G.tab==="ulangan") h += guruUlangan();
+  else if(!u) h += `<div class="kosong"><b>Belum ada ulangan</b>Buat ulangan dulu di tab "Ulangan &amp; kode".</div>`;
+  else {
+    h += `<div class="saring"><select aria-label="Pilih ulangan" onchange="G.kode=this.value;renderGuru()">${list.map(x=>`<option value="${esc(x.kode)}" ${x.kode===G.kode?"selected":""}>${esc(x.nama)} (${esc(x.kode)})</option>`).join("")}</select></div>
+    <p class="catatan" style="margin:-4px 2px 12px">Kelas ${esc(u.kelas)}, ${esc(namaMapel(u.mapel))}, ${aktifU(u)?"dibuka":"ditutup"}. Diperbarui otomatis setiap 20 detik.</p>`;
+    h += ({pantau:guruPantau, rank:guruRank, aktivitas:guruAktivitas, rekap:guruRekap})[G.tab](u);
+  }
   app.innerHTML = h;
+}
+function guruUlangan(){
+  const list = daftarUlangan();
+  const opsiKelas = KELAS_AKTIF.map(k=>`<option value="${k}">Kelas ${k}</option>`).join("");
+  const opsiMapel = Object.keys(MAPEL).map(m=>`<option value="${m}">${MAPEL[m].nama}</option>`).join("");
+  let h = `<div class="buku"><h2>Buat ulangan baru</h2>
+  <p class="ket">Setiap ulangan mendapat kode sendiri. Bagikan kodenya ke siswa yang ikut ulangan itu.</p>
+  <label class="lbl" for="uNama">Nama ulangan</label><input class="input" id="uNama" maxlength="60" placeholder="contoh: Ulangan Harian MTK Bab 1–3">
+  <div class="baris-form"><div><label class="lbl" for="uKelas">Kelas</label><select class="pilih" id="uKelas">${opsiKelas}</select></div>
+  <div><label class="lbl" for="uMapel">Mata pelajaran</label><select class="pilih" id="uMapel">${opsiMapel}</select></div></div>
+  <p class="status" id="uStatus" role="status"></p>
+  <button class="btn btn-papan" id="btnBuatU" onclick="buatUlangan()">Buat ulangan &amp; kode</button></div>`;
+  if(!list.length) return h + `<div class="kosong"><b>Belum ada ulangan</b>Ulangan yang dibuat akan muncul di sini beserta kodenya.</div>`;
+  h += `<h2 style="font-size:22px;margin:18px 2px 10px">Daftar ulangan</h2>`;
+  list.forEach(x=>{
+    const n = (G.data.nilai||[]).filter(r=>String(r.kode)===x.kode).length, on = aktifU(x);
+    const pesanWA = encodeURIComponent(`Kode ulangan ${x.nama} (Kelas ${x.kelas}, ${namaMapel(x.mapel)}): ${x.kode}\nBuka ${location.origin+location.pathname} lalu pilih ${namaMapel(x.mapel)} dan masukkan kode tersebut.`);
+    h += `<div class="kartu-ulangan ${on?"":"tutup"}"><div class="ku-atas"><div><b>${esc(x.nama)}</b><span>Kelas ${esc(x.kelas)}, ${esc(namaMapel(x.mapel))}, ${n} nilai masuk</span></div>
+      <span class="lencana ${on?"l-selesai":"l-diam"}">${on?"Dibuka":"Ditutup"}</span></div>
+      <div class="kode-besar" aria-label="Kode ${esc(x.kode)}">${esc(x.kode)}</div>
+      <div class="ku-aksi"><button class="btn btn-garis" onclick="salinKode('${esc(x.kode)}',this)">Salin kode</button>
+      <a class="btn btn-garis" href="https://wa.me/?text=${pesanWA}" target="_blank" rel="noopener">Kirim lewat WhatsApp</a>
+      <button class="btn btn-garis" onclick="G.kode='${esc(x.kode)}';layarGuru('pantau')">Pantau siswa</button>
+      <button class="btn ${on?"btn-garis":"btn-papan"}" onclick="aturUlangan('${esc(x.kode)}',${!on})">${on?"Tutup ulangan":"Buka lagi"}</button></div></div>`;
+  });
+  return h + `<p class="catatan">Ulangan yang ditutup tidak bisa dimulai lagi oleh siswa. Siswa yang sedang mengerjakan tetap bisa menyelesaikan.</p>`;
+}
+async function buatUlangan(){
+  const nama=$("#uNama").value.trim(), kelas=$("#uKelas").value, mapel=$("#uMapel").value, st=$("#uStatus");
+  if(nama.length<3){ st.className="status gagal"; st.textContent="Tulis nama ulangan dulu."; return $("#uNama").focus(); }
+  const b=$("#btnBuatU"); b.disabled=true; b.textContent="Membuat…";
+  try{ const r=await adminKirim({sub:"buatUlangan", password:sandiGuru.get(), nama, kelas, mapel, tanpaWaktu:true});
+    if(!r.ok){ b.disabled=false; b.textContent="Buat ulangan & kode"; st.className="status gagal"; st.textContent=r.error||"Gagal membuat ulangan."; return; }
+    G.kode=r.kode; await muatGuru(true); const s=$("#uStatus"); if(s){ s.className="status ok"; s.textContent=`✓ Ulangan dibuat. Kodenya ${r.kode}.`; }
+  }catch(e){ b.disabled=false; b.textContent="Buat ulangan & kode"; st.className="status gagal"; st.textContent="Tidak bisa terhubung. Periksa koneksi internet."; }
+}
+async function aturUlangan(kode, aktif){
+  try{ const r=await adminKirim({sub:"aturUlangan", password:sandiGuru.get(), kode, aktif}); if(!r.ok) return; muatGuru(true); }catch(e){}
+}
+function salinKode(kode, btn){
+  const ok=()=>{ btn.textContent="✓ Tersalin"; setTimeout(()=>btn.textContent="Salin kode",1800); };
+  if(navigator.clipboard) navigator.clipboard.writeText(kode).then(ok).catch(()=>{});
 }
 function statusSesi(p){
   const diam = (Date.now()-new Date(p.terakhir))/60000;
@@ -858,30 +930,25 @@ function statusSesi(p){
   return ["kerja","Mengerjakan"];
 }
 function guruPantau(){
-  const rows = saringGuru(G.data.pantauan,"terakhir").map(p=>({...p, st:statusSesi(p)}));
+  const rows = saringGuru(G.data.pantauan).map(p=>({...p, st:statusSesi(p)}));
   const urut = {keluar:0, kerja:1, diam:2, selesai:3};
   rows.sort((a,b)=> urut[a.st[0]]-urut[b.st[0]] || b.keluar-a.keluar || new Date(b.terakhir)-new Date(a.terakhir));
   const n = k => rows.filter(r=>r.st[0]===k).length;
   let h = `<div class="ringkasan"><div><b>${n("kerja")}</b><span>sedang mengerjakan</span></div><div><b style="color:var(--merah)">${n("keluar")}</b><span>sedang keluar dari web</span></div><div><b>${rows.filter(r=>+r.keluar>0).length}</b><span>pernah keluar</span></div><div><b style="color:var(--hijau)">${n("selesai")}</b><span>sudah selesai</span></div></div>`;
-  if(!rows.length) return h + `<div class="kosong"><b>Belum ada siswa yang mulai</b>Siswa akan muncul di sini begitu mereka menekan salah satu ulangan.</div>`;
+  if(!rows.length) return h + `<div class="kosong"><b>Belum ada siswa yang mulai</b>Siswa akan muncul di sini begitu mereka memasukkan kode dan menekan Mulai ulangan.</div>`;
   h += `<div class="kartu scroll"><table class="tabel"><thead><tr><th>Nama</th><th>Mapel</th><th>Status</th><th class="n">Dijawab</th><th class="n">Keluar</th><th class="n">Terakhir</th></tr></thead><tbody>`;
   rows.forEach(r=>{ h += `<tr><td><b>${esc(r.nama)}</b></td><td>${esc(namaMapel(r.mapel))}</td><td><span class="lencana l-${r.st[0]}">${r.st[1]}</span></td><td class="n">${r.terjawab}/${r.total}</td><td class="n"><span class="keluar-n ${+r.keluar>0?"bahaya":""}">${r.keluar}×</span></td><td class="n">${jam(r.terakhir)}</td></tr>`; });
   return h + `</tbody></table></div><p class="catatan">"Tidak aktif" berarti tidak ada kabar dari HP siswa lebih dari 3 menit, misalnya internet putus atau HP terkunci.</p>`;
 }
-function guruRank(){
-  const nilai = G.data.nilai.filter(r=>G.hari==="semua"||new Date(r.waktu).toDateString()===new Date().toDateString());
-  const blok = m => {
-    const rows = urutkan(pertama(nilai.map(r=>({...r,kelas:String(r.kelas)})), G.kelas, m));
-    let h = `<h2 style="font-size:22px;margin:4px 2px 8px">${MAPEL[m].nama}</h2>`;
-    if(!rows.length) return h + `<div class="kosong" style="margin-bottom:14px">Belum ada nilai.</div>`;
-    h += `<div class="kartu scroll"><table class="tabel"><thead><tr><th>#</th><th>Nama</th><th class="n">Nilai</th><th class="n">Benar</th><th class="n">Waktu</th><th class="n">Keluar</th><th>Keterangan</th></tr></thead><tbody>`;
-    rows.forEach((r,i)=>{ h += `<tr><td><b>${i+1}</b></td><td><b>${esc(r.nama)}</b></td><td class="n"><b style="color:var(--merah)">${r.nilai}</b></td><td class="n">${r.benar}/${r.total}</td><td class="n">${fmtDur(r.durasi)}</td><td class="n"><span class="keluar-n ${+r.keluar>0?"bahaya":""}">${+r.keluar||0}×</span></td><td>${esc(r.alasan||"")}</td></tr>`; });
-    return h + `</tbody></table></div>`;
-  };
-  return (G.mapel==="semua"?Object.keys(MAPEL):[G.mapel]).map(blok).join("") + `<p class="catatan">Setiap siswa dihitung dari percobaan pertamanya. Nilai sama diurutkan dari yang lebih cepat selesai.</p>`;
+function guruRank(u){
+  const rows = urutkan(pertama(saringGuru(G.data.nilai).map(r=>({...r,kelas:String(r.kelas)})), String(u.kelas), u.mapel));
+  if(!rows.length) return `<div class="kosong">Belum ada nilai untuk ulangan ini.</div>`;
+  let h = `<div class="kartu scroll"><table class="tabel"><thead><tr><th>#</th><th>Nama</th><th class="n">Nilai</th><th class="n">Benar</th><th class="n">Lama</th><th class="n">Keluar</th><th>Keterangan</th></tr></thead><tbody>`;
+  rows.forEach((r,i)=>{ h += `<tr><td><b>${i+1}</b></td><td><b>${esc(r.nama)}</b></td><td class="n"><b style="color:var(--merah)">${r.nilai}</b></td><td class="n">${r.benar}/${r.total}</td><td class="n">${fmtDur(r.durasi)}</td><td class="n"><span class="keluar-n ${+r.keluar>0?"bahaya":""}">${+r.keluar||0}×</span></td><td>${esc(r.alasan||"")}</td></tr>`; });
+  return h + `</tbody></table></div><p class="catatan">Setiap siswa dihitung dari percobaan pertamanya. Nilai sama diurutkan dari yang lebih cepat selesai.</p>`;
 }
 function guruAktivitas(){
-  const rows = saringGuru(G.data.aktivitas,"waktu").filter(r=>r.jenis!=="progres").reverse();
+  const rows = saringGuru(G.data.aktivitas).filter(r=>r.jenis!=="progres").reverse();
   const label = {mulai:["kerja","Mulai"], keluar:["keluar","Keluar"], kembali:["diam","Kembali"], selesai:["selesai","Selesai"]};
   if(!rows.length) return `<div class="kosong"><b>Belum ada aktivitas</b>Setiap siswa yang mulai, keluar dari web, kembali, atau selesai akan tercatat di sini.</div>`;
   const keluarPer = {}; rows.filter(r=>r.jenis==="keluar").forEach(r=>{ keluarPer[r.nama]=(keluarPer[r.nama]||0)+1; });
@@ -892,22 +959,22 @@ function guruAktivitas(){
   return h + `</tbody></table></div>`;
 }
 function guruRekap(){
-  const rows = saringGuru(G.data.nilai,"waktu").slice().sort((a,b)=>new Date(b.waktu)-new Date(a.waktu));
+  const rows = saringGuru(G.data.nilai).slice().sort((a,b)=>new Date(b.waktu)-new Date(a.waktu));
   let h = `<button class="btn btn-utama" style="margin:0 0 10px" onclick="unduhRekap()" ${rows.length?"":"disabled"}>Unduh rekap (Excel/CSV)</button>`;
   if(CONFIG.SHEET_URL) h += `<a class="btn btn-garis" style="margin:0 0 14px;text-decoration:none" href="${CONFIG.SHEET_URL}" target="_blank" rel="noopener">Buka Google Sheet nilai</a>`;
-  if(!rows.length) return h + `<div class="kosong"><b>Belum ada nilai</b>Ubah saringan waktu ke "Semua waktu" untuk melihat nilai hari sebelumnya.</div>`;
+  if(!rows.length) return h + `<div class="kosong"><b>Belum ada nilai</b>Nilai siswa muncul di sini setelah mereka mengumpulkan jawaban.</div>`;
   h += `<div class="kartu scroll"><table class="tabel"><thead><tr><th>Waktu</th><th>Nama</th><th>Mapel</th><th class="n">Nilai</th><th class="n">Keluar</th><th>Keterangan</th></tr></thead><tbody>`;
   rows.forEach(r=>{ h += `<tr><td class="waktu-kecil">${jam(r.waktu)}</td><td><b>${esc(r.nama)}</b></td><td>${esc(namaMapel(r.mapel))}</td><td class="n"><b>${r.nilai}</b></td><td class="n">${+r.keluar||0}×</td><td>${esc(r.alasan||"")}</td></tr>`; });
   return h + `</tbody></table></div>`;
 }
 function unduhRekap(){
-  const rows = saringGuru(G.data.nilai,"waktu");
+  const rows = saringGuru(G.data.nilai), u = ulanganPilihan();
   const kol = ["waktu","kelas","mapel","nama","benar","total","nilai","durasi","keluar","alasan"];
   const cel = v => `"${String(v==null?"":v).replace(/"/g,'""')}"`;
   const csv = "﻿" + ["Waktu;Kelas;Mapel;Nama;Benar;Total soal;Nilai;Durasi (detik);Keluar web;Keterangan"]
     .concat(rows.map(r=>kol.map(k=> k==="waktu"? cel(new Date(r.waktu).toLocaleString("id-ID")) : k==="mapel"? cel(namaMapel(r.mapel)) : cel(r[k])).join(";"))).join("\r\n");
   const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
-  a.download=`rekap-nilai-kelas${G.kelas}-${new Date().toISOString().slice(0,10)}.csv`; document.body.appendChild(a); a.click(); a.remove();
+  a.download=`rekap-${(u?u.nama:"ulangan").replace(/[^A-Za-z0-9-]+/g,"-")}-${G.kode}.csv`; document.body.appendChild(a); a.click(); a.remove();
 }
 
 /* ---------- Mulai ---------- */
@@ -915,6 +982,7 @@ document.addEventListener("keydown",e=>{ if(e.key==="Escape") tutupModal(); });
 if(S && !S.id){ S.id=Date.now().toString(36)+Math.random().toString(36).slice(2,7); S.keluar=S.keluar||0; simpan(); }
 if(S && !S.selesai){ profil.kelas=S.kelas; profil.nama=S.nama; layarSoal(); if(S.keluarSejak) siswaKembali(); }
 else if(S && S.selesai){ profil.kelas=S.kelas; profil.nama=S.nama; layarHasil(false); }
+else if(sandiGuru.get() && CONFIG.SCRIPT_URL){ papan("Ruang guru"); app.innerHTML=`<div class="kosong"><b>Memuat ruang guru…</b></div>`; adminAmbil(sandiGuru.get()).then(d=>{ if(!d.ok){ sandiGuru.del(); return layarLoginGuru(d.error); } G.data=d; layarGuru("ulangan"); }).catch(()=>layarLoginGuru("Tidak bisa terhubung. Periksa koneksi internet.")); }
 else if(profil.kelas && profil.nama && KELAS_AKTIF.includes(profil.kelas)) layarMenu();
 else layarKelas();
 </script>

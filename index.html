@@ -545,7 +545,7 @@ function layarSoal(){
         (akhir ? `<button class="btn btn-utama" onclick="bukaModal()">Kumpulkan</button>` : `<button class="btn btn-papan" onclick="ke(${S.cur+1})">Berikutnya</button>`));
 }
 function toggleRagu(){ S.ragu[S.cur]=!S.ragu[S.cur]; simpan(); layarSoal(); }
-function jawab(k){ S.jwb[S.cur]=k; simpan(); layarSoal(); if(S.cur<S.jwb.length-1 && !S.ragu[S.cur]) setTimeout(()=>ke(S.cur+1),260); }
+function jawab(k){ S.jwb[S.cur]=k; simpan(); layarSoal(); }
 function ke(n){ if(n<0||n>=S.jwb.length) return; S.cur=n; simpan(); layarSoal(); atas(); }
 function bukaModal(){
   const sisa = S.jwb.filter(j=>j===null).length, ragu = (S.ragu||[]).filter(Boolean).length;

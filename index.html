@@ -312,17 +312,25 @@ const CONFIG = {
 const KELAS_AKTIF = ["5"];
 // Jumlah soal per bab yang diambil acak dari bank soal untuk setiap siswa (total 40).
 // Bab Bilangan Cacah: 5 subbab A–E masing-masing 4 soal.
+// Bab KPK & FPB: subbab A, B, C masing-masing 5 soal.
 // Bab Pecahan: hanya subbab A, B, C (2 + 2 + 1 = 5 soal).
 const KOMPOSISI = {
-  mtk: {"Bilangan Cacah": {A:4, B:4, C:4, D:4, E:4}, "KPK & FPB":15, "Pecahan": {A:2, B:2, C:1}},
+  mtk: {"Bilangan Cacah": {A:4, B:4, C:4, D:4, E:4}, "KPK & FPB": {A:5, B:5, C:5}, "Pecahan": {A:2, B:2, C:1}},
   ipas: {"Letak Indonesia":22, "Potensi Daerah":18}
 };
 const NAMA_SUBBAB = {
   "Bilangan Cacah": {A:"Membaca & menulis lambang", B:"Nilai tempat", C:"Membandingkan & mengurutkan", D:"Komposisi & dekomposisi", E:"Operasi hitung"},
+  "KPK & FPB": {A:"Kelipatan & kelipatan persekutuan", B:"Faktor & faktor persekutuan", C:"KPK & FPB dengan faktorisasi prima"},
   "Pecahan": {A:"Arti pecahan", B:"Membandingkan & mengurutkan", C:"Penjumlahan", D:"Pengurangan"}
 };
 function subBab(q){
   const x = q.q;
+  if(q.t==="KPK & FPB"){
+    if(/Faktorisasi|KPK|FPB/.test(x)) return "C";
+    if(/[Kk]elipatan/.test(x)) return "A";
+    if(/[Ff]aktor|prima/.test(x)) return "B";
+    return "C";
+  }
   if(q.t==="Pecahan"){
     if(/Tanda yang tepat|Urutan pecahan/.test(x)) return "B";
     if(/ \+ /.test(x)) return "C";
@@ -526,7 +534,12 @@ mtk: [
 {"t": "Pecahan", "q": "Pada pecahan 5/9, angka yang menjadi penyebut adalah ....", "o": ["9", "5", "14", "4"], "p": "Penyebut adalah angka di bawah garis pecahan, yaitu 9."},
 {"t": "Pecahan", "q": "Pecahan \"tiga perlima\" ditulis ....", "o": ["3/5", "5/3", "3/8", "1/5"], "p": "Tiga perlima: pembilang 3, penyebut 5, ditulis 3/5."},
 {"t": "Pecahan", "q": "Pecahan 2/9 dibaca ....", "o": ["dua persembilan", "sembilan perdua", "dua sembilan", "dua per sembilan puluh"], "p": "2/9 dibaca dua persembilan."},
-{"t": "Pecahan", "q": "Dalam sebuah kotak ada 8 kelereng. Sebanyak 3 kelereng berwarna merah. Pecahan yang menunjukkan kelereng merah adalah ....", "o": ["3/8", "5/8", "8/3", "3/5"], "p": "3 kelereng merah dari 8 kelereng = 3/8."}
+{"t": "Pecahan", "q": "Dalam sebuah kotak ada 8 kelereng. Sebanyak 3 kelereng berwarna merah. Pecahan yang menunjukkan kelereng merah adalah ....", "o": ["3/8", "5/8", "8/3", "3/5"], "p": "3 kelereng merah dari 8 kelereng = 3/8."},
+{"t": "KPK & FPB", "q": "Kelipatan persekutuan dari 3 dan 5 yang kurang dari 40 adalah ....", "o": ["15 dan 30", "15, 30, dan 35", "5, 15, dan 30", "8, 15, dan 30"], "p": "Kelipatan 3: 3, 6, 9, 12, 15, …, 30, 33, 36, 39. Kelipatan 5: 5, 10, 15, …, 30, 35. Yang sama: 15 dan 30."},
+{"t": "KPK & FPB", "q": "Lima kelipatan pertama dari 7 adalah ....", "o": ["7, 14, 21, 28, 35", "1, 7, 14, 21, 28", "7, 17, 27, 37, 47", "14, 21, 28, 35, 42"], "p": "Kelipatan 7: 7 × 1, 7 × 2, 7 × 3, 7 × 4, 7 × 5 = 7, 14, 21, 28, 35."},
+{"t": "KPK & FPB", "q": "Bilangan berikut yang merupakan kelipatan 9 adalah ....", "o": ["54", "48", "64", "92"], "p": "54 = 9 × 6, jadi 54 adalah kelipatan 9."},
+{"t": "KPK & FPB", "q": "Kelipatan persekutuan terkecil dari 6 dan 8 adalah ....", "o": ["24", "14", "48", "2"], "p": "Kelipatan 6: 6, 12, 18, 24. Kelipatan 8: 8, 16, 24. Yang sama dan terkecil: 24."},
+{"t": "KPK & FPB", "q": "Tiga kelipatan persekutuan pertama dari 2 dan 3 adalah ....", "o": ["6, 12, 18", "2, 3, 6", "5, 10, 15", "6, 9, 12"], "p": "Kelipatan 2 dan 3 yang sama: 6, 12, 18, …"}
 ],
 ipas: [
 // ===== Bab 1 Letak Negara Indonesia (22 soal) =====

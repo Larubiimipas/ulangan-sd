@@ -941,7 +941,6 @@ function guruUlangan(){
   const opsiMapel = Object.keys(MAPEL).map(m=>`<option value="${m}">${MAPEL[m].nama}</option>`).join("");
   let h = `<div class="buku"><h2>Buat ulangan baru</h2>
   <p class="ket">Setiap ulangan mendapat kode sendiri. Bagikan kodenya ke siswa yang ikut ulangan itu.</p>
-  <label class="lbl" for="uNama">Nama ulangan</label><input class="input" id="uNama" maxlength="60" placeholder="contoh: Ulangan Harian MTK Bab 1–3">
   <div class="baris-form"><div><label class="lbl" for="uKelas">Kelas</label><select class="pilih" id="uKelas">${opsiKelas}</select></div>
   <div><label class="lbl" for="uMapel">Mata pelajaran</label><select class="pilih" id="uMapel">${opsiMapel}</select></div></div>
   <p class="status" id="uStatus" role="status"></p>
@@ -962,8 +961,9 @@ function guruUlangan(){
   return h + `<p class="catatan">Ulangan yang ditutup tidak bisa dimulai lagi oleh siswa. Siswa yang sedang mengerjakan tetap bisa menyelesaikan.</p>`;
 }
 async function buatUlangan(){
-  const nama=$("#uNama").value.trim(), kelas=$("#uKelas").value, mapel=$("#uMapel").value, st=$("#uStatus");
-  if(nama.length<3){ st.className="status gagal"; st.textContent="Tulis nama ulangan dulu."; return $("#uNama").focus(); }
+  const kelas=$("#uKelas").value, mapel=$("#uMapel").value, st=$("#uStatus");
+  // nama dibuat otomatis: "Matematika Kelas 5 · 26 Nov 2026"
+  const nama=`${(MAPEL[mapel]||{}).nama||mapel} Kelas ${kelas} · ${new Date().toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric"})}`;
   const b=$("#btnBuatU"); b.disabled=true; b.textContent="Membuat…";
   try{ const r=await adminKirim({sub:"buatUlangan", password:sandiGuru.get(), nama, kelas, mapel, tanpaWaktu:true});
     if(!r.ok){ b.disabled=false; b.textContent="Buat ulangan & kode"; st.className="status gagal"; st.textContent=r.error||"Gagal membuat ulangan."; return; }
